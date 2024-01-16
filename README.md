@@ -1,6 +1,6 @@
 # hit_me_up
 
-A sms application.
+A todo-list application.
 
 ## Getting Started
 
