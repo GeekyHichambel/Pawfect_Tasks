@@ -10,6 +10,7 @@ class ProfilePane extends StatefulWidget{
 
 class _ProfilePaneState extends State<ProfilePane>{
   bool imageUp = false;
+  bool loggedIn = false;
 
 
   @override
@@ -23,12 +24,28 @@ class _ProfilePaneState extends State<ProfilePane>{
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(padding: const EdgeInsets.symmetric(vertical: 10.0,horizontal: 0.0),
-                child: IconButton(
-                    onPressed: (){
-                      Navigator.pop(context);
-                    }, icon: Icon(Icons.arrow_back_ios_new_rounded,
-                  size: 30.0,
-                  color: AppTheme.colors.blissCream,)),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    IconButton(
+                        onPressed: (){
+                          Navigator.pop(context);
+                        }, icon: Icon(Icons.arrow_back_ios_new_rounded,
+                      size: 30.0,
+                      color: AppTheme.colors.blissCream,)),
+                    !loggedIn?ElevatedButton(onPressed: (){
+
+                    }, style: ButtonStyle(
+                      backgroundColor: MaterialStatePropertyAll<Color>(AppTheme.colors.onsetBlue),
+                    ),
+                        child: Text(
+                      'Log In',
+                      style: TextStyle(
+                        color: AppTheme.colors.blissCream,
+                      ),
+                    )): const SizedBox.shrink(),
+                  ],
+                ),
               ),
               Expanded(child:
               SingleChildScrollView(
@@ -37,32 +54,37 @@ class _ProfilePaneState extends State<ProfilePane>{
                   children: [
                     const SizedBox(height: 30.0,),
                     Center(
-                      child: Container(
-                        width: 200,
-                        height: 200,
-                        decoration: BoxDecoration(
-                            color: AppTheme.colors.complimentaryBlack,
-                            shape: BoxShape.circle,
-                            boxShadow: [BoxShadow(
-                              color: AppTheme.colors.blissCream,
-                              offset: const Offset(0, 0),
-                              blurRadius: 30.0,
-                            ),
-                            ]
-                        ),
-                        child: Center(
-                          child: imageUp? null :
-                          Text('F',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontFamily: 'Onset',
-                              fontSize: 80,
-                              color: AppTheme.colors.blissCream,
-                              fontWeight: FontWeight.bold,
+                      child: Material(
+                        elevation: 5.0,
+                        shadowColor: Colors.transparent,
+                        borderRadius: BorderRadius.circular(15.0),
+                        child: Container(
+                          width: 200,
+                          height: 200,
+                          decoration: BoxDecoration(
+                              color: AppTheme.colors.complimentaryBlack,
+                              shape: BoxShape.circle,
+                              boxShadow: [BoxShadow(
+                                color: AppTheme.colors.blissCream,
+                                offset: const Offset(0, 0),
+                                blurRadius: 30.0,
+                              ),
+                              ]
+                          ),
+                          child: Center(
+                            child: imageUp? null :
+                            Text('F',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontFamily: 'Onset',
+                                fontSize: 80,
+                                color: AppTheme.colors.blissCream,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
                         ),
-                      ),),
+                      )),
                     const SizedBox(height: 10.0,),
                     Padding(padding: const EdgeInsetsDirectional.all(16.0),
                       child: ListView(

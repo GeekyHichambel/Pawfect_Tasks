@@ -35,29 +35,35 @@ class _HomeState extends State<Home>{
     }
 
   void _getTasks(){
-
+    // Fetch the tasks list
   }
 
   void _getPendingTasks(){
     //calculate pending tasks
     int tasks = 0;
-    pendingTasks = tasks;
+    setState(() {
+      pendingTasks = tasks;
+    });
   }
 
   void _getStreak(){
     //fetch streak from db
     int streak = 0;
-    StreakDays = streak;
+    setState(() {
+      StreakDays = streak;
+    });
   }
 
   void _getUserName(){
     //fetch name from db
     String Name = '';
-    if (Name.isEmpty){
-      UserName = 'Fella';
-    }else{
-      UserName = Name;
-    }
+    setState(() {
+      if (Name.isEmpty){
+        UserName = 'Fella';
+      }else{
+        UserName = Name;
+      }
+    });
   }
 
   void _updateTime(){
