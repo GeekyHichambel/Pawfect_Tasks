@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:hit_me_up/Components/AppTheme.dart';
 import 'package:hit_me_up/Components/CustomTextField.dart';
 
@@ -13,6 +12,7 @@ class _LoginState extends State<LoginPage>{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: AppTheme.colors.gloryBlack,
       body: Padding(
         padding: const EdgeInsetsDirectional.symmetric(horizontal: 10.0, vertical: 10.0),
@@ -46,24 +46,43 @@ class _LoginState extends State<LoginPage>{
                           fontFamily: 'Onset',
                           fontSize: 32.0,
                         ),),
-                      const SizedBox(width: 30.0,),
+                      const SizedBox(width: 20.0,),
                       Image.asset('assets/user_icon.png', width: 45, height: 45,),
                     ],
                   ),
-                  Padding(padding: const EdgeInsetsDirectional.symmetric(horizontal: 16.0,vertical: 32.0),
-                    child: Column(
-                      children: [
-                        CustomTextField(
-                          labelText: 'UserName',
-                          labelColor: AppTheme.colors.pleasingWhite,
-                          bgColor: AppTheme.colors.complimentaryBlack,
-                          cursorColor: AppTheme.colors.onsetBlue,
-                          textColor: AppTheme.colors.pleasingWhite,
-                          borderColor: AppTheme.colors.onsetBlue,
-                        ),
-                      ],
-                    )
-                  )
+                  const SizedBox(height: 20.0,),
+                  Expanded(child: Container(
+                    decoration: BoxDecoration(
+                      color: AppTheme.colors.complimentaryBlack,
+                      borderRadius: BorderRadius.circular(16.0)
+                    ),
+                    child: Padding(padding: const EdgeInsetsDirectional.symmetric(horizontal: 16.0,vertical: 32.0),
+                        child: Column(
+                          children: [
+                            CustomTextField(
+                              inputType: TextInputType.name,
+                              fontSize: 16.0,
+                              labelText: 'Username',
+                              labelColor: AppTheme.colors.onsetBlue,
+                              bgColor: AppTheme.colors.blissCream,
+                              cursorColor: AppTheme.colors.pleasingWhite,
+                              textColor: AppTheme.colors.onsetBlue,
+                              borderColor: AppTheme.colors.onsetBlue,
+                            ),
+                            const SizedBox(height: 20.0,),
+                            CustomTextField(
+                                labelText: 'Password',
+                                inputType: TextInputType.visiblePassword,
+                                labelColor: AppTheme.colors.blissCream,
+                                cursorColor: AppTheme.colors.pleasingWhite,
+                                bgColor: AppTheme.colors.onsetBlue,
+                                textColor: AppTheme.colors.blissCream,
+                                borderColor: AppTheme.colors.blissCream,
+                                fontSize: 16.0)
+                          ],
+                        )
+                    ),
+                  )),
                 ],
               ),
             )
