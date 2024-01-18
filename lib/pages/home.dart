@@ -123,7 +123,7 @@ class _HomeState extends State<Home>{
                 children: [
                   GestureDetector(
                     onTap: (){
-
+                      Navigator.of(context).pushNamed('/streaks');
                     },
                     child: Row(
                       children: [
