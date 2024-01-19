@@ -51,13 +51,14 @@ class _LoginState extends State<LoginPage>{
                     ],
                   ),
                   const SizedBox(height: 20.0,),
-                  Expanded(child: Container(
+                  /*Expanded(child: */Container(
                     decoration: BoxDecoration(
-                      color: AppTheme.colors.complimentaryBlack,
+                      color: Colors.grey,
                       borderRadius: BorderRadius.circular(16.0)
                     ),
                     child: Padding(padding: const EdgeInsetsDirectional.symmetric(horizontal: 16.0,vertical: 32.0),
                         child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             CustomTextField(
                               inputType: TextInputType.name,
@@ -78,11 +79,46 @@ class _LoginState extends State<LoginPage>{
                                 bgColor: AppTheme.colors.onsetBlue,
                                 textColor: AppTheme.colors.blissCream,
                                 borderColor: AppTheme.colors.blissCream,
-                                fontSize: 16.0)
+                                fontSize: 16.0),
+                            const SizedBox(height: 5,),
+                            Padding(padding: const EdgeInsetsDirectional.only(start: 8),
+                              child: GestureDetector(
+                                onTap: (){
+
+                                },
+                                child: Text('Forgot Password',
+                                  style: TextStyle(
+                                    fontFamily: 'Onset',
+                                    color: AppTheme.colors.pleasingWhite,
+                                  ),),
+                              ),
+                            ),
+                            const SizedBox(height: 20,),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Center(
+                                  widthFactor: 5,
+                                  child: Text('New User?', style: TextStyle(
+                                    fontFamily: 'Onset',
+                                    decoration: TextDecoration.underline,
+                                    decorationColor: AppTheme.colors.blissCream,
+                                    color: AppTheme.colors.pleasingWhite,
+                                  ),),
+                                ),
+                                IconButton(onPressed: (){
+
+                                }, style: ButtonStyle(
+                                  iconColor: MaterialStatePropertyAll<Color?>(AppTheme.colors.pleasingWhite),
+                                  backgroundColor: MaterialStatePropertyAll<Color?>(AppTheme.colors.gloryBlack),
+                                ),
+                                  icon: const Icon(Icons.login_rounded),),
+                              ],
+                            ),
                           ],
                         )
                     ),
-                  )),
+                  )
                 ],
               ),
             )
