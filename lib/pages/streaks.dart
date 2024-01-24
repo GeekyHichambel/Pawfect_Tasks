@@ -24,7 +24,7 @@ class _StreakState extends State<Streaks>{
                 children: [
                   IconButton(onPressed: (){
                     Navigator.of(context).pop();
-                  }, icon: const Icon(Icons.close_rounded),
+                  }, icon: const Icon(Icons.close_rounded, weight: 30.0,),
                     iconSize: 30.0,
                     color: AppTheme.colors.blissCream,
                   )

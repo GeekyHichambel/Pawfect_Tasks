@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:hit_me_up/Components/AppTheme.dart';
 import 'package:hit_me_up/Components/CustomBox.dart';
+import 'package:hit_me_up/GLOBALS.dart';
 import 'package:hit_me_up/pages/ProfilePane.dart';
 
 import '../Components/Animations.dart';
@@ -54,9 +55,12 @@ class _HomeState extends State<Home>{
     });
   }
 
-  void _getUserName(){
+  void _getUserName() async{
     //fetch name from db
     String Name = '';
+    if(Globals.LoggedIN){
+      Name = Globals.user;
+    }
     setState(() {
       if (Name.isEmpty){
         UserName = 'Fella';
@@ -131,7 +135,7 @@ class _HomeState extends State<Home>{
                           '$StreakDays',
                           textAlign: TextAlign.end,
                           style: TextStyle(
-                            fontFamily: 'Onset',
+                            fontFamily: Globals.sysFont,
                             color: Theme.of(context).colorScheme.primary,
                             fontSize: 24,
                           ),
@@ -147,7 +151,7 @@ class _HomeState extends State<Home>{
                   Text(
                         'Hi, $UserName',
                         style: TextStyle(
-                          fontFamily: 'Onset',
+                          fontFamily: Globals.sysFont,
                           color: Theme.of(context).colorScheme.tertiary,
                           fontSize: 30,
                         ),
@@ -165,7 +169,7 @@ class _HomeState extends State<Home>{
               )
             ),
             const SizedBox(height: 10,),
-            Card(
+            FadeInAnimation(delay: 1, child: Card(
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(15.0),
                 ),
@@ -178,43 +182,43 @@ class _HomeState extends State<Home>{
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text('Time', style: TextStyle(fontFamily: 'Onset', color: Colors.white60, ),),
+                          Text('Time', style: TextStyle(fontFamily: Globals.sysFont, color: Colors.white60, ),),
                           const SizedBox(height: 8,),
-                          Text(currentTime,style: TextStyle(fontFamily: 'Onset', color: AppTheme.colors.pleasingWhite , fontSize: 18),)
+                          Text(currentTime,style: TextStyle(fontFamily: Globals.sysFont, color: AppTheme.colors.pleasingWhite , fontSize: 18),)
                         ],
                       ),
                     ),
                     Expanded(child: Align(
-                      alignment: Alignment.centerRight,
-                      child: Padding(
-                        padding: const EdgeInsets.only(right: 16.0),
-                        child: Image.asset(TimeImg,
-                          width: 50,
-                          height: 50,
-                        ),
-                      )
+                        alignment: Alignment.centerRight,
+                        child: Padding(
+                          padding: const EdgeInsets.only(right: 16.0),
+                          child: Image.asset(TimeImg,
+                            width: 50,
+                            height: 50,
+                          ),
+                        )
                     ))
-                    ],
-                    )
-                ),
+                  ],
+                )
+            )),
             const SizedBox(height: 10,),
             Padding(padding: const EdgeInsets.all(16.0),
-              child: Text(
-                    'My Tasks',
-                    style: TextStyle(
-                      fontFamily: 'Onset',
-                      color: Theme.of(context).colorScheme.primary,
-                      fontSize: 24,
-                    ),
-                  ),
+              child: FadeInAnimation(delay: 1.25,child: Text(
+                'My Tasks',
+                style: TextStyle(
+                  fontFamily: Globals.sysFont,
+                  color: Theme.of(context).colorScheme.primary,
+                  fontSize: 24,
+                ),
+              ),),
             ),
             Expanded(child: Padding(padding: const EdgeInsets.all(16.0),
-              child: CustomBox(
+              child: FadeInAnimation(delay: 1.5,child: CustomBox(
                 color: AppTheme.colors.complimentaryBlack,
                 shadow: AppTheme.colors.blissCream,
                 child: Center(
                     child: Text((pendingTasks > 0) ? '$pendingTasks' : 'We\'re done for today 😀')),
-              ),
+              ),)
             )
             ),
           ],

@@ -1,63 +1,90 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:mongo_dart/mongo_dart.dart' as mong;
 import 'package:hit_me_up/Components/Animations.dart';
-import 'package:hit_me_up/Components/AppTheme.dart';
-import 'package:hit_me_up/Components/CustomTextField.dart';
-import 'package:hit_me_up/GLOBALS.dart';
 import 'package:hit_me_up/db/database.dart';
+import 'package:mongo_dart/mongo_dart.dart' as mong;
+import '../Components/AppTheme.dart';
+import '../Components/CustomTextField.dart';
+import '../GLOBALS.dart';
 
-class LoginPage extends StatefulWidget{
-  const LoginPage({Key? key}) : super(key: key);
+class SignUpPage extends StatefulWidget{
+  const SignUpPage({Key? key}) : super(key: key);
   @override
-  _LoginState createState() => _LoginState();
+  _SignUpState createState() => _SignUpState();
 }
 
-class _LoginState extends State<LoginPage>{
-  final FocusNode UfocusNode = FocusNode();
-  final FocusNode PfocusNode = FocusNode();
+class _SignUpState extends State<SignUpPage>{
+  late String userName;
+  late String userPassword;
+  late String userCPassword;
   late TextEditingController userNameC = TextEditingController();
   late TextEditingController userPasswordC = TextEditingController();
+  late TextEditingController userCPasswordC = TextEditingController();
+  final FocusNode UfocusNode = FocusNode();
+  final FocusNode PfocusNode = FocusNode();
+  final FocusNode CPfocusNode = FocusNode();
   bool showP = true;
+  bool showCP = true;
   bool isUfocus = false;
   bool isPfocus = false;
+  bool isCPfocus = false;
   bool isLoading = false;
   bool result = false;
 
-  Future<void> Userlogin() async{
+  Future<void> NewUser() async{
     try {
-      final username = userNameC.text;
-      final password = userPasswordC.text;
-      if (username.isEmpty || password.isEmpty) {
+      userName = userNameC.text;
+      userPassword = userPasswordC.text;
+      userCPassword = userCPasswordC.text;
+      if (userName.isEmpty || userPassword.isEmpty || userCPassword.isEmpty){
         GlobalVar.globalVar.showToast('Empty text fields');
         throw Exception('Empty text fields');
       }
-      if (password.length < 8){
+      if (userCPassword != userPassword){
+        GlobalVar.globalVar.showToast('Password doesn\'t match');
+        throw Exception('Password doesn\'t match');
+      }
+      if (!isValidUsername(userName)){
+        GlobalVar.globalVar.showToast('Username can only contain alphabets and numbers');
+        throw Exception('Username can only contain alphabets and numbers');
+      }
+      if (userPassword.length < 8){
         GlobalVar.globalVar.showToast('Password is too short');
         throw Exception('Password is too short');
       }
+      if (!isValidPassword(userPassword)){
+        GlobalVar.globalVar.showToast('Password can only contain alphabets, numbers and special characters');
+        throw Exception('Password can only contain alphabets, numbers and special characters');
+      }
       final user = await DataBase.userCollection.findOne(
-          mong.where.eq('username', username)
+        mong.where.eq('username', userName)
       );
-      if (user == null){
-        GlobalVar.globalVar.showToast('Username is incorrect');
-        throw Exception('Username is incorrect');
+      if (user != null){
+        GlobalVar.globalVar.showToast('User already exists');
+        throw Exception('User already exists');
       }
-      if (user['password'] != password){
-        GlobalVar.globalVar.showToast('Password is incorrect');
-        throw Exception('Password is incorrect');
-      }
-      result = true;
-      await Globals.prefs.write(key: 'loggedIN', value: 'true');
-      await Globals.prefs.write(key: 'user', value: username);
-      Globals.LoggedIN = true;
-      Globals.user = username;
-      GlobalVar.globalVar.showToast('Successfully logged in!');
-    } catch (e){
+        final Map<String, dynamic> newDoc = {
+            'username' : userName,
+            'userpass' : userPassword,
+        };
+        await DataBase.userCollection.insertOne(newDoc);
+        result = true;
+        GlobalVar.globalVar.showToast('Successfully Signed Up');
+    }catch(e){
       if (kDebugMode){
         print('Error: $e');
       }
     }
+  }
+
+  bool isValidUsername(String username){
+    RegExp regExp = RegExp(r'^[a-zA-Z0-9]+$');
+    return regExp.hasMatch(username);
+  }
+
+  bool isValidPassword(String userPassword){
+    RegExp regExp = RegExp(r'^[a-zA-Z0-9!@#\$&_?-]+$');
+    return regExp.hasMatch(userPassword);
   }
 
   @override
@@ -72,6 +99,7 @@ class _LoginState extends State<LoginPage>{
         }
       });
     });
+
     PfocusNode.addListener(() {
       setState(() {
         if (PfocusNode.hasFocus) {
@@ -81,6 +109,17 @@ class _LoginState extends State<LoginPage>{
         }
       });
     });
+
+    CPfocusNode.addListener(() {
+      setState(() {
+        if (CPfocusNode.hasFocus) {
+          isCPfocus = true;
+        }else{
+          isCPfocus = false;
+        }
+      });
+    });
+
   }
 
   @override
@@ -98,7 +137,7 @@ class _LoginState extends State<LoginPage>{
                 children: [
                   IconButton(onPressed: (){
                     Navigator.of(context).pop();
-                  }, icon: Icon(Icons.close,weight: 30.0,
+                  }, icon: Icon(Icons.close, weight: 30.0,
                     size: 30.0,
                     color: AppTheme.colors.blissCream,
                   )
@@ -113,7 +152,7 @@ class _LoginState extends State<LoginPage>{
                   FadeInAnimation(delay: 1, child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Text('Log In',
+                      Text('Sign Up',
                         style: TextStyle(
                           color: AppTheme.colors.pleasingWhite,
                           fontWeight: FontWeight.bold,
@@ -138,8 +177,8 @@ class _LoginState extends State<LoginPage>{
                               inputType: TextInputType.name,
                               fontSize: 16.0,
                               labelText: !isUfocus? (userNameC.text.isNotEmpty? '' : 'Username') : (''),
-                              focusNode: UfocusNode,
                               controller: userNameC,
+                              focusNode: UfocusNode,
                               labelColor: AppTheme.colors.onsetBlue,
                               bgColor: AppTheme.colors.blissCream,
                               cursorColor: AppTheme.colors.pleasingWhite,
@@ -149,44 +188,52 @@ class _LoginState extends State<LoginPage>{
                             const SizedBox(height: 20.0,),
                             CustomTextField(
                                 labelText: !isPfocus? (userPasswordC.text.isNotEmpty? '' : 'Password') : (''),
-                                focusNode: PfocusNode,
                                 controller: userPasswordC,
+                                focusNode: PfocusNode,
                                 inputType: TextInputType.visiblePassword,
                                 labelColor: AppTheme.colors.blissCream,
                                 cursorColor: AppTheme.colors.pleasingWhite,
                                 bgColor: AppTheme.colors.onsetBlue,
                                 textColor: AppTheme.colors.blissCream,
                                 borderColor: AppTheme.colors.blissCream,
+                                fontSize: 16.0, obscureText: showP,
                                 suffixIcon: IconButton(
                                   icon: Icon(showP? Icons.visibility_outlined : Icons.visibility_off_outlined), onPressed: () {
-                                  setState(() {
-                                    showP = !showP;
-                                  });
+                                    setState(() {
+                                      showP = !showP;
+                                    });
                                 },
                                   color: AppTheme.colors.blissCream,
                                 ),
-                                fontSize: 16.0, obscureText: showP,),
-                            const SizedBox(height: 8,),
-                            Padding(padding: const EdgeInsetsDirectional.only(start: 8),
-                              child: GestureDetector(
-                                onTap: (){
-
-                                },
-                                child: Text('Forgot Password',
-                                  style: TextStyle(
-                                    fontSize: 10.0,
-                                    fontFamily: Globals.sysFont,
-                                    color: AppTheme.colors.pleasingWhite,
-                                  ),),
+                            ),
+                            const SizedBox(height: 20,),
+                            CustomTextField(
+                              inputType: TextInputType.name,
+                              fontSize: 16.0,
+                              labelText: !isCPfocus? (userCPasswordC.text.isNotEmpty? '' : 'Confirm Password') : (''),
+                              controller: userCPasswordC,
+                              focusNode: CPfocusNode,
+                              labelColor: AppTheme.colors.onsetBlue,
+                              bgColor: AppTheme.colors.blissCream,
+                              cursorColor: AppTheme.colors.pleasingWhite,
+                              textColor: AppTheme.colors.onsetBlue,
+                              borderColor: AppTheme.colors.onsetBlue, obscureText: showCP,
+                              suffixIcon: IconButton(
+                                icon: Icon(showCP? Icons.visibility_outlined : Icons.visibility_off_outlined), onPressed: () {
+                                  setState(() {
+                                    showCP = !showCP;
+                                  });
+                              },
+                                color: AppTheme.colors.onsetBlue,
                               ),
                             ),
                             const SizedBox(height: 20,),
                             Center(
                                 child: GestureDetector(
                                   onTap: (){
-                                    Navigator.of(context).pushReplacementNamed('/Usignup');
+                                    Navigator.of(context).pushReplacementNamed('/Ulogin');
                                   },
-                                  child: Text('New User >', style: TextStyle(
+                                  child: Text('< Back to Login', style: TextStyle(
                                     fontFamily: Globals.sysFont,
                                     fontWeight: FontWeight.bold,
                                     decoration: TextDecoration.underline,
@@ -205,13 +252,11 @@ class _LoginState extends State<LoginPage>{
                                   setState(() {
                                     isLoading = true;
                                   });
-                                  Userlogin().then((_){
+                                  NewUser().then((_){
                                     setState(() {
                                       isLoading = false;
                                     });
-                                    if (result) {
-                                      Navigator.of(context).pushNamedAndRemoveUntil('/home', (route) => false);
-                                    }
+                                    if (result){Navigator.of(context).pushReplacementNamed('/Ulogin');}
                                   });
                                 },hoverColor: AppTheme.colors.lightOnsetBlue,
                                   style: ButtonStyle(
@@ -225,7 +270,7 @@ class _LoginState extends State<LoginPage>{
                           ],
                         )
                     ),
-                  ))
+                  )),
                 ],
               ),
             )

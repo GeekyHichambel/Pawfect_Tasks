@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hit_me_up/GLOBALS.dart';
 
 class CustomTextField extends StatelessWidget{
   final Color? cursorColor;
@@ -8,7 +9,11 @@ class CustomTextField extends StatelessWidget{
   final String? labelText;
   final Color? labelColor;
   final double? fontSize;
+  final bool obscureText;
   final TextInputType? inputType;
+  final TextEditingController? controller;
+  final FocusNode? focusNode;
+  final Widget? suffixIcon;
 
   const CustomTextField({
     super.key,
@@ -17,25 +22,33 @@ class CustomTextField extends StatelessWidget{
     required this.textColor,
     required this.borderColor,
     required this.fontSize,
+    required this.obscureText,
+    this.suffixIcon,
+    this.focusNode,
     this.inputType,
     this.labelText,
     this.labelColor,
+    this.controller,
   });
 
   @override
   Widget build(BuildContext context){
     return Material(
-      elevation: 5,
+      elevation: 5.0,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
       color: bgColor,
       child: TextField(
+          controller: controller,
           keyboardType: inputType,
           enableInteractiveSelection: false,
           autocorrect: false,
+          focusNode: focusNode,
+          obscureText: obscureText,
           decoration: InputDecoration(
+            suffixIcon: suffixIcon,
             labelStyle: TextStyle(
               color: labelColor,
-              fontFamily: 'Onset',
+              fontFamily: Globals.sysFont,
               fontSize: fontSize,
             ),
             contentPadding: const EdgeInsetsDirectional.symmetric(horizontal: 10.0,vertical: 16.0),
@@ -52,7 +65,7 @@ class CustomTextField extends StatelessWidget{
           cursorColor: cursorColor,
           style: TextStyle(
             color: textColor,
-            fontFamily: 'Onset',
+            fontFamily: Globals.sysFont,
             fontSize: fontSize,
           ),
         ),

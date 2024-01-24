@@ -1,6 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     android:versionCode="0"
     android:versionName="test">
+    <uses-permission android:name="android.permission.INTERNET"/>
     <application
         android:label="Hit Me Up"
         android:name="${applicationName}"

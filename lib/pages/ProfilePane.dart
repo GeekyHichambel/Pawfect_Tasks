@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:hit_me_up/Components/Animations.dart';
 import 'package:hit_me_up/Components/AppTheme.dart';
 import 'package:hit_me_up/Components/CustomBox.dart';
+import 'package:hit_me_up/GLOBALS.dart';
 
 class ProfilePane extends StatefulWidget{
   const ProfilePane({Key? key}) : super(key: key);
@@ -10,8 +12,6 @@ class ProfilePane extends StatefulWidget{
 
 class _ProfilePaneState extends State<ProfilePane>{
   bool imageUp = false;
-  bool loggedIn = false;
-
 
   @override
   Widget build(BuildContext context){
@@ -30,10 +30,10 @@ class _ProfilePaneState extends State<ProfilePane>{
                     IconButton(
                         onPressed: (){
                           Navigator.pop(context);
-                        }, icon: Icon(Icons.arrow_back_ios_new_rounded,
+                        }, icon: Icon(Icons.arrow_back_ios_new_rounded, weight: 30.0,
                       size: 30.0,
                       color: AppTheme.colors.blissCream,)),
-                    !loggedIn?ElevatedButton(onPressed: (){
+                    !Globals.LoggedIN?ElevatedButton(onPressed: (){
                       Navigator.of(context).pushNamed('/Ulogin');
                     }, style: ButtonStyle(
                       backgroundColor: MaterialStatePropertyAll<Color>(AppTheme.colors.onsetBlue),
@@ -73,10 +73,10 @@ class _ProfilePaneState extends State<ProfilePane>{
                           ),
                           child: Center(
                             child: imageUp? null :
-                            Text('F',
+                            Text(Globals.user.isEmpty? 'F' : Globals.user[0],
                               textAlign: TextAlign.center,
                               style: TextStyle(
-                                fontFamily: 'Onset',
+                                fontFamily: Globals.sysFont,
                                 fontSize: 80,
                                 color: AppTheme.colors.blissCream,
                                 fontWeight: FontWeight.bold,
@@ -87,7 +87,7 @@ class _ProfilePaneState extends State<ProfilePane>{
                       )),
                     const SizedBox(height: 10.0,),
                     Padding(padding: const EdgeInsetsDirectional.all(16.0),
-                      child: ListView(
+                      child: FadeInAnimation(delay: 1,child: ListView(
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
                         children: [
@@ -145,7 +145,7 @@ class _ProfilePaneState extends State<ProfilePane>{
                                 ],
                               )),
                         ],
-                      ),
+                      ),),
                     ),
                   ],
                 ),
