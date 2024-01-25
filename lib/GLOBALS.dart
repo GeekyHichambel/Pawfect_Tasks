@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'dart:io';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hit_me_up/Components/AppTheme.dart';
@@ -29,16 +30,18 @@ class Globals {
   }
 
   void showToast(String message) {
-    Fluttertoast.showToast(msg: message,
-      toastLength: Toast.LENGTH_SHORT,
-      gravity: ToastGravity.TOP,
-      timeInSecForIosWeb: 2,
-      backgroundColor: AppTheme.colors.blissCream,
-      textColor: AppTheme.colors.onsetBlue,
-      fontSize: 10.0,
-      webBgColor: "#cec7bf",
-      webPosition: "center",
-    );
+    if (!Platform.isWindows) {
+      Fluttertoast.showToast(msg: message,
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.TOP,
+        timeInSecForIosWeb: 2,
+        backgroundColor: AppTheme.colors.blissCream,
+        textColor: AppTheme.colors.onsetBlue,
+        fontSize: 10.0,
+        webBgColor: "#cec7bf",
+        webPosition: "center",
+      );
+    }
   }
 }
 

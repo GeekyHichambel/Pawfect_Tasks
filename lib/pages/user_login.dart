@@ -43,7 +43,7 @@ class _LoginState extends State<LoginPage>{
         GlobalVar.globalVar.showToast('Username is incorrect');
         throw Exception('Username is incorrect');
       }
-      if (user['password'] != password){
+      if (user['userpass'] != password){
         GlobalVar.globalVar.showToast('Password is incorrect');
         throw Exception('Password is incorrect');
       }
