@@ -1,3 +1,4 @@
+import 'package:bcrypt/bcrypt.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:mongo_dart/mongo_dart.dart' as mong;
@@ -43,7 +44,8 @@ class _LoginState extends State<LoginPage>{
         GlobalVar.globalVar.showToast('Username is incorrect');
         throw Exception('Username is incorrect');
       }
-      if (user['userpass'] != password){
+      final String hashed = user['userpass'];
+      if (!BCrypt.checkpw(password, hashed)){
         GlobalVar.globalVar.showToast('Password is incorrect');
         throw Exception('Password is incorrect');
       }

@@ -1,3 +1,4 @@
+import 'package:bcrypt/bcrypt.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hit_me_up/Components/Animations.dart';
@@ -63,9 +64,10 @@ class _SignUpState extends State<SignUpPage>{
         GlobalVar.globalVar.showToast('User already exists');
         throw Exception('User already exists');
       }
+      final String hashed = BCrypt.hashpw(userPassword, BCrypt.gensalt());
         final Map<String, dynamic> newDoc = {
             'username' : userName,
-            'userpass' : userPassword,
+            'userpass' : hashed,
         };
         await DataBase.userCollection.insertOne(newDoc);
         result = true;

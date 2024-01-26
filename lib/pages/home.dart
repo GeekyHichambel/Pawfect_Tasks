@@ -9,6 +9,7 @@ import 'package:hit_me_up/pages/mypets.dart';
 import 'package:hit_me_up/Components/CustomBottomNavigationBarItem.dart';
 
 import '../Components/Animations.dart';
+import 'marketplace.dart';
 
 
 class MainPage extends StatefulWidget{
@@ -18,13 +19,97 @@ class MainPage extends StatefulWidget{
 }
 
 class _MainPageState extends State<MainPage>{
-  static const Pages = [Home(), MyPet()];
+  static const Pages = [Home(), MyPet(), MarketPlace()];
   var pageC = PageController();
   int selectedIndex = 0;
+  int StreakDays = 0;
+  String UserName = '';
+
+  @override
+  void initState(){
+    super.initState();
+    _getStreak();
+    _getUserName();
+  }
+
+  void _getStreak(){
+    //fetch streak from db
+    int streak = 0;
+    setState(() {
+      StreakDays = streak;
+    });
+  }
+
+  void _getUserName() async{
+    //fetch name from db
+    String Name = '';
+    if(Globals.LoggedIN){
+      Name = Globals.user;
+      if (Name.length > 8){
+        Name = '${Name.substring(0, 5)}...';
+      }
+    }
+    setState(() {
+      if (Name.isEmpty){
+        UserName = 'Fella';
+      }else{
+        UserName = Name;
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context){
     return Scaffold(
+      appBar: PreferredSize(preferredSize: const Size.fromHeight(80),
+        child: Padding(padding: const EdgeInsets.symmetric(vertical: 30.0,horizontal: 25.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                GestureDetector(
+                  onTap: (){
+                    Navigator.of(context).pushNamed('/streaks');
+                  },
+                  child: Row(
+                    children: [
+                      Text(
+                        '$StreakDays',
+                        textAlign: TextAlign.end,
+                        style: TextStyle(
+                          fontFamily: Globals.sysFont,
+                          color: Theme.of(context).colorScheme.primary,
+                          fontSize: 24,
+                        ),
+                      ),
+                      Image.asset(
+                        'assets/streak_icon.png',
+                        width: 25,
+                        height: 25,
+                      ),
+                    ],
+                  ),
+                ),
+                Text(
+                  'Hi, $UserName',
+                  style: TextStyle(
+                    fontFamily: Globals.sysFont,
+                    color: Theme.of(context).colorScheme.tertiary,
+                    fontSize: 30,
+                  ),
+                ),
+                GestureDetector(
+                    onTap: (){
+                      Navigator.of(context).push(Animations.animations.customRightSlideIn(const ProfilePane()));
+                    },
+                    child: Image.asset('assets/profile_icon.png',
+                      width: 25,
+                      height: 25,
+                    )
+                )
+              ],
+            )
+        ),
+      ),
       body: PageView(
         onPageChanged: (index){
           setState(() {
@@ -40,11 +125,12 @@ class _MainPageState extends State<MainPage>{
         selectedItemColor: AppTheme.colors.blissCream,
         selectedFontSize: 0,
         unselectedFontSize: 0,
-        unselectedItemColor: AppTheme.colors.complimentaryBlack,
+        unselectedItemColor: AppTheme.colors.superPleasingWhite,
         useLegacyColorScheme: false,
         items: <BottomNavigationBarItem>[
           customNavigationBarItem(Icons.home, ''),
           customNavigationBarItem(Icons.pets_rounded, ''),
+          customNavigationBarItem(Icons.shopping_cart_rounded, '')
         ],
         currentIndex: selectedIndex,
         onTap: (index) {
@@ -67,9 +153,7 @@ class Home extends StatefulWidget{
 
 class _HomeState extends State<Home>{
   String currentTime = '';
-  String UserName = '';
   String TimeImg = '';
-  int StreakDays = 0;
   int pendingTasks = 0;
   List<String> Tasks = [];
   bool isMounted = false;
@@ -78,8 +162,6 @@ class _HomeState extends State<Home>{
     void initState(){
       isMounted = true;
       super.initState();
-      _getUserName();
-      _getStreak();
       _getTasks();
       _getPendingTasks();
       _updateTime();
@@ -110,29 +192,6 @@ class _HomeState extends State<Home>{
     });
   }
 
-  void _getStreak(){
-    //fetch streak from db
-    int streak = 0;
-    setState(() {
-      StreakDays = streak;
-    });
-  }
-
-  void _getUserName() async{
-    //fetch name from db
-    String Name = '';
-    if(Globals.LoggedIN){
-      Name = Globals.user;
-    }
-    setState(() {
-      if (Name.isEmpty){
-        UserName = 'Fella';
-      }else{
-        UserName = Name;
-      }
-    });
-  }
-
   void _updateTime(){
       setState(() {
         currentTime = _getCurrentTime();
@@ -160,7 +219,8 @@ class _HomeState extends State<Home>{
       floatingActionButton: InkWell(
         onTap: () {
 
-        },
+        },overlayColor: const MaterialStatePropertyAll<Color?>(Colors.transparent),
+        splashColor: Colors.transparent,
         child: Material(
           elevation: 5.0,
           shape: const CircleBorder(),
@@ -184,54 +244,6 @@ class _HomeState extends State<Home>{
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Padding(padding: const EdgeInsets.symmetric(vertical: 10.0,horizontal: 5.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  GestureDetector(
-                    onTap: (){
-                      Navigator.of(context).pushNamed('/streaks');
-                    },
-                    child: Row(
-                      children: [
-                        Text(
-                          '$StreakDays',
-                          textAlign: TextAlign.end,
-                          style: TextStyle(
-                            fontFamily: Globals.sysFont,
-                            color: Theme.of(context).colorScheme.primary,
-                            fontSize: 24,
-                          ),
-                        ),
-                        Image.asset(
-                          'assets/streak_icon.png',
-                          width: 25,
-                          height: 25,
-                        ),
-                      ],
-                    ),
-                  ),
-                  Text(
-                        'Hi, $UserName',
-                        style: TextStyle(
-                          fontFamily: Globals.sysFont,
-                          color: Theme.of(context).colorScheme.tertiary,
-                          fontSize: 30,
-                        ),
-                      ),
-                  GestureDetector(
-                    onTap: (){
-                      Navigator.of(context).push(Animations.animations.customRightSlideIn(const ProfilePane()));
-                    },
-                    child: Image.asset('assets/profile_icon.png',
-                      width: 25,
-                      height: 25,
-                    )
-                  )
-                ],
-              )
-            ),
-            const SizedBox(height: 10,),
             FadeInAnimation(delay: 1, child: Card(
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(15.0),
