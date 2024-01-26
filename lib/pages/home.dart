@@ -5,8 +5,59 @@ import 'package:hit_me_up/Components/AppTheme.dart';
 import 'package:hit_me_up/Components/CustomBox.dart';
 import 'package:hit_me_up/GLOBALS.dart';
 import 'package:hit_me_up/pages/ProfilePane.dart';
+import 'package:hit_me_up/pages/mypets.dart';
+import 'package:hit_me_up/Components/CustomBottomNavigationBarItem.dart';
 
 import '../Components/Animations.dart';
+
+
+class MainPage extends StatefulWidget{
+  const MainPage({Key? key}) : super(key: key);
+  @override
+  _MainPageState createState() => _MainPageState();
+}
+
+class _MainPageState extends State<MainPage>{
+  static const Pages = [Home(), MyPet()];
+  var pageC = PageController();
+  int selectedIndex = 0;
+
+  @override
+  Widget build(BuildContext context){
+    return Scaffold(
+      body: PageView(
+        onPageChanged: (index){
+          setState(() {
+            selectedIndex = index;
+          });
+        },
+        controller: pageC,
+        children: Pages,
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        elevation: 5.0,
+        type: BottomNavigationBarType.fixed,
+        selectedItemColor: AppTheme.colors.blissCream,
+        selectedFontSize: 0,
+        unselectedFontSize: 0,
+        unselectedItemColor: AppTheme.colors.complimentaryBlack,
+        useLegacyColorScheme: false,
+        items: <BottomNavigationBarItem>[
+          customNavigationBarItem(Icons.home, ''),
+          customNavigationBarItem(Icons.pets_rounded, ''),
+        ],
+        currentIndex: selectedIndex,
+        onTap: (index) {
+          setState(() {
+            selectedIndex = index;
+            pageC.animateToPage(selectedIndex,
+                duration: const Duration(milliseconds: 200), curve: Curves.linear);
+          });
+        },
+      ),
+    );
+  }
+}
 
 class Home extends StatefulWidget{
   const Home({Key? key}) : super(key: key);
@@ -21,19 +72,31 @@ class _HomeState extends State<Home>{
   int StreakDays = 0;
   int pendingTasks = 0;
   List<String> Tasks = [];
+  bool isMounted = false;
 
   @override
     void initState(){
+      isMounted = true;
       super.initState();
       _getUserName();
       _getStreak();
       _getTasks();
       _getPendingTasks();
       _updateTime();
-      Timer.periodic(const Duration(seconds: 1), (Timer timer){
-        _updateTime();
-      });
+      Timer.periodic(const Duration(seconds: 1), (Timer timer) {
+          if (isMounted) {
+            _updateTime();
+          }else {
+            timer.cancel();
+          }
+        });
     }
+
+  @override
+    void dispose(){
+      isMounted = false;
+      super.dispose();
+  }
 
   void _getTasks(){
     // Fetch the tasks list

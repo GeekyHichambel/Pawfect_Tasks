@@ -18,7 +18,7 @@ Future<void> main() async {
       theme: lightMode,
       darkTheme: darkMode,
       routes: {
-        '/home' : (context) => const Home(),
+        '/home' : (context) => const MainPage(),
         '/streaks': (context) => const Streaks(),
         '/Ulogin': (context) => const LoginPage(),
         '/Usignup' : (context) => const SignUpPage(),
