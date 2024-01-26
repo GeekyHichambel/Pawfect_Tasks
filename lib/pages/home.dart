@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:hit_me_up/Components/AppTheme.dart';
 import 'package:hit_me_up/Components/CustomBox.dart';
@@ -7,7 +6,6 @@ import 'package:hit_me_up/GLOBALS.dart';
 import 'package:hit_me_up/pages/ProfilePane.dart';
 import 'package:hit_me_up/pages/mypets.dart';
 import 'package:hit_me_up/Components/CustomBottomNavigationBarItem.dart';
-
 import '../Components/Animations.dart';
 import 'marketplace.dart';
 
@@ -61,7 +59,7 @@ class _MainPageState extends State<MainPage>{
   @override
   Widget build(BuildContext context){
     return Scaffold(
-      appBar: PreferredSize(preferredSize: const Size.fromHeight(80),
+      appBar: PreferredSize(preferredSize: const Size.fromHeight(100),
         child: Padding(padding: const EdgeInsets.symmetric(vertical: 30.0,horizontal: 25.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -160,8 +158,8 @@ class _HomeState extends State<Home>{
 
   @override
     void initState(){
-      isMounted = true;
       super.initState();
+      isMounted = mounted;
       _getTasks();
       _getPendingTasks();
       _updateTime();
@@ -176,7 +174,7 @@ class _HomeState extends State<Home>{
 
   @override
     void dispose(){
-      isMounted = false;
+      isMounted = mounted;
       super.dispose();
   }
 
@@ -193,9 +191,11 @@ class _HomeState extends State<Home>{
   }
 
   void _updateTime(){
-      setState(() {
-        currentTime = _getCurrentTime();
-      });
+    if (mounted) {
+        setState(() {
+          currentTime = _getCurrentTime();
+        });
+      }
     }
 
    String _getCurrentTime(){
