@@ -240,7 +240,7 @@ class _HomeState extends State<Home>{
       ),
         backgroundColor: Theme.of(context).colorScheme.background,
       body: Padding(
-        padding: const EdgeInsetsDirectional.symmetric(horizontal: 20.0, vertical: 20.0),
+        padding: const EdgeInsetsDirectional.only(start: 20,end: 20,bottom: 20,top: 0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
