@@ -64,10 +64,24 @@ class _SignUpState extends State<SignUpPage>{
         GlobalVar.globalVar.showToast('User already exists');
         throw Exception('User already exists');
       }
+      final List<String> pets = ['labra'];
+      final Map<String, dynamic> petParams = {'mood' : 'Normal',
+                                              'health' : 100,
+                                              'starvation' : 0,
+                                              };
+      final Map<String, Map<String, dynamic>> petStatus = {'labra' : petParams};
+      final List<String> decoitems = [];
+      const int streak = 0;
+      const int pawCoin = 50;
       final String hashed = BCrypt.hashpw(userPassword, BCrypt.gensalt());
-        final Map<String, dynamic> newDoc = {
+      final Map<String, dynamic> newDoc = {
             'username' : userName,
             'userpass' : hashed,
+            'pets' : pets,
+            'petStatus' : petStatus,
+            'streak' : streak,
+            'pawCoin' : pawCoin,
+            'decoitems' : decoitems,
         };
         await DataBase.userCollection.insertOne(newDoc);
         result = true;

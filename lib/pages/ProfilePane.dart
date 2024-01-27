@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hit_me_up/Components/Animations.dart';
 import 'package:hit_me_up/Components/AppTheme.dart';
@@ -12,6 +13,24 @@ class ProfilePane extends StatefulWidget{
 
 class _ProfilePaneState extends State<ProfilePane>{
   bool imageUp = false;
+  bool result = false;
+  bool loading = false;
+
+  Future<void> userLogout() async{
+    try {
+      await Globals.prefs.delete(key: 'loggedIN');
+      await Globals.prefs.delete(key: 'user');
+      Globals.LoggedIN = false;
+      Globals.user = '';
+      result = true;
+      GlobalVar.globalVar.showToast('Successfully logged out!');
+    } catch (e){
+      if (kDebugMode) {
+        print('Error: $e');
+      }
+      GlobalVar.globalVar.showToast('Failed to log out!');
+    }
+  }
 
   @override
   Widget build(BuildContext context){
@@ -43,7 +62,25 @@ class _ProfilePaneState extends State<ProfilePane>{
                       style: TextStyle(
                         color: AppTheme.colors.blissCream,
                       ),
-                    )): const SizedBox.shrink(),
+                    )): loading? CircularProgressIndicator(color: AppTheme.colors.onsetBlue,) :ElevatedButton(onPressed: (){
+                        setState(() {
+                          loading = true;
+                        });
+                        userLogout().then((_){
+                          setState(() {
+                            loading = false;
+                          });
+                          if (result) {
+                            Navigator.of(context).pushNamedAndRemoveUntil('/home', (route) => false);
+                          }
+                        });
+                    }, style: ButtonStyle(
+                      shape: const MaterialStatePropertyAll<OutlinedBorder>(CircleBorder(side: BorderSide(color: Colors.red))),
+                      backgroundColor: MaterialStatePropertyAll<Color>(AppTheme.colors.gloryBlack),
+                    ),
+                        child: const Icon( Icons.power_settings_new_rounded,
+                          color: Colors.red,
+                        )),
                   ],
                 ),
               ),
