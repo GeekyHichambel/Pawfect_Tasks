@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:hit_me_up/Components/AppTheme.dart';
 import 'package:hit_me_up/Components/CustomBox.dart';
 import 'package:hit_me_up/GLOBALS.dart';
+import 'package:hit_me_up/db/database.dart';
 import 'package:hit_me_up/pages/ProfilePane.dart';
 import 'package:hit_me_up/pages/mypets.dart';
+import 'package:mongo_dart/mongo_dart.dart' as mong;
 import 'package:hit_me_up/Components/CustomBottomNavigationBarItem.dart';
 import '../Components/Animations.dart';
 import 'marketplace.dart';
@@ -30,16 +32,20 @@ class _MainPageState extends State<MainPage>{
     _getUserName();
   }
 
-  void _getStreak(){
-    //fetch streak from db
+  void _getStreak() async{
     int streak = 0;
+    if (Globals.LoggedIN){
+      var doc = await DataBase.streakCollection.findOne(
+          mong.where.eq('user_id', Globals.user)
+      );
+      streak = doc['streak'];
+    }
     setState(() {
       StreakDays = streak;
     });
   }
 
   void _getUserName() async{
-    //fetch name from db
     String Name = '';
     if(Globals.LoggedIN){
       Name = Globals.user;

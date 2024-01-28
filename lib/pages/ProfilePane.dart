@@ -4,6 +4,7 @@ import 'package:hit_me_up/Components/Animations.dart';
 import 'package:hit_me_up/Components/AppTheme.dart';
 import 'package:hit_me_up/Components/CustomBox.dart';
 import 'package:hit_me_up/GLOBALS.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 
 class ProfilePane extends StatefulWidget{
   const ProfilePane({Key? key}) : super(key: key);
@@ -15,6 +16,53 @@ class _ProfilePaneState extends State<ProfilePane>{
   bool imageUp = false;
   bool result = false;
   bool loading = false;
+
+  Future openDialog() => showDialog(
+      context: context, builder: (context) => Center(
+    child: SizedBox(height: 200,
+      child: AlertDialog(
+        elevation: 5,
+        alignment: Alignment.center,
+        contentPadding: const EdgeInsets.all(20.0),
+        backgroundColor: AppTheme.colors.complimentaryBlack,
+        shadowColor: AppTheme.colors.blissCream,
+        shape: const RoundedRectangleBorder(side: BorderSide.none, borderRadius: BorderRadius.all(Radius.circular(16.0))),
+        content: Column(
+          children: [
+            Text('Are you sure you want to Log Out?', style: TextStyle(fontFamily: Globals.sysFont),),
+            const Expanded(child: SizedBox.shrink()),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                loading? CircularProgressIndicator(color: AppTheme.colors.onsetBlue,) :
+                ElevatedButton(onPressed: (){
+                  setState(() {
+                    loading = true;
+                  });
+                  userLogout().then((_){
+                    setState(() {
+                      loading = false;
+                    });
+                    if (result) {
+                      Navigator.of(context).pushNamedAndRemoveUntil('/home', (route) => false);
+                    }
+                  });
+                }, style: ButtonStyle(backgroundColor: MaterialStatePropertyAll<Color>(AppTheme.colors.gloryBlack)),
+                    child: const Text('Logout', style: TextStyle(color: Colors.red),)),
+                ElevatedButton(onPressed: (){
+                    Navigator.of(context).pop();
+                }, style: ButtonStyle(backgroundColor: MaterialStatePropertyAll<Color>(AppTheme.colors.gloryBlack)),
+                    child: const Text('Cancel', style: TextStyle(color: Colors.green),))
+              ],
+            )
+          ],
+        ),
+      ),
+    )
+  ).animate(effects: [
+    FadeEffect(duration: 200.ms, curve: Curves.fastLinearToSlowEaseIn),
+    ScaleEffect(duration: 200.ms, curve: Curves.easeIn)
+  ]));
 
   Future<void> userLogout() async{
     try {
@@ -62,17 +110,9 @@ class _ProfilePaneState extends State<ProfilePane>{
                       style: TextStyle(
                         color: AppTheme.colors.blissCream,
                       ),
-                    )): loading? CircularProgressIndicator(color: AppTheme.colors.onsetBlue,) :ElevatedButton(onPressed: (){
+                    )): ElevatedButton(onPressed: (){
                         setState(() {
-                          loading = true;
-                        });
-                        userLogout().then((_){
-                          setState(() {
-                            loading = false;
-                          });
-                          if (result) {
-                            Navigator.of(context).pushNamedAndRemoveUntil('/home', (route) => false);
-                          }
+                          openDialog();
                         });
                     }, style: ButtonStyle(
                       shape: const MaterialStatePropertyAll<OutlinedBorder>(CircleBorder(side: BorderSide(color: Colors.red))),

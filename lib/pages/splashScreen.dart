@@ -44,7 +44,7 @@ class _SplashScreenState  extends State<SplashScreen>{
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16.0),
                     ),
-                    color: AppTheme.colors.gloryBlack,
+                    color: const Color(0xff222222),
                     child: Image.asset('assets/logo.png', fit: BoxFit.cover,)
                 ),
               )

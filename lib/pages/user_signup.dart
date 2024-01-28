@@ -68,22 +68,35 @@ class _SignUpState extends State<SignUpPage>{
       final Map<String, dynamic> petParams = {'mood' : 'Normal',
                                               'health' : 100,
                                               'starvation' : 0,
+                                              'nickname' : 'Labra',
                                               };
       final Map<String, Map<String, dynamic>> petStatus = {'labra' : petParams};
       final List<String> decoitems = [];
       const int streak = 0;
       const int pawCoin = 50;
       final String hashed = BCrypt.hashpw(userPassword, BCrypt.gensalt());
-      final Map<String, dynamic> newDoc = {
+      final Map<String, dynamic> userDoc = {
             'username' : userName,
             'userpass' : hashed,
-            'pets' : pets,
-            'petStatus' : petStatus,
-            'streak' : streak,
-            'pawCoin' : pawCoin,
-            'decoitems' : decoitems,
         };
-        await DataBase.userCollection.insertOne(newDoc);
+        final Map<String, dynamic> petsDoc = {
+          'user_id' : userName,
+          'pets' : pets,
+          'petStatus' : petStatus,
+        };
+        final Map<String, dynamic> streakDoc = {
+          'user_id' : userName,
+          'streak' : streak,
+        };
+        final Map<String, dynamic> itemsDoc = {
+          'user_id' : userName,
+          'pawCoin' : pawCoin,
+          'decoitems' : decoitems,
+        };
+        await DataBase.userCollection.insertOne(userDoc);
+        await DataBase.petsCollection.insertOne(petsDoc);
+        await DataBase.streakCollection.insertOne(streakDoc);
+        await DataBase.itemCollection.insertOne(itemsDoc);
         result = true;
         GlobalVar.globalVar.showToast('Successfully Signed Up');
     }catch(e){
