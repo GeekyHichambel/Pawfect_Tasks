@@ -1,13 +1,13 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:hit_me_up/Components/AppTheme.dart';
-import 'package:hit_me_up/Components/CustomBox.dart';
-import 'package:hit_me_up/GLOBALS.dart';
-import 'package:hit_me_up/db/database.dart';
-import 'package:hit_me_up/pages/ProfilePane.dart';
-import 'package:hit_me_up/pages/mypets.dart';
+import 'package:PawfectTasks/Components/AppTheme.dart';
+import 'package:PawfectTasks/Components/CustomBox.dart';
+import 'package:PawfectTasks/GLOBALS.dart';
+import 'package:PawfectTasks/db/database.dart';
+import 'package:PawfectTasks/pages/ProfilePane.dart';
+import 'package:PawfectTasks/pages/mypets.dart';
 import 'package:mongo_dart/mongo_dart.dart' as mong;
-import 'package:hit_me_up/Components/CustomBottomNavigationBarItem.dart';
+import 'package:PawfectTasks/Components/CustomBottomNavigationBarItem.dart';
 import '../Components/Animations.dart';
 import 'marketplace.dart';
 

@@ -4,11 +4,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:gif/gif.dart';
-import 'package:hit_me_up/Components/Animations.dart';
-import 'package:hit_me_up/Components/AppTheme.dart';
-import 'package:hit_me_up/Components/CustomBox.dart';
-import 'package:hit_me_up/GLOBALS.dart';
-import 'package:hit_me_up/db/database.dart';
+import 'package:PawfectTasks/Components/Animations.dart';
+import 'package:PawfectTasks/Components/AppTheme.dart';
+import 'package:PawfectTasks/Components/CustomBox.dart';
+import 'package:PawfectTasks/GLOBALS.dart';
+import 'package:PawfectTasks/db/database.dart';
 import 'package:mongo_dart/mongo_dart.dart' as mong;
 
 import '../Components/CustomTextField.dart';
@@ -162,7 +162,9 @@ class _MyPetState extends State<MyPet> with SingleTickerProviderStateMixin{
       });
     });
     controller = GifController(vsync: this);
-    getPetDetails();
+    if (mounted) {
+      getPetDetails();
+    }
   }
 
   @override

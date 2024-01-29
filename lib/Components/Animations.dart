@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hit_me_up/Components/anims.dart';
+import 'package:PawfectTasks/Components/anims.dart';
 
 class Animations{
   static const animations = animS();

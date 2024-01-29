@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:hit_me_up/Components/AppTheme.dart';
+import 'package:PawfectTasks/Components/AppTheme.dart';
+import 'package:lottie/lottie.dart';
 
 class SplashScreen extends StatefulWidget{
   const SplashScreen({Key? key}) : super(key: key);
@@ -7,50 +8,48 @@ class SplashScreen extends StatefulWidget{
   _SplashScreenState createState() => _SplashScreenState();
 }
 
-class _SplashScreenState  extends State<SplashScreen>{
+class _SplashScreenState  extends State<SplashScreen> with SingleTickerProviderStateMixin{
+  late AnimationController animationController;
+
   @override
-  void didChangeDependencies(){
-    super.didChangeDependencies();
-    navigateToHome(context);
+  void initState(){
+    animationController = AnimationController(vsync: this,);
+    super.initState();
+    animationController.addStatusListener((status) {
+      if (status == AnimationStatus.completed){
+        navigateToHome(context);
+      }
+    });
   }
 
+  @override
+  void dispose(){
+    animationController.dispose();
+    super.dispose();
+  }
+
+
   void navigateToHome(BuildContext context){
-    Future.delayed(
-      const Duration(seconds: 4),
-        (){
-          Navigator.pushReplacementNamed(context, '/home');
-        }
-    );
+          Navigator.of(context).pushReplacementNamed('/home');
   }
 
   @override
   Widget build(BuildContext context) {
       return Scaffold(
-        backgroundColor: AppTheme.colors.gloryBlack,
-        body: Stack(
-          children: [
-            Image.asset('assets/cardBack.png',
-              fit: BoxFit.cover,
-              width: double.infinity,
-              height: double.infinity,
-              color: AppTheme.colors.blissCream,
+        backgroundColor: AppTheme.colors.onsetBlue,
+        body: Lottie.asset('assets/splashScreen.json',
+              height: MediaQuery.of(context).size.height,
+              width: MediaQuery.of(context).size.width,
+              controller: animationController,
+              onLoaded: (composition){
+                animationController
+                  ..duration = composition.duration
+                  ..forward();
+              },
+              frameRate: FrameRate.composition,
+              backgroundLoading: true,
+              repeat: false,
             ),
-            Center(
-              child: SizedBox(
-                width: 200,
-                height: 100,
-                child: Card(
-                    elevation: 5,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16.0),
-                    ),
-                    color: const Color(0xff222222),
-                    child: Image.asset('assets/logo.png', fit: BoxFit.cover,)
-                ),
-              )
-            ),
-          ],
-        )
       );
   }
 }

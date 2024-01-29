@@ -1,9 +1,8 @@
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:hit_me_up/Components/AppTheme.dart';
+import 'package:PawfectTasks/Components/AppTheme.dart';
 
 @immutable
 class Globals {

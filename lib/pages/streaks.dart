@@ -1,6 +1,5 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:hit_me_up/Components/AppTheme.dart';
+import 'package:PawfectTasks/Components/AppTheme.dart';
 
 class Streaks extends StatefulWidget{
   const Streaks({Key? key}) : super(key: key);

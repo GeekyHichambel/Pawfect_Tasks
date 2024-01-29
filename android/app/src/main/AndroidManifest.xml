@@ -3,7 +3,7 @@
     android:versionName="test">
     <uses-permission android:name="android.permission.INTERNET"/>
     <application
-        android:label="Hit Me Up"
+        android:label="Pawfect Tasks"
         android:name="${applicationName}"
         android:icon="@drawable/logo">
         <activity

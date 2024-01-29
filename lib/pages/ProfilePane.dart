@@ -1,9 +1,9 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:hit_me_up/Components/Animations.dart';
-import 'package:hit_me_up/Components/AppTheme.dart';
-import 'package:hit_me_up/Components/CustomBox.dart';
-import 'package:hit_me_up/GLOBALS.dart';
+import 'package:PawfectTasks/Components/Animations.dart';
+import 'package:PawfectTasks/Components/AppTheme.dart';
+import 'package:PawfectTasks/Components/CustomBox.dart';
+import 'package:PawfectTasks/GLOBALS.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
 class ProfilePane extends StatefulWidget{

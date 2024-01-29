@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hit_me_up/GLOBALS.dart';
+import 'package:PawfectTasks/GLOBALS.dart';
 
 class CustomTextField extends StatelessWidget{
   final Color? cursorColor;

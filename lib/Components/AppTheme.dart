@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hit_me_up/Components/colors.dart';
+import 'package:PawfectTasks/Components/colors.dart';
 
 class AppTheme{
   static const colors = AppColors();

@@ -1,8 +1,8 @@
 import 'package:bcrypt/bcrypt.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:hit_me_up/Components/Animations.dart';
-import 'package:hit_me_up/db/database.dart';
+import 'package:PawfectTasks/Components/Animations.dart';
+import 'package:PawfectTasks/db/database.dart';
 import 'package:mongo_dart/mongo_dart.dart' as mong;
 import '../Components/AppTheme.dart';
 import '../Components/CustomTextField.dart';

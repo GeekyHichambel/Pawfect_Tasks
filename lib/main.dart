@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:hit_me_up/Components/AppTheme.dart';
-import 'package:hit_me_up/GLOBALS.dart';
-import 'package:hit_me_up/pages/splashScreen.dart';
-import 'package:hit_me_up/pages/home.dart';
-import 'package:hit_me_up/pages/streaks.dart';
-import 'package:hit_me_up/pages/user_login.dart';
-import 'package:hit_me_up/pages/user_signup.dart';
-import 'package:hit_me_up/db/database.dart';
+import 'package:PawfectTasks/Components/AppTheme.dart';
+import 'package:PawfectTasks/GLOBALS.dart';
+import 'package:PawfectTasks/pages/ProfilePane.dart';
+import 'package:PawfectTasks/pages/splashScreen.dart';
+import 'package:PawfectTasks/pages/home.dart';
+import 'package:PawfectTasks/pages/streaks.dart';
+import 'package:PawfectTasks/pages/user_login.dart';
+import 'package:PawfectTasks/pages/user_signup.dart';
+import 'package:PawfectTasks/db/database.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -22,6 +23,7 @@ Future<void> main() async {
         '/streaks': (context) => const Streaks(),
         '/Ulogin': (context) => const LoginPage(),
         '/Usignup' : (context) => const SignUpPage(),
+        '/Settings' : (context) => const ProfilePane(),
       },
     ),
   );
