@@ -100,7 +100,7 @@ class _MyPetState extends State<MyPet> with SingleTickerProviderStateMixin{
               shape: const RoundedRectangleBorder(side: BorderSide.none, borderRadius: BorderRadius.all(Radius.circular(16.0))),
               content: Column(
                 children: [
-                  Text('What should be the new name for the pet 🤔?', style: TextStyle(fontFamily: Globals.sysFont),),
+                  Text('Name your buddy!', style: TextStyle(fontFamily: Globals.sysFont),),
                   const SizedBox(height: 20,),
                   CustomTextField(
                     inputType: TextInputType.name,
@@ -130,11 +130,11 @@ class _MyPetState extends State<MyPet> with SingleTickerProviderStateMixin{
                           Navigator.of(context).pop();
                         });
                       }, style: ButtonStyle(backgroundColor: MaterialStatePropertyAll<Color>(AppTheme.colors.gloryBlack)),
-                          child: const Text('Save', style: TextStyle(color: Colors.red),)),
+                          child: const Text('Save', style: TextStyle(color: Colors.green),)),
                       ElevatedButton(onPressed: (){
                         Navigator.of(context).pop();
                       }, style: ButtonStyle(backgroundColor: MaterialStatePropertyAll<Color>(AppTheme.colors.gloryBlack)),
-                          child: const Text('Cancel', style: TextStyle(color: Colors.green),))
+                          child: const Text('Cancel', style: TextStyle(color: Colors.red),))
                     ],
                   )
                 ],
@@ -239,7 +239,7 @@ class _MyPetState extends State<MyPet> with SingleTickerProviderStateMixin{
                                     Row(
                                       mainAxisAlignment: MainAxisAlignment.start,
                                       children: [
-                                        Text(cPetName, style: TextStyle(fontFamily: Globals.sysFont, fontSize: 20),),
+                                        Text(cPetName, style: TextStyle(color: Colors.white, fontFamily: Globals.sysFont, fontSize: 20),),
                                         const SizedBox(width: 10,),
                                         IconButton(onPressed: (){
                                           openDialog(context);
@@ -266,8 +266,8 @@ class _MyPetState extends State<MyPet> with SingleTickerProviderStateMixin{
                                         ),
                                         Column(
                                           children: [
-                                            Image.asset('assets/mood.png', width: 25, height: 25, fit: BoxFit.fill,),
-                                            const SizedBox(height: 5,),
+                                            Image.asset('assets/mood.png', width: 30, height: 30, fit: BoxFit.fill,),
+                                            const SizedBox(height: 0,),
                                             Text(cPetMood, style: TextStyle(color: cPetMood == 'Happy'? Colors.pink : cPetMood == 'Normal' ? Colors.lightGreen : cPetMood == 'Sad' ? Colors.blueAccent : Colors.red, fontFamily: Globals.sysFont),),
                                           ],
                                         ),

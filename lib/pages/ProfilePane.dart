@@ -48,11 +48,11 @@ class _ProfilePaneState extends State<ProfilePane>{
                     }
                   });
                 }, style: ButtonStyle(backgroundColor: MaterialStatePropertyAll<Color>(AppTheme.colors.gloryBlack)),
-                    child: const Text('Logout', style: TextStyle(color: Colors.red),)),
+                    child: const Text('Logout', style: TextStyle(color: Colors.green),)),
                 ElevatedButton(onPressed: (){
                     Navigator.of(context).pop();
                 }, style: ButtonStyle(backgroundColor: MaterialStatePropertyAll<Color>(AppTheme.colors.gloryBlack)),
-                    child: const Text('Cancel', style: TextStyle(color: Colors.green),))
+                    child: const Text('Cancel', style: TextStyle(color: Colors.red),))
               ],
             )
           ],

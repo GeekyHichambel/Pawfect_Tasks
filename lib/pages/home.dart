@@ -98,7 +98,7 @@ class _MainPageState extends State<MainPage>{
                   style: TextStyle(
                     fontFamily: Globals.sysFont,
                     color: Theme.of(context).colorScheme.tertiary,
-                    fontSize: 30,
+                    fontSize: 22,
                   ),
                 ),
                 GestureDetector(
@@ -298,7 +298,7 @@ class _HomeState extends State<Home>{
                 color: AppTheme.colors.complimentaryBlack,
                 shadow: AppTheme.colors.blissCream,
                 child: Center(
-                    child: Text((pendingTasks > 0) ? '$pendingTasks' : 'We\'re done for today 😀')),
+                    child: Text((pendingTasks > 0) ? '$pendingTasks' : 'We\'re done for today 😀', style: const TextStyle(color: Colors.white),),),
               ),)
             )
             ),
