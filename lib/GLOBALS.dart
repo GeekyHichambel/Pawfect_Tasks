@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -10,6 +11,18 @@ class Globals {
   static FlutterSecureStorage prefs = const FlutterSecureStorage();
   static late bool LoggedIN;
   static late String user;
+
+  Future<void> loadImages(String assetPath,BuildContext context) async{
+    try{
+      await precacheImage(AssetImage(assetPath), context);
+      print('Successfully loaded and cached images correctly');
+    }catch(e){
+      if(kDebugMode){
+        print(e);
+        print('Failed to load and cache images correctly');
+      }
+    }
+  }
 
   static updatePref() async{
     if (await prefs.read(key: 'loggedIN') != null) {

@@ -25,10 +25,9 @@ class _MyPetState extends State<MyPet> with SingleTickerProviderStateMixin{
   late int cPetHp = 100;
   late int cPetHunger = 0;
   late String cPetMood = 'Normal';
-  final FocusNode NfocusNode = FocusNode();
   final TextEditingController NameC = TextEditingController();
-  bool isNfocus = false;
   bool loading = false;
+  bool isLoaded = false;
 
   String getTip(){
     Random random = Random();
@@ -57,9 +56,36 @@ class _MyPetState extends State<MyPet> with SingleTickerProviderStateMixin{
         cPetHunger = hunger;
         cPetMood = mood;
       });
+      if (cPetHunger > 0 || cPetHp < 100){
+        if (cPetHp <= 100 && cPetHp >=  80){
+          if (cPetHunger > 0 && cPetHunger <= 20){
+           mood = 'Happy';
+          }else if (cPetHunger > 20 && cPetHunger <= 50){
+            mood = 'Normal';
+          }else if (cPetHunger > 50 && cPetHunger <=80){
+            mood = 'Sad';
+          }else{
+            mood = 'Angry';
+          }
+        }else if (cPetHp < 80 && cPetHp >= 50){
+          mood = 'Normal';
+        }else  if (cPetHp < 50 && cPetHp >= 20){
+          mood = 'Sad';
+        }else{
+          mood = 'Angry';
+        }
+      }else{
+        mood = 'Happy';
+      }
+      setState(() {
+        cPetMood = mood;
+      });
+      await DataBase.petsCollection.updateOne(
+          mong.where.eq('user_id', Globals.user),
+          mong.modify.set('petStatus.labra.mood', cPetMood)
+      );
     }
   }
-  
   Future<void> nameChange() async{
     try {
       String nickN = NameC.text;
@@ -87,7 +113,7 @@ class _MyPetState extends State<MyPet> with SingleTickerProviderStateMixin{
   Future<void> openDialog(BuildContext context) async{
     await showDialog(
         context: context, builder: (context){
-      return StatefulBuilder(
+       return StatefulBuilder(
         builder: (BuildContext context, StateSetter setState){
           return SizedBox(height: 300,
             child: AlertDialog(
@@ -105,8 +131,6 @@ class _MyPetState extends State<MyPet> with SingleTickerProviderStateMixin{
                   CustomTextField(
                     inputType: TextInputType.name,
                     fontSize: 16.0,
-                    labelText: !isNfocus? (NameC.text.isNotEmpty? '' : 'NickName') : (''),
-                    focusNode: NfocusNode,
                     controller: NameC,
                     labelColor: AppTheme.colors.onsetBlue,
                     bgColor: AppTheme.colors.blissCream,
@@ -127,11 +151,13 @@ class _MyPetState extends State<MyPet> with SingleTickerProviderStateMixin{
                           setState(() {
                             loading = false;
                           });
+                          NameC.clear();
                           Navigator.of(context).pop();
                         });
                       }, style: ButtonStyle(backgroundColor: MaterialStatePropertyAll<Color>(AppTheme.colors.gloryBlack)),
                           child: const Text('Save', style: TextStyle(color: Colors.green),)),
                       ElevatedButton(onPressed: (){
+                        NameC.clear();
                         Navigator.of(context).pop();
                       }, style: ButtonStyle(backgroundColor: MaterialStatePropertyAll<Color>(AppTheme.colors.gloryBlack)),
                           child: const Text('Cancel', style: TextStyle(color: Colors.red),))
@@ -152,20 +178,21 @@ class _MyPetState extends State<MyPet> with SingleTickerProviderStateMixin{
   @override
   void initState(){
     super.initState();
-    NfocusNode.addListener(() {
-      setState(() {
-        if (NfocusNode.hasFocus) {
-          isNfocus = true;
-        } else{
-          isNfocus = false;
-        }
-      });
-    });
     controller = GifController(vsync: this);
     if (mounted) {
       getPetDetails();
     }
   }
+
+  @override
+  void didChangeDependencies(){
+    GlobalVar.globalVar.loadImages('assets/pets/labrador/idle_dog.gif', context).then((_){
+      setState(() {
+        isLoaded = true;
+      });
+    });
+    super.didChangeDependencies();
+}
 
   @override
   void dispose(){
@@ -176,7 +203,6 @@ class _MyPetState extends State<MyPet> with SingleTickerProviderStateMixin{
 
   @override
   Widget build(BuildContext context){
-    precacheImage(const AssetImage('assets/pets/labrador/idle_dog.gif'), context);
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Padding(
@@ -185,7 +211,7 @@ class _MyPetState extends State<MyPet> with SingleTickerProviderStateMixin{
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Expanded(child: Center(
-                child: CustomBox(
+                child: isLoaded? CustomBox(
                     color: AppTheme.colors.onsetBlue,
                     shadow: Colors.transparent,
                     child: Padding(
@@ -194,15 +220,15 @@ class _MyPetState extends State<MyPet> with SingleTickerProviderStateMixin{
                         image: const AssetImage('assets/pets/labrador/idle_dog.gif'),
                         controller: controller,
                         autostart: Autostart.no,
-                        placeholder: (context) => CircularProgressIndicator(color: AppTheme.colors.onsetBlue,),
+                        placeholder: (context) => const SizedBox.shrink(),
                         onFetchCompleted: (){
                           controller.reset();
                           controller.loop();
                         },
                       ),
                     )
-                )
-            ),
+                ) : CircularProgressIndicator(color: AppTheme.colors.onsetBlue,)
+            ) ,
             ),
             const SizedBox(height: 20,),
             Text(getTip(), style: TextStyle(color: AppTheme.colors.blissCream, fontFamily: Globals.sysFont),).animate(
