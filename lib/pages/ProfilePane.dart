@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:PawfectTasks/Components/Animations.dart';
@@ -162,64 +163,184 @@ class _ProfilePaneState extends State<ProfilePane>{
                           ),
                         ),
                       )),
-                    const SizedBox(height: 10.0,),
+                    const SizedBox(height: 20.0,),
                     Padding(padding: const EdgeInsetsDirectional.all(16.0),
                       child: FadeInAnimation(delay: 1,child: ListView(
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
                         children: [
-                          CustomBox(color: AppTheme.colors.complimentaryBlack,
+                          CustomBox(color: AppTheme.colors.onsetBlue,
                               shadow: Colors.transparent,
                               height: 60,
-                              child: const Row(
-                                children: [
-
-                                ],
+                              child: Padding(
+                                padding: const EdgeInsetsDirectional.fromSTEB(20, 8, 20, 8),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children:[Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Text('User Info', style: TextStyle(color: AppTheme.colors.blissCream, fontSize: 14.0, fontWeight: FontWeight.bold, fontFamily: Globals.sysFont),),
+                                        const SizedBox(width: 3,),
+                                        Icon(CupertinoIcons.profile_circled, color: AppTheme.colors.blissCream, size: 14.0,),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 3,),
+                                    Text('Edit you user profile', style: TextStyle(color: AppTheme.colors.pleasingWhite, fontSize: 12.0, fontWeight: FontWeight.normal, fontFamily: Globals.sysFont),),
+                                  ],
+                                ),
+                                      Align(
+                                        child: Icon(CupertinoIcons.arrow_right_circle, color: AppTheme.colors.blissCream,),
+                                      )
+                                  ]
+                              )
+                              ),
+                          ),
+                          const SizedBox(height: 16.0),
+                          CustomBox(color: AppTheme.colors.onsetBlue,
+                              shadow: Colors.transparent,
+                              height: 60,
+                              child: Padding(
+                                  padding: const EdgeInsetsDirectional.fromSTEB(20, 8, 20, 8),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Row(
+                                            children: [
+                                              Text('Kill Mode', style: TextStyle(color: AppTheme.colors.blissCream, fontSize: 14.0, fontWeight: FontWeight.bold, fontFamily: Globals.sysFont),),
+                                              const SizedBox(width: 3,),
+                                              Icon(Icons.dangerous_rounded, color: AppTheme.colors.blissCream, size: 14.0,),
+                                            ],
+                                          ),
+                                          const SizedBox(height: 3,),
+                                          Text('Raise the stakes with kill mode', style: TextStyle(color: AppTheme.colors.pleasingWhite, fontSize: 12.0, fontWeight: FontWeight.normal, fontFamily: Globals.sysFont),),
+                                        ],
+                                      ),
+                                      Align(
+                                        child: Icon(CupertinoIcons.arrow_right_circle, color: AppTheme.colors.blissCream,),
+                                      )
+                                    ],
+                                  ),
                               )),
                           const SizedBox(height: 16.0),
-                          CustomBox(color: AppTheme.colors.complimentaryBlack,
+                          CustomBox(color: AppTheme.colors.onsetBlue,
                               shadow: Colors.transparent,
                               height: 60,
-                              child: const Row(
-                                children: [
-
-                                ],
+                              child: Padding(
+                                  padding: const EdgeInsetsDirectional.fromSTEB(20, 8, 20, 8),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Row(
+                                            children: [
+                                              Text('Notifications', style: TextStyle(color: AppTheme.colors.blissCream, fontSize: 14.0, fontWeight: FontWeight.bold, fontFamily: Globals.sysFont),),
+                                              const SizedBox(width: 3,),
+                                              Icon(Icons.notifications_active_rounded, color: AppTheme.colors.blissCream, size: 14.0,),
+                                            ],
+                                          ),
+                                          const SizedBox(height: 3,),
+                                          Text('Notification settings', style: TextStyle(color: AppTheme.colors.pleasingWhite, fontSize: 12.0, fontWeight: FontWeight.normal, fontFamily: Globals.sysFont),),
+                                        ],
+                                      ),
+                                      Align(
+                                        child: Icon(CupertinoIcons.arrow_right_circle, color: AppTheme.colors.blissCream,),
+                                      )
+                                    ],
+                                  )
                               )),
                           const SizedBox(height: 16.0),
-                          CustomBox(color: AppTheme.colors.complimentaryBlack,
+                          CustomBox(color: AppTheme.colors.onsetBlue,
                               shadow: Colors.transparent,
                               height: 60,
-                              child: const Row(
-                                children: [
-
-                                ],
+                              child: Padding(
+                                  padding: const EdgeInsetsDirectional.fromSTEB(20, 8, 20, 8),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Row(
+                                            children: [
+                                              Text('Customization', style: TextStyle(color: AppTheme.colors.blissCream, fontSize: 14.0, fontWeight: FontWeight.bold, fontFamily: Globals.sysFont),),
+                                              const SizedBox(width: 3,),
+                                              Icon(Icons.dashboard_customize_rounded, color: AppTheme.colors.blissCream, size: 14.0,),
+                                            ],
+                                          ),
+                                          const SizedBox(height: 3,),
+                                          Text('Customization settings', style: TextStyle(color: AppTheme.colors.pleasingWhite, fontSize: 12.0, fontWeight: FontWeight.normal, fontFamily: Globals.sysFont),),
+                                        ],
+                                      ),
+                                      Align(
+                                        child: Icon(CupertinoIcons.arrow_right_circle, color: AppTheme.colors.blissCream,),
+                                      )
+                                    ],
+                                  )
                               )),
                           const SizedBox(height: 16.0),
-                          CustomBox(color: AppTheme.colors.complimentaryBlack,
+                          CustomBox(color: AppTheme.colors.onsetBlue,
                               shadow: Colors.transparent,
                               height: 60,
-                              child: const Row(
-                                children: [
-
-                                ],
+                              child: Padding(
+                                  padding: const EdgeInsetsDirectional.fromSTEB(20, 8, 20, 8),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Row(
+                                            children: [
+                                              Text('Customer Feedback', style: TextStyle(color: AppTheme.colors.blissCream, fontSize: 14.0, fontWeight: FontWeight.bold, fontFamily: Globals.sysFont),),
+                                              const SizedBox(width: 3,),
+                                              Icon(Icons.feedback_rounded, color: AppTheme.colors.blissCream, size: 14.0,),
+                                            ],
+                                          ),
+                                          const SizedBox(height: 3,),
+                                          Text('Give us your valuable feedback', style: TextStyle(color: AppTheme.colors.pleasingWhite, fontSize: 12.0, fontWeight: FontWeight.normal, fontFamily: Globals.sysFont),),
+                                        ],
+                                      ),
+                                      Align(
+                                        child: Icon(CupertinoIcons.arrow_right_circle, color: AppTheme.colors.blissCream,),
+                                      )
+                                    ],
+                                  )
                               )),
                           const SizedBox(height: 16.0),
-                          CustomBox(color: AppTheme.colors.complimentaryBlack,
+                          CustomBox(color: AppTheme.colors.onsetBlue,
                               shadow: Colors.transparent,
                               height: 60,
-                              child: const Row(
-                                children: [
-
-                                ],
-                              )),
-                          const SizedBox(height: 16.0),
-                          CustomBox(color: AppTheme.colors.complimentaryBlack,
-                              shadow: Colors.transparent,
-                              height: 60,
-                              child: const Row(
-                                children: [
-
-                                ],
+                              child: Padding(
+                                  padding: const EdgeInsetsDirectional.fromSTEB(20, 8, 20, 8),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Row(
+                                            children: [
+                                              Text('About us', style: TextStyle(color: AppTheme.colors.blissCream, fontSize: 14.0, fontWeight: FontWeight.bold, fontFamily: Globals.sysFont),),
+                                              const SizedBox(width: 3,),
+                                              Icon(CupertinoIcons.info_circle, color: AppTheme.colors.blissCream, size: 14.0,),
+                                            ],
+                                          ),
+                                          const SizedBox(height: 3,),
+                                          Text('Get to know more about us', style: TextStyle(color: AppTheme.colors.pleasingWhite, fontSize: 12.0, fontWeight: FontWeight.normal, fontFamily: Globals.sysFont),),
+                                        ],
+                                      ),
+                                      Align(
+                                        child: Icon(CupertinoIcons.arrow_right_circle, color: AppTheme.colors.blissCream,),
+                                      )
+                                    ],
+                                  )
                               )),
                         ],
                       ),),
