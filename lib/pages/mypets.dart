@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -212,15 +213,15 @@ class _MyPetState extends State<MyPet> with SingleTickerProviderStateMixin{
           children: [
             Expanded(child: Center(
                 child: isLoaded? CustomBox(
-                    color: AppTheme.colors.onsetBlue,
-                    shadow: Colors.transparent,
+                    color: AppTheme.colors.complimentaryBlack,
+                    shadow: AppTheme.colors.blissCream,
                     child: Padding(
                       padding: const EdgeInsets.all(16.0),
                       child: Gif(
                         image: const AssetImage('assets/pets/labrador/idle_dog.gif'),
                         controller: controller,
                         autostart: Autostart.no,
-                        placeholder: (context) => const SizedBox.shrink(),
+                        placeholder: (context) => CircularProgressIndicator(color: AppTheme.colors.onsetBlue,),
                         onFetchCompleted: (){
                           controller.reset();
                           controller.loop();
@@ -229,6 +230,68 @@ class _MyPetState extends State<MyPet> with SingleTickerProviderStateMixin{
                     )
                 ) : CircularProgressIndicator(color: AppTheme.colors.onsetBlue,)
             ) ,
+            ),
+            const SizedBox(height: 20,),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                ElevatedButton(onPressed: (){
+
+                }, style: ButtonStyle(
+                  backgroundColor: MaterialStatePropertyAll(AppTheme.colors.blissCream),
+                  elevation: const MaterialStatePropertyAll(5),
+                  padding: const MaterialStatePropertyAll(EdgeInsetsDirectional.all(16.0)),
+                  shape: const MaterialStatePropertyAll<OutlinedBorder>(CircleBorder(
+                    side: BorderSide.none,
+                  ))
+                ),
+                    child: Column(
+                  children: [
+                    Image.asset('assets/feed.png', color: AppTheme.colors.onsetBlue, width: 30, height: 30,),
+                    const SizedBox(height: 1,),
+                    Text('Feed', style: TextStyle(color: AppTheme.colors.onsetBlue, fontFamily: Globals.sysFont, fontSize: 10),),
+                  ],
+                )).animate(
+                  effects: [
+                    MoveEffect(delay: 800.ms,
+                      begin: const Offset(-100, 0),
+                      end: const Offset(0, 0),
+                      curve: Curves.decelerate,
+                    ),
+                    VisibilityEffect(
+                      delay: 500.ms,
+                    )
+                  ]
+                ),
+                ElevatedButton(onPressed: (){
+
+                }, style: ButtonStyle(
+                    backgroundColor: MaterialStatePropertyAll(AppTheme.colors.blissCream),
+                    elevation: const MaterialStatePropertyAll(5),
+                    padding: const MaterialStatePropertyAll(EdgeInsetsDirectional.all(16.0)),
+                    shape: const MaterialStatePropertyAll<OutlinedBorder>(CircleBorder(
+                      side: BorderSide.none,
+                    ))
+                ),
+                    child: Column(
+                      children: [
+                        Image.asset('assets/interact.png', color: AppTheme.colors.onsetBlue, width: 30, height: 30,),
+                        const SizedBox(height: 1,),
+                        Text('Interact', style: TextStyle(color: AppTheme.colors.onsetBlue, fontFamily: Globals.sysFont, fontSize: 10),),
+                      ],
+                    )).animate(
+                  effects: [
+                    MoveEffect(delay: 800.ms,
+                      begin: const Offset(100,0),
+                      end: const Offset(0, 0),
+                      curve: Curves.decelerate,
+                    ),
+                    VisibilityEffect(
+                      delay: 500.ms,
+                    )
+                  ]
+                ),
+              ],
             ),
             const SizedBox(height: 20,),
             Text(getTip(), style: TextStyle(color: AppTheme.colors.blissCream, fontFamily: Globals.sysFont),).animate(
@@ -255,8 +318,8 @@ class _MyPetState extends State<MyPet> with SingleTickerProviderStateMixin{
                   Expanded(child: FadeInAnimation(
                             delay: 1,
                             child: CustomBox(
-                              color: AppTheme.colors.complimentaryBlack,
-                              shadow: AppTheme.colors.blissCream,
+                              color: AppTheme.colors.onsetBlue,
+                              shadow: Colors.transparent,
                               child: Padding(
                                 padding: const EdgeInsets.all(16.0),
                                 child: Column(

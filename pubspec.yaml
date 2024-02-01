@@ -62,6 +62,10 @@ flutter_launcher_icons:
   adaptive_icon_foreground: "assets/logo_foreground.png"
   adaptive_icon_background: "#ffffff"
   remove_alpha_ios: true
+  windows:
+    generate: true
+    image_path: "assets/logo.png"
+    icon_size: 80
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
