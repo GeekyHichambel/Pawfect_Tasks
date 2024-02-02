@@ -238,6 +238,7 @@ class _MyPetState extends State<MyPet> with SingleTickerProviderStateMixin{
                 ElevatedButton(onPressed: (){
 
                 }, style: ButtonStyle(
+                    fixedSize: const MaterialStatePropertyAll(Size(65,65)),
                   backgroundColor: MaterialStatePropertyAll(AppTheme.colors.blissCream),
                   elevation: const MaterialStatePropertyAll(5),
                   padding: const MaterialStatePropertyAll(EdgeInsetsDirectional.all(16.0)),
@@ -246,10 +247,10 @@ class _MyPetState extends State<MyPet> with SingleTickerProviderStateMixin{
                   ))
                 ),
                     child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Image.asset('assets/feed.png', color: AppTheme.colors.onsetBlue, width: 30, height: 30,),
-                    const SizedBox(height: 1,),
-                    Text('Feed', style: TextStyle(color: AppTheme.colors.onsetBlue, fontFamily: Globals.sysFont, fontSize: 10),),
+                    Expanded(child: Image.asset('assets/feed.png', color: AppTheme.colors.onsetBlue,),),
+                    Text('Feed', style: TextStyle(color: AppTheme.colors.onsetBlue, fontFamily: Globals.sysFont, fontSize: 8),),
                   ],
                 )).animate(
                   effects: [
@@ -260,12 +261,20 @@ class _MyPetState extends State<MyPet> with SingleTickerProviderStateMixin{
                     ),
                     VisibilityEffect(
                       delay: 500.ms,
-                    )
+                    ),
+                    RotateEffect(
+                      delay: 1.seconds,
+                      duration: 800.ms,
+                      begin: 0,
+                      end: 1,
+                      curve: Curves.decelerate,
+                    ),
                   ]
                 ),
                 ElevatedButton(onPressed: (){
 
                 }, style: ButtonStyle(
+                    fixedSize: const MaterialStatePropertyAll(Size(65,65)),
                     backgroundColor: MaterialStatePropertyAll(AppTheme.colors.blissCream),
                     elevation: const MaterialStatePropertyAll(5),
                     padding: const MaterialStatePropertyAll(EdgeInsetsDirectional.all(16.0)),
@@ -274,10 +283,10 @@ class _MyPetState extends State<MyPet> with SingleTickerProviderStateMixin{
                     ))
                 ),
                     child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Image.asset('assets/interact.png', color: AppTheme.colors.onsetBlue, width: 30, height: 30,),
-                        const SizedBox(height: 1,),
-                        Text('Interact', style: TextStyle(color: AppTheme.colors.onsetBlue, fontFamily: Globals.sysFont, fontSize: 10),),
+                        Expanded(child: Image.asset('assets/interact.png', color: AppTheme.colors.onsetBlue),),
+                        Text('Interact', style: TextStyle(color: AppTheme.colors.onsetBlue, fontFamily: Globals.sysFont, fontSize: 8),),
                       ],
                     )).animate(
                   effects: [
@@ -288,7 +297,14 @@ class _MyPetState extends State<MyPet> with SingleTickerProviderStateMixin{
                     ),
                     VisibilityEffect(
                       delay: 500.ms,
-                    )
+                    ),
+                    RotateEffect(
+                      delay: 1.seconds,
+                      duration: 800.ms,
+                      begin: 0,
+                      end: 1,
+                      curve: Curves.decelerate,
+                    ),
                   ]
                 ),
               ],

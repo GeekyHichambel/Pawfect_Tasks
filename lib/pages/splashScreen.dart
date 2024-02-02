@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:PawfectTasks/Components/AppTheme.dart';
 import 'package:lottie/lottie.dart';
+import 'package:video_player/video_player.dart';
+
+import '../GLOBALS.dart';
+import '../db/database.dart';
 
 class SplashScreen extends StatefulWidget{
   const SplashScreen({Key? key}) : super(key: key);
@@ -10,6 +14,9 @@ class SplashScreen extends StatefulWidget{
 
 class _SplashScreenState  extends State<SplashScreen> with SingleTickerProviderStateMixin{
   late AnimationController animationController;
+  late VideoPlayerController videoPlayerController;
+  bool load = true;
+  bool animationCompleted = false;
 
   @override
   void initState(){
@@ -17,7 +24,12 @@ class _SplashScreenState  extends State<SplashScreen> with SingleTickerProviderS
     super.initState();
     animationController.addStatusListener((status) {
       if (status == AnimationStatus.completed){
-        navigateToHome(context);
+        setState(() {
+          load = false;
+        });
+        loadConfigs().then((_){
+          navigateToHome(context);
+        });
       }
     });
   }
@@ -29,15 +41,20 @@ class _SplashScreenState  extends State<SplashScreen> with SingleTickerProviderS
   }
 
 
-  void navigateToHome(BuildContext context){
+  Future<void> loadConfigs() async{
+    await DataBase.connect();
+    await Globals.updatePref();
+  }
+
+  void navigateToHome(BuildContext context) {
           Navigator.of(context).pushReplacementNamed('/home');
   }
 
   @override
   Widget build(BuildContext context) {
       return Scaffold(
-        backgroundColor: AppTheme.colors.onsetBlue,
-        body: Lottie.asset('assets/splashScreen.json',
+        backgroundColor: AppTheme.colors.gloryBlack,
+        body: load? Lottie.asset('assets/splashScreen.json',
               height: MediaQuery.of(context).size.height,
               width: MediaQuery.of(context).size.width,
               controller: animationController,
@@ -49,7 +66,23 @@ class _SplashScreenState  extends State<SplashScreen> with SingleTickerProviderS
               frameRate: FrameRate.composition,
               backgroundLoading: true,
               repeat: false,
+              animate: load,
+            ): SizedBox(
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height,
+          child: Padding(
+            padding: const EdgeInsetsDirectional.all(20.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Image(image: AssetImage('assets/img.png')),
+                CircularProgressIndicator(color: AppTheme.colors.onsetBlue,),
+                const SizedBox(height: 20,),
+                Text('Onboarding now, please hang on tightly', style: TextStyle(color: AppTheme.colors.blissCream,fontSize: 16,fontFamily: Globals.sysFont),)
+              ],
             ),
+          )
+        ),
       );
   }
 }
