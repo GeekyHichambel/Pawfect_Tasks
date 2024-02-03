@@ -73,12 +73,13 @@ class _SplashScreenState  extends State<SplashScreen> with SingleTickerProviderS
           child: Padding(
             padding: const EdgeInsetsDirectional.all(20.0),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const Image(image: AssetImage('assets/img.png')),
                 CircularProgressIndicator(color: AppTheme.colors.onsetBlue,),
                 const SizedBox(height: 20,),
-                Text('Onboarding now, please hang on tightly', style: TextStyle(color: AppTheme.colors.blissCream,fontSize: 16,fontFamily: Globals.sysFont),)
+                Center(child: Text('Onboarding now, please hang on tightly', style: TextStyle(color: AppTheme.colors.blissCream,fontSize: 14,fontFamily: Globals.sysFont),),)
               ],
             ),
           )

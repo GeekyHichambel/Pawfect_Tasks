@@ -207,7 +207,7 @@ class _HomeState extends State<Home>{
    String _getCurrentTime(){
       DateTime now = DateTime.now();
       String period = now.hour < 12 ? 'AM' : 'PM';
-      TimeImg = (now.hour >= 6 && now.hour < 18)? 'assets/day_img.png' : 'assets/night_img.png';
+      TimeImg = (now.hour >= 6 && now.hour < 12)? 'assets/day_img.png' : (now.hour >= 12 && now.hour < 18)? 'assets/sunny.png' : (now.hour >= 18 && now.hour < 22)? 'assets/eve.png' : 'assets/night_img.png';
       String Hour = '${now.hour}';
       String Minute = '${now.minute}';
       if (now.minute < 10){

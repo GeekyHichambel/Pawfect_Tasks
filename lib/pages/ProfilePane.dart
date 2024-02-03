@@ -87,7 +87,7 @@ class _ProfilePaneState extends State<ProfilePane>{
       resizeToAvoidBottomInset: false,
       backgroundColor: AppTheme.colors.gloryBlack,
       body: Padding(
-          padding: const EdgeInsetsDirectional.symmetric(horizontal: 10.0, vertical: 20.0),
+          padding: const EdgeInsetsDirectional.only(start: 10,end: 10,top: 20, bottom: 0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -169,38 +169,47 @@ class _ProfilePaneState extends State<ProfilePane>{
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
                         children: [
-                          CustomBox(color: AppTheme.colors.onsetBlue,
+                          GestureDetector(
+                            onTap: (){
+                              Navigator.of(context).pushNamed('/S>info');
+                            },
+                            child: CustomBox(color: AppTheme.colors.onsetBlue,
                               shadow: Colors.transparent,
                               height: 60,
                               child: Padding(
-                                padding: const EdgeInsetsDirectional.fromSTEB(20, 8, 20, 8),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children:[Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        Text('User Info', style: TextStyle(color: AppTheme.colors.blissCream, fontSize: 14.0, fontWeight: FontWeight.bold, fontFamily: Globals.sysFont),),
-                                        const SizedBox(width: 3,),
-                                        Icon(CupertinoIcons.profile_circled, color: AppTheme.colors.blissCream, size: 14.0,),
-                                      ],
-                                    ),
-                                    Text('Edit you user profile', style: TextStyle(color: AppTheme.colors.pleasingWhite, fontSize: 12.0, fontWeight: FontWeight.normal, fontFamily: Globals.sysFont),),
-                                  ],
-                                ),
-                                      Align(
-                                        child: Icon(CupertinoIcons.arrow_right_circle, color: AppTheme.colors.blissCream,),
-                                      )
-                                  ]
-                              )
+                                  padding: const EdgeInsetsDirectional.fromSTEB(20, 8, 20, 8),
+                                  child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children:[Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Row(
+                                            children: [
+                                              Text('User Info', style: TextStyle(color: AppTheme.colors.blissCream, fontSize: 14.0, fontWeight: FontWeight.bold, fontFamily: Globals.sysFont),),
+                                              const SizedBox(width: 3,),
+                                              Icon(CupertinoIcons.profile_circled, color: AppTheme.colors.blissCream, size: 14.0,),
+                                            ],
+                                          ),
+                                          Text('Edit you user profile', style: TextStyle(color: AppTheme.colors.pleasingWhite, fontSize: 12.0, fontWeight: FontWeight.normal, fontFamily: Globals.sysFont),),
+                                        ],
+                                      ),
+                                        Align(
+                                          child: Icon(CupertinoIcons.arrow_right_circle, color: AppTheme.colors.blissCream,),
+                                        )
+                                      ]
+                                  )
                               ),
+                            ),
                           ),
                           const SizedBox(height: 16.0),
-                          CustomBox(color: AppTheme.colors.onsetBlue,
-                              shadow: Colors.transparent,
-                              height: 60,
-                              child: Padding(
+                          GestureDetector(
+                            onTap: (){
+                              Navigator.of(context).pushNamed('/S>kill');
+                            },
+                            child: CustomBox(color: AppTheme.colors.onsetBlue,
+                                shadow: Colors.transparent,
+                                height: 60,
+                                child: Padding(
                                   padding: const EdgeInsetsDirectional.fromSTEB(20, 8, 20, 8),
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -223,37 +232,46 @@ class _ProfilePaneState extends State<ProfilePane>{
                                       )
                                     ],
                                   ),
-                              )),
+                                )),
+                          ),
                           const SizedBox(height: 16.0),
-                          CustomBox(color: AppTheme.colors.onsetBlue,
-                              shadow: Colors.transparent,
-                              height: 60,
-                              child: Padding(
-                                  padding: const EdgeInsetsDirectional.fromSTEB(20, 8, 20, 8),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Row(
-                                            children: [
-                                              Text('Notifications', style: TextStyle(color: AppTheme.colors.blissCream, fontSize: 14.0, fontWeight: FontWeight.bold, fontFamily: Globals.sysFont),),
-                                              const SizedBox(width: 3,),
-                                              Icon(Icons.notifications_active_rounded, color: AppTheme.colors.blissCream, size: 14.0,),
-                                            ],
-                                          ),
-                                          Text('Notification settings', style: TextStyle(color: AppTheme.colors.pleasingWhite, fontSize: 12.0, fontWeight: FontWeight.normal, fontFamily: Globals.sysFont),),
-                                        ],
-                                      ),
-                                      Align(
-                                        child: Icon(CupertinoIcons.arrow_right_circle, color: AppTheme.colors.blissCream,),
-                                      )
-                                    ],
-                                  )
-                              )),
+                          GestureDetector(
+                            onTap: (){
+                              Navigator.of(context).pushNamed('/S>notif');
+                            },
+                            child: CustomBox(color: AppTheme.colors.onsetBlue,
+                                shadow: Colors.transparent,
+                                height: 60,
+                                child: Padding(
+                                    padding: const EdgeInsetsDirectional.fromSTEB(20, 8, 20, 8),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Row(
+                                              children: [
+                                                Text('Notifications', style: TextStyle(color: AppTheme.colors.blissCream, fontSize: 14.0, fontWeight: FontWeight.bold, fontFamily: Globals.sysFont),),
+                                                const SizedBox(width: 3,),
+                                                Icon(Icons.notifications_active_rounded, color: AppTheme.colors.blissCream, size: 14.0,),
+                                              ],
+                                            ),
+                                            Text('Notification settings', style: TextStyle(color: AppTheme.colors.pleasingWhite, fontSize: 12.0, fontWeight: FontWeight.normal, fontFamily: Globals.sysFont),),
+                                          ],
+                                        ),
+                                        Align(
+                                          child: Icon(CupertinoIcons.arrow_right_circle, color: AppTheme.colors.blissCream,),
+                                        )
+                                      ],
+                                    )
+                                )),
+                          ),
                           const SizedBox(height: 16.0),
-                          CustomBox(color: AppTheme.colors.onsetBlue,
+                          GestureDetector(
+                            onTap: (){
+                              Navigator.of(context).pushNamed('/S>custom');
+                            },child: CustomBox(color: AppTheme.colors.onsetBlue,
                               shadow: Colors.transparent,
                               height: 60,
                               child: Padding(
@@ -280,62 +298,73 @@ class _ProfilePaneState extends State<ProfilePane>{
                                     ],
                                   )
                               )),
+                          ),
                           const SizedBox(height: 16.0),
-                          CustomBox(color: AppTheme.colors.onsetBlue,
-                              shadow: Colors.transparent,
-                              height: 60,
-                              child: Padding(
-                                  padding: const EdgeInsetsDirectional.fromSTEB(20, 8, 20, 8),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Row(
-                                            children: [
-                                              Text('Customer Feedback', style: TextStyle(color: AppTheme.colors.blissCream, fontSize: 14.0, fontWeight: FontWeight.bold, fontFamily: Globals.sysFont),),
-                                              const SizedBox(width: 3,),
-                                              Icon(Icons.feedback_rounded, color: AppTheme.colors.blissCream, size: 14.0,),
-                                            ],
-                                          ),
-                                          Text('Give us your valuable feedback', style: TextStyle(color: AppTheme.colors.pleasingWhite, fontSize: 12.0, fontWeight: FontWeight.normal, fontFamily: Globals.sysFont),),
-                                        ],
-                                      ),
-                                      Align(
-                                        child: Icon(CupertinoIcons.arrow_right_circle, color: AppTheme.colors.blissCream,),
-                                      )
-                                    ],
-                                  )
-                              )),
+                          GestureDetector(
+                            onTap: (){
+                              Navigator.of(context).pushNamed('/S>feed');
+                            },
+                            child: CustomBox(color: AppTheme.colors.onsetBlue,
+                                shadow: Colors.transparent,
+                                height: 60,
+                                child: Padding(
+                                    padding: const EdgeInsetsDirectional.fromSTEB(20, 8, 20, 8),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Row(
+                                              children: [
+                                                Text('Customer Feedback', style: TextStyle(color: AppTheme.colors.blissCream, fontSize: 14.0, fontWeight: FontWeight.bold, fontFamily: Globals.sysFont),),
+                                                const SizedBox(width: 3,),
+                                                Icon(Icons.feedback_rounded, color: AppTheme.colors.blissCream, size: 14.0,),
+                                              ],
+                                            ),
+                                            Text('Give us your valuable feedback', style: TextStyle(color: AppTheme.colors.pleasingWhite, fontSize: 12.0, fontWeight: FontWeight.normal, fontFamily: Globals.sysFont),),
+                                          ],
+                                        ),
+                                        Align(
+                                          child: Icon(CupertinoIcons.arrow_right_circle, color: AppTheme.colors.blissCream,),
+                                        )
+                                      ],
+                                    )
+                                )),
+                          ),
                           const SizedBox(height: 16.0),
-                          CustomBox(color: AppTheme.colors.onsetBlue,
-                              shadow: Colors.transparent,
-                              height: 60,
-                              child: Padding(
-                                  padding: const EdgeInsetsDirectional.fromSTEB(20, 8, 20, 8),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Row(
-                                            children: [
-                                              Text('About us', style: TextStyle(color: AppTheme.colors.blissCream, fontSize: 14.0, fontWeight: FontWeight.bold, fontFamily: Globals.sysFont),),
-                                              const SizedBox(width: 3,),
-                                              Icon(CupertinoIcons.info_circle, color: AppTheme.colors.blissCream, size: 14.0,),
-                                            ],
-                                          ),
-                                          Text('Get to know more about us', style: TextStyle(color: AppTheme.colors.pleasingWhite, fontSize: 12.0, fontWeight: FontWeight.normal, fontFamily: Globals.sysFont),),
-                                        ],
-                                      ),
-                                      Align(
-                                        child: Icon(CupertinoIcons.arrow_right_circle, color: AppTheme.colors.blissCream,),
-                                      )
-                                    ],
-                                  )
-                              )),
+                          GestureDetector(
+                            onTap: (){
+                              Navigator.of(context).pushNamed('/S>about');
+                            },
+                            child: CustomBox(color: AppTheme.colors.onsetBlue,
+                                shadow: Colors.transparent,
+                                height: 60,
+                                child: Padding(
+                                    padding: const EdgeInsetsDirectional.fromSTEB(20, 8, 20, 8),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Row(
+                                              children: [
+                                                Text('About us', style: TextStyle(color: AppTheme.colors.blissCream, fontSize: 14.0, fontWeight: FontWeight.bold, fontFamily: Globals.sysFont),),
+                                                const SizedBox(width: 3,),
+                                                Icon(CupertinoIcons.info_circle, color: AppTheme.colors.blissCream, size: 14.0,),
+                                              ],
+                                            ),
+                                            Text('Get to know more about us', style: TextStyle(color: AppTheme.colors.pleasingWhite, fontSize: 12.0, fontWeight: FontWeight.normal, fontFamily: Globals.sysFont),),
+                                          ],
+                                        ),
+                                        Align(
+                                          child: Icon(CupertinoIcons.arrow_right_circle, color: AppTheme.colors.blissCream,),
+                                        )
+                                      ],
+                                    )
+                                )),
+                          )
                         ],
                       ),),
                     ),

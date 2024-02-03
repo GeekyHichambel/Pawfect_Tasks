@@ -1,3 +1,9 @@
+import 'package:PawfectTasks/pages/settings/aboutUs.dart';
+import 'package:PawfectTasks/pages/settings/cFeedback.dart';
+import 'package:PawfectTasks/pages/settings/killM.dart';
+import 'package:PawfectTasks/pages/settings/notif.dart';
+import 'package:PawfectTasks/pages/settings/uInfo.dart';
+import 'package:PawfectTasks/pages/settings/user_customization.dart';
 import 'package:flutter/material.dart';
 import 'package:PawfectTasks/Components/AppTheme.dart';
 import 'package:PawfectTasks/pages/ProfilePane.dart';
@@ -20,6 +26,12 @@ Future<void> main() async {
         '/Ulogin': (context) => const LoginPage(),
         '/Usignup' : (context) => const SignUpPage(),
         '/Settings' : (context) => const ProfilePane(),
+        '/S>about' : (context) => const aboutUs(),
+        '/S>feed' : (context) => const cFeed(),
+        '/S>kill' : (context) => const killM(),
+        '/S>notif' : (context) => const notif(),
+        '/S>info' : (context) => const Uinfo(),
+        '/S>custom' : (context) => const Ucustom(),
       },
     ),
   );
