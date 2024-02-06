@@ -51,12 +51,14 @@ class _MyPetState extends State<MyPet> with SingleTickerProviderStateMixin{
       var mood = doc?['petStatus']?['labra']?['mood'] ?? 'Labra';
       var hp = doc?['petStatus']?['labra']?['health'] ?? 'Labra';
       var hunger = doc?['petStatus']?['labra']?['starvation'] ?? 'Labra';
-      setState(() {
-        cPetName = nickname;
-        cPetHp = hp;
-        cPetHunger = hunger;
-        cPetMood = mood;
-      });
+      if (cPetName != nickname || cPetHp != hp || cPetHunger != hunger || cPetMood != mood) {
+        setState(() {
+          cPetName = nickname;
+          cPetHp = hp;
+          cPetHunger = hunger;
+          cPetMood = mood;
+        });
+      }
       if (cPetHunger > 0 || cPetHp < 100){
         if (cPetHp <= 100 && cPetHp >=  80){
           if (cPetHunger > 0 && cPetHunger <= 20){
@@ -78,9 +80,11 @@ class _MyPetState extends State<MyPet> with SingleTickerProviderStateMixin{
       }else{
         mood = 'Happy';
       }
-      setState(() {
-        cPetMood = mood;
-      });
+      if (cPetMood != mood) {
+        setState(() {
+          cPetMood = mood;
+        });
+      }
       await DataBase.petsCollection.updateOne(
           mong.where.eq('user_id', Globals.user),
           mong.modify.set('petStatus.labra.mood', cPetMood)
