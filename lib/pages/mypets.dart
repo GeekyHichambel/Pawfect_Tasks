@@ -1,6 +1,4 @@
 import 'dart:math';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -10,7 +8,6 @@ import 'package:PawfectTasks/Components/AppTheme.dart';
 import 'package:PawfectTasks/Components/CustomBox.dart';
 import 'package:PawfectTasks/GLOBALS.dart';
 import 'package:PawfectTasks/db/database.dart';
-import 'package:mongo_dart/mongo_dart.dart' as mong;
 
 import '../Components/CustomTextField.dart';
 
@@ -25,7 +22,7 @@ class _MyPetState extends State<MyPet> with SingleTickerProviderStateMixin{
   late String cPetName = 'Labra';
   late int cPetHp = 100;
   late int cPetHunger = 0;
-  late String cPetMood = 'Normal';
+  late String cPetMood = 'Happy';
   final TextEditingController NameC = TextEditingController();
   bool loading = false;
   bool isLoaded = false;
@@ -44,19 +41,17 @@ class _MyPetState extends State<MyPet> with SingleTickerProviderStateMixin{
 
   void getPetDetails() async{
     if (Globals.LoggedIN) {
-      var doc = await DataBase.petsCollection.findOne(
-        mong.where.eq('user_id', Globals.user)
-      );
-      var nickname = doc?['petStatus']?['labra']?['nickname'] ?? 'Labra';
-      var mood = doc?['petStatus']?['labra']?['mood'] ?? 'Labra';
-      var hp = doc?['petStatus']?['labra']?['health'] ?? 'Labra';
-      var hunger = doc?['petStatus']?['labra']?['starvation'] ?? 'Labra';
+      final user = await DataBase.petsCollection?.child(Globals.user).get();
+      String? nickname = user?.child('petStatus/labra/nickname').value.toString();
+      int? hp = user?.child('petStatus/labra/health').value as int;
+      int? hunger = user?.child('petStatus/labra/starvation').value as int;
+      String? mood = user?.child('petStatus/labra/mood').value.toString();
       if (cPetName != nickname || cPetHp != hp || cPetHunger != hunger || cPetMood != mood) {
         setState(() {
-          cPetName = nickname;
+          cPetName = nickname!;
           cPetHp = hp;
           cPetHunger = hunger;
-          cPetMood = mood;
+          cPetMood = mood!;
         });
       }
       if (cPetHunger > 0 || cPetHp < 100){
@@ -82,13 +77,12 @@ class _MyPetState extends State<MyPet> with SingleTickerProviderStateMixin{
       }
       if (cPetMood != mood) {
         setState(() {
-          cPetMood = mood;
+          cPetMood = mood!;
         });
       }
-      await DataBase.petsCollection.updateOne(
-          mong.where.eq('user_id', Globals.user),
-          mong.modify.set('petStatus.labra.mood', cPetMood)
-      );
+      await DataBase.petsCollection?.child(Globals.user).child('petStatus/labra').update({
+        'mood' : mood,
+      });
     }
   }
   Future<void> nameChange() async{
@@ -98,10 +92,9 @@ class _MyPetState extends State<MyPet> with SingleTickerProviderStateMixin{
         GlobalVar.globalVar.showToast('NickName can\'t be empty');
         throw Exception('NickName can\'t be empty');
       }
-      await DataBase.petsCollection.updateOne(
-        mong.where.eq('user_id', Globals.user),
-        mong.modify.set('petStatus.labra.nickname', nickN)
-      );
+      await DataBase.petsCollection?.child(Globals.user).child('petStatus/labra').update({
+        'nickname' : nickN,
+      });
       setState(() {
         cPetName = nickN;
         if(kDebugMode) {

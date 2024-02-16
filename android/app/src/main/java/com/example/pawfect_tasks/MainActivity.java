@@ -1,4 +1,4 @@
-package com.example.hit_me_up;
+package com.example.pawfect_tasks;
 
 import io.flutter.embedding.android.FlutterActivity;
 

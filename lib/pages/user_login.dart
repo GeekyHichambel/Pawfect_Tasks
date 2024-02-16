@@ -1,7 +1,6 @@
 import 'package:bcrypt/bcrypt.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:mongo_dart/mongo_dart.dart' as mong;
 import 'package:PawfectTasks/Components/Animations.dart';
 import 'package:PawfectTasks/Components/AppTheme.dart';
 import 'package:PawfectTasks/Components/CustomTextField.dart';
@@ -37,14 +36,12 @@ class _LoginState extends State<LoginPage>{
         GlobalVar.globalVar.showToast('Password is too short');
         throw Exception('Password is too short');
       }
-      final user = await DataBase.userCollection.findOne(
-          mong.where.eq('username', username)
-      );
+      final user = await DataBase.userCollection?.child(username).get();
       if (user == null){
         GlobalVar.globalVar.showToast('Username is incorrect');
         throw Exception('Username is incorrect');
       }
-      final String hashed = user['userpass'];
+      final String hashed = user.child('userpass').value.toString();
       if (!BCrypt.checkpw(password, hashed)){
         GlobalVar.globalVar.showToast('Password is incorrect');
         throw Exception('Password is incorrect');

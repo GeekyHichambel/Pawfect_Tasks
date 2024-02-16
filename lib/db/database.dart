@@ -1,7 +1,7 @@
-import 'dart:developer';
-
+import 'dart:io';
 import 'package:flutter/foundation.dart';
-import 'package:mongo_dart/mongo_dart.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 const USER_COLLECTION = 'users';
 const ITEM_COLLECTION = 'items';
@@ -9,28 +9,31 @@ const STREAK_COLLECTION = 'streaks';
 const PETS_COLLECTION = 'pets';
 
 class DataBase{
-  static var userCollection;
-  static var itemCollection;
-  static var streakCollection;
-  static var petsCollection;
+  static FirebaseDatabase? firebaseDatabase;
+  static DatabaseReference? userCollection;
+  static DatabaseReference? itemCollection;
+  static DatabaseReference? streakCollection;
+  static DatabaseReference? petsCollection;
 
   static connect() async{
-    const String connectionUrl = "mongodb+srv://userS:userS@goodcluster.agd8cel.mongodb.net/myApp?retryWrites=true&w=majority";
-    var db;
-    db = await Db.create(connectionUrl);
-    await db.open();
-    inspect(db);
-    var status = db.serverStatus();
-    userCollection = db.collection(USER_COLLECTION);
-    itemCollection = db.collection(ITEM_COLLECTION);
-    streakCollection = db.collection(STREAK_COLLECTION);
-    petsCollection = db.collection(PETS_COLLECTION);
+    Platform.isAndroid? await Firebase.initializeApp(
+        options: const FirebaseOptions(
+            apiKey: 'AIzaSyABctfAIz0j9N-7a7bIP9KCG38JKBDYvGI',
+            appId: '1:60544625479:android:adf1d55fe912ff8263ba62',
+            messagingSenderId: '60544625479',
+            projectId: 'pawfecttasks',
+            databaseURL: 'https://pawfecttasks-default-rtdb.asia-southeast1.firebasedatabase.app'
+        )
+    ) : await Firebase.initializeApp();
+    firebaseDatabase = FirebaseDatabase.instance;
+    firebaseDatabase?.setPersistenceEnabled(true);
+    firebaseDatabase?.setPersistenceCacheSizeBytes(10000000);
+    userCollection = firebaseDatabase?.ref().child(USER_COLLECTION);
+    itemCollection = firebaseDatabase?.ref().child(ITEM_COLLECTION);
+    streakCollection = firebaseDatabase?.ref().child(STREAK_COLLECTION);
+    petsCollection = firebaseDatabase?.ref().child(PETS_COLLECTION);
     if (kDebugMode) {
-      print(status);
-      print(await userCollection.find().toList());
-      print(await itemCollection.find().toList());
-      print(await streakCollection.find().toList());
-      print(await petsCollection.find().toList());
+      firebaseDatabase?.setLoggingEnabled(true);
     }
   }
 }

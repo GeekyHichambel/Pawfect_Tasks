@@ -6,7 +6,6 @@ import 'package:PawfectTasks/GLOBALS.dart';
 import 'package:PawfectTasks/db/database.dart';
 import 'package:PawfectTasks/pages/ProfilePane.dart';
 import 'package:PawfectTasks/pages/mypets.dart';
-import 'package:mongo_dart/mongo_dart.dart' as mong;
 import 'package:PawfectTasks/Components/CustomBottomNavigationBarItem.dart';
 import '../Components/Animations.dart';
 import 'marketplace.dart';
@@ -35,10 +34,10 @@ class _MainPageState extends State<MainPage>{
   void _getStreak() async{
     int streak = 0;
     if (Globals.LoggedIN){
-      var doc = await DataBase.streakCollection.findOne(
-          mong.where.eq('user_id', Globals.user)
-      );
-      streak = doc['streak'];
+        final snapshot = await DataBase.streakCollection?.child(Globals.user).child('streaks').get();
+        if (snapshot?.value != null) {
+          streak = snapshot?.value as int;
+        }
     }
     setState(() {
       StreakDays = streak;
@@ -207,7 +206,7 @@ class _HomeState extends State<Home>{
    String _getCurrentTime(){
       DateTime now = DateTime.now();
       String period = now.hour < 12 ? 'AM' : 'PM';
-      TimeImg = (now.hour >= 6 && now.hour < 12)? 'assets/day_img.png' : (now.hour >= 12 && now.hour < 18)? 'assets/sunny.png' : (now.hour >= 18 && now.hour < 22)? 'assets/eve.png' : 'assets/night_img.png';
+      TimeImg = (now.hour >= 6 && now.hour < 12)? 'assets/day_img.png' : (now.hour >= 12 && now.hour < 16)? 'assets/sunny.png' : (now.hour >= 16 && now.hour < 20)? 'assets/eve.png' : 'assets/night_img.png';
       String Hour = '${now.hour}';
       String Minute = '${now.minute}';
       if (now.minute < 10){

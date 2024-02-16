@@ -3,7 +3,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:PawfectTasks/Components/Animations.dart';
 import 'package:PawfectTasks/db/database.dart';
-import 'package:mongo_dart/mongo_dart.dart' as mong;
 import '../Components/AppTheme.dart';
 import '../Components/CustomTextField.dart';
 import '../GLOBALS.dart';
@@ -57,48 +56,42 @@ class _SignUpState extends State<SignUpPage>{
         GlobalVar.globalVar.showToast('Password can only contain alphabets, numbers and special characters');
         throw Exception('Password can only contain alphabets, numbers and special characters');
       }
-      final user = await DataBase.userCollection.findOne(
-        mong.where.eq('username', userName)
-      );
-      if (user != null){
+      final snapshot = await DataBase.userCollection?.child(userName).get();
+      if (snapshot!.exists){
         GlobalVar.globalVar.showToast('User already exists');
         throw Exception('User already exists');
       }
       final List<String> pets = ['labra'];
-      final Map<String, dynamic> petParams = {'mood' : 'Normal',
-                                              'health' : 100,
-                                              'starvation' : 0,
-                                              'nickname' : 'Labra',
-                                              };
+      final Map<String, dynamic> petParams = {'mood' : 'Happy',
+        'health' : 100,
+        'starvation' : 0,
+        'nickname' : 'Labra',
+      };
       final Map<String, Map<String, dynamic>> petStatus = {'labra' : petParams};
       final List<String> decoitems = [];
       const int streak = 0;
       const int pawCoin = 50;
       final String hashed = BCrypt.hashpw(userPassword, BCrypt.gensalt());
       final Map<String, dynamic> userDoc = {
-            'username' : userName,
-            'userpass' : hashed,
-        };
-        final Map<String, dynamic> petsDoc = {
-          'user_id' : userName,
-          'pets' : pets,
-          'petStatus' : petStatus,
-        };
-        final Map<String, dynamic> streakDoc = {
-          'user_id' : userName,
-          'streak' : streak,
-        };
-        final Map<String, dynamic> itemsDoc = {
-          'user_id' : userName,
-          'pawCoin' : pawCoin,
-          'decoitems' : decoitems,
-        };
-        await DataBase.userCollection.insertOne(userDoc);
-        await DataBase.petsCollection.insertOne(petsDoc);
-        await DataBase.streakCollection.insertOne(streakDoc);
-        await DataBase.itemCollection.insertOne(itemsDoc);
-        result = true;
-        GlobalVar.globalVar.showToast('Successfully Signed Up');
+        'userpass' : hashed,
+      };
+      final Map<String, dynamic> petsDoc = {
+        'pets' : pets,
+        'petStatus' : petStatus,
+      };
+      final Map<String, dynamic> streakDoc = {
+        'streak' : streak,
+      };
+      final Map<String, dynamic> itemsDoc = {
+        'pawCoin' : pawCoin,
+        'decoitems' : decoitems,
+      };
+      await DataBase.userCollection?.child(userName).set(userDoc);
+      await DataBase.streakCollection?.child(userName).set(streakDoc);
+      await DataBase.petsCollection?.child(userName).set(petsDoc);
+      await DataBase.itemCollection?.child(userName).set(itemsDoc);
+      result = true;
+      GlobalVar.globalVar.showToast('Successfully Signed Up');
     }catch(e){
       if (kDebugMode){
         print('Error: $e');

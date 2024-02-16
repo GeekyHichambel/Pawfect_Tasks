@@ -43,6 +43,9 @@ dependencies:
   gif: ^2.3.0
   lottie: ^3.0.0
   video_player: ^2.8.2
+  firebase_core: ^2.25.4
+  firebase_database: ^10.4.5
+  firebase_core_dart: ^1.0.1
 
 dev_dependencies:
   flutter_test:
