@@ -206,9 +206,10 @@ class _MyPetState extends State<MyPet> with SingleTickerProviderStateMixin{
       body: Padding(
         padding: const EdgeInsetsDirectional.symmetric(horizontal: 30,vertical: 20),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Expanded(child: Center(
+          children: Globals.LoggedIN? [
+             Expanded(child: Center(
                 child: isLoaded? CustomBox(
                     color: AppTheme.colors.complimentaryBlack,
                     shadow: AppTheme.colors.blissCream,
@@ -382,6 +383,10 @@ class _MyPetState extends State<MyPet> with SingleTickerProviderStateMixin{
                           ),
                 ],
               ),
+          ] : [
+            Image.asset('assets/loginFirst.png', height: 200, width: 200, fit: BoxFit.fill,),
+            const SizedBox(height: 20,),
+            Center(child: Text('Kindly login first to access this section', style: TextStyle(fontWeight: FontWeight.bold,color: AppTheme.colors.pleasingWhite, fontFamily: Globals.sysFont, fontSize: 14)),),
           ],
         )
       )
