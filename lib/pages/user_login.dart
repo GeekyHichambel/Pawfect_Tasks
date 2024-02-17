@@ -37,7 +37,7 @@ class _LoginState extends State<LoginPage>{
         throw Exception('Password is too short');
       }
       final user = await DataBase.userCollection?.child(username).get();
-      if (user == null){
+      if (user == null || !user.exists){
         GlobalVar.globalVar.showToast('Username is incorrect');
         throw Exception('Username is incorrect');
       }
