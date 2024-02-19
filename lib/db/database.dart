@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -14,6 +15,48 @@ class DataBase{
   static DatabaseReference? itemCollection;
   static DatabaseReference? streakCollection;
   static DatabaseReference? petsCollection;
+  static FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
+
+  static void handleMessage(RemoteMessage? message){
+    if (message == null) return;
+  }
+
+  static Future initPushNotifications() async{
+    await FirebaseMessaging.instance
+        .setForegroundNotificationPresentationOptions(
+      alert: true,
+      badge: true,
+      sound: true,
+    );
+    FirebaseMessaging.instance.getInitialMessage().then((handleMessage));
+    FirebaseMessaging.onMessageOpenedApp.listen(handleMessage);
+    FirebaseMessaging.onBackgroundMessage((_firebaseMessagingBackgroundHandler));
+  }
+
+  static Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage remoteMessage) async{
+    FirebaseMessaging.onMessage.listen((RemoteMessage remoteMessage){
+      if (kDebugMode) {
+        print('A new background message received.');
+      }
+    });
+  }
+
+  static Future<void> initNotifications() async{
+    await firebaseMessaging.requestPermission(
+      alert: true,
+      announcement: true,
+      badge: true,
+      carPlay: false,
+      criticalAlert: false,
+      provisional: false,
+      sound: true,
+    );
+    final FCMtoken = await firebaseMessaging.getToken();
+    if (kDebugMode){
+      print('Token: $FCMtoken');
+    }
+    initPushNotifications();
+  }
 
   static connect() async{
     Platform.isAndroid? await Firebase.initializeApp(

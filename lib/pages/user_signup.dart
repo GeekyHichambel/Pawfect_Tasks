@@ -61,10 +61,12 @@ class _SignUpState extends State<SignUpPage>{
         GlobalVar.globalVar.showToast('User already exists');
         throw Exception('User already exists');
       }
+      final TimeStamp = DateTime.now();
       final List<String> pets = ['labra'];
       final Map<String, dynamic> petParams = {'mood' : 'Happy',
         'health' : 100,
         'starvation' : 0,
+        'lastFed' : TimeStamp.toString(),
         'nickname' : 'Labra',
       };
       final Map<String, Map<String, dynamic>> petStatus = {'labra' : petParams};
@@ -72,8 +74,10 @@ class _SignUpState extends State<SignUpPage>{
       const int streak = 0;
       const int pawCoin = 50;
       final String hashed = BCrypt.hashpw(userPassword, BCrypt.gensalt());
+      final token = await DataBase.firebaseMessaging.getToken();
       final Map<String, dynamic> userDoc = {
         'userpass' : hashed,
+        'fCMToken' : token,
       };
       final Map<String, dynamic> petsDoc = {
         'pets' : pets,

@@ -1,5 +1,7 @@
+import 'package:PawfectTasks/db/database.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gif_plus/flutter_gif_plus.dart';
 import 'dart:io';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -11,11 +13,40 @@ class Globals {
   static FlutterSecureStorage prefs = const FlutterSecureStorage();
   static late bool LoggedIN;
   static late String user;
+  static late bool gifLoaded;
 
-  Future<void> loadImages(String assetPath,BuildContext context) async{
+  static Future<void> updatePetStatus() async {
+    if (LoggedIN) {
+      final data = await DataBase.petsCollection?.child(user).get();
+      int initialHunger = data
+          ?.child('petStatus/labra/starvation')
+          .value as int;
+      if (initialHunger == 100) return;
+      DateTime lastFed = DateTime.parse(
+          data!.child('petStatus/labra/lastFed').value.toString());
+      Duration timeDifference = DateTime.now().difference(lastFed);
+      int newHunger = (timeDifference.inHours / 1).floor() * 10;
+      newHunger = newHunger.clamp(0, 100);
+      if (initialHunger == newHunger) return;
+      if (kDebugMode) {
+        print(initialHunger);
+        print(newHunger);
+      }
+      await DataBase.petsCollection?.child(user)
+          .child('petStatus/labra')
+          .update({
+        'starvation': newHunger,
+      });
+    }
+  }
+
+  Future<void> loadImages(String assetPath) async{
     try{
-      await precacheImage(AssetImage(assetPath), context);
-      print('Successfully loaded and cached images correctly');
+      await fetchGif(AssetImage(assetPath));
+      gifLoaded = true;
+      if (kDebugMode) {
+        print('Successfully loaded and cached images correctly');
+      }
     }catch(e){
       if(kDebugMode){
         print(e);

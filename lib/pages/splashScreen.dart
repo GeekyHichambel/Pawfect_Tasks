@@ -28,7 +28,9 @@ class _SplashScreenState  extends State<SplashScreen> with SingleTickerProviderS
           load = false;
         });
         loadConfigs().then((_){
-          navigateToHome(context);
+          Future.delayed(const Duration(milliseconds: 200),(){
+            navigateToHome(context);
+          });
         });
       }
     });
@@ -40,10 +42,12 @@ class _SplashScreenState  extends State<SplashScreen> with SingleTickerProviderS
     super.dispose();
   }
 
-
   Future<void> loadConfigs() async{
     await DataBase.connect();
+    await DataBase.initNotifications();
     await Globals.updatePref();
+    await Globals.updatePetStatus();
+    await GlobalVar.globalVar.loadImages('assets/pets/labrador/idle_dog.gif');
   }
 
   void navigateToHome(BuildContext context) {
@@ -77,7 +81,7 @@ class _SplashScreenState  extends State<SplashScreen> with SingleTickerProviderS
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const Image(image: AssetImage('assets/img.png')),
-                CircularProgressIndicator(color: AppTheme.colors.onsetBlue,),
+                LinearProgressIndicator(color: AppTheme.colors.onsetBlue, borderRadius: BorderRadius.circular(10),),
                 const SizedBox(height: 20,),
                 Center(child: Text('Onboarding now, please hang on tightly', style: TextStyle(color: AppTheme.colors.blissCream,fontSize: 14,fontFamily: Globals.sysFont),),)
               ],

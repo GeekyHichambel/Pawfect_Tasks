@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -47,12 +48,14 @@ class _MyPetState extends State<MyPet> with SingleTickerProviderStateMixin{
       int? hunger = user?.child('petStatus/labra/starvation').value as int;
       String? mood = user?.child('petStatus/labra/mood').value.toString();
       if (cPetName != nickname || cPetHp != hp || cPetHunger != hunger || cPetMood != mood) {
-        setState(() {
-          cPetName = nickname!;
-          cPetHp = hp;
-          cPetHunger = hunger;
-          cPetMood = mood!;
-        });
+        if (mounted) {
+          setState(() {
+            cPetName = nickname!;
+            cPetHp = hp;
+            cPetHunger = hunger;
+            cPetMood = mood!;
+          });
+        }
       }
       if (cPetHunger > 0 || cPetHp < 100){
         if (cPetHp <= 100 && cPetHp >=  80){
@@ -173,22 +176,37 @@ class _MyPetState extends State<MyPet> with SingleTickerProviderStateMixin{
     });
   }
 
+  void setupListener() {
+    DataBase.petsCollection?.child(Globals.user).child('petStatus').onValue.listen((event) async {
+      if (event.snapshot.value != null){
+        final user = await DataBase.petsCollection?.child(Globals.user).get();
+        setState(() {
+          cPetName = user!.child('petStatus/labra/nickname').value.toString();
+          cPetHp = user.child('petStatus/labra/health').value as int;
+          cPetHunger = user.child('petStatus/labra/starvation').value as int;
+          cPetMood = user.child('petStatus/labta/mood').value.toString();
+        });
+      }
+    }, onError: (error){
+      if (kDebugMode) print('Error in DB: $e');
+    });
+  }
+
   @override
   void initState(){
     super.initState();
     controller = GifController(vsync: this);
     if (mounted) {
       getPetDetails();
+      setupListener();
     }
   }
 
   @override
   void didChangeDependencies(){
-    GlobalVar.globalVar.loadImages('assets/pets/labrador/idle_dog.gif', context).then((_){
       setState(() {
-        isLoaded = true;
+        isLoaded = Globals.gifLoaded;
       });
-    });
     super.didChangeDependencies();
 }
 
@@ -218,7 +236,7 @@ class _MyPetState extends State<MyPet> with SingleTickerProviderStateMixin{
                       child: Gif(
                         image: const AssetImage('assets/pets/labrador/idle_dog.gif'),
                         controller: controller,
-                        autostart: Autostart.no,
+                        autostart: Autostart.loop,
                         placeholder: (context) => CircularProgressIndicator(color: AppTheme.colors.onsetBlue,),
                         onFetchCompleted: (){
                           controller.reset();
