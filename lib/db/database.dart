@@ -2,13 +2,13 @@ import 'dart:io';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firebase_database/firebase_database.dart';
 
 const USER_COLLECTION = 'users';
 const ITEM_COLLECTION = 'items';
 const STREAK_COLLECTION = 'streaks';
 const PETS_COLLECTION = 'pets';
-const APP_COLLECTION = 'app';
 
 class DataBase{
   static FirebaseDatabase? firebaseDatabase;
@@ -16,7 +16,7 @@ class DataBase{
   static DatabaseReference? itemCollection;
   static DatabaseReference? streakCollection;
   static DatabaseReference? petsCollection;
-  static DatabaseReference? appCollection;
+  static Reference? marketStorage;
   static FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
 
   static void handleMessage(RemoteMessage? message){
@@ -67,7 +67,8 @@ class DataBase{
             appId: '1:60544625479:android:adf1d55fe912ff8263ba62',
             messagingSenderId: '60544625479',
             projectId: 'pawfecttasks',
-            databaseURL: 'https://pawfecttasks-default-rtdb.asia-southeast1.firebasedatabase.app'
+            databaseURL: 'https://pawfecttasks-default-rtdb.asia-southeast1.firebasedatabase.app',
+            storageBucket: 'pawfecttasks.appspot.com',
         )
     ) : await Firebase.initializeApp();
     firebaseDatabase = FirebaseDatabase.instance;
@@ -77,7 +78,7 @@ class DataBase{
     itemCollection = firebaseDatabase?.ref().child(ITEM_COLLECTION);
     streakCollection = firebaseDatabase?.ref().child(STREAK_COLLECTION);
     petsCollection = firebaseDatabase?.ref().child(PETS_COLLECTION);
-    appCollection = firebaseDatabase?.ref().child(APP_COLLECTION);
+    marketStorage = FirebaseStorage.instance.ref().child('pics');
     if (kDebugMode) {
       firebaseDatabase?.setLoggingEnabled(true);
     }

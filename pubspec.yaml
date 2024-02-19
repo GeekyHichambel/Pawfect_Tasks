@@ -49,6 +49,7 @@ dependencies:
   flutter_gif_plus: ^0.0.5
   firebase_messaging: ^14.7.15
   flutter_local_notifications: ^16.3.2
+  firebase_storage: ^11.6.6
 
 dev_dependencies:
   flutter_test:
