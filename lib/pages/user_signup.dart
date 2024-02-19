@@ -73,6 +73,7 @@ class _SignUpState extends State<SignUpPage>{
       final List<String> decoitems = [];
       const int streak = 0;
       const int pawCoin = 50;
+      const int xp = 0;
       final String hashed = BCrypt.hashpw(userPassword, BCrypt.gensalt());
       final token = await DataBase.firebaseMessaging.getToken();
       final Map<String, dynamic> userDoc = {
@@ -85,6 +86,7 @@ class _SignUpState extends State<SignUpPage>{
       };
       final Map<String, dynamic> streakDoc = {
         'streak' : streak,
+        'xp' : xp,
       };
       final Map<String, dynamic> itemsDoc = {
         'pawCoin' : pawCoin,

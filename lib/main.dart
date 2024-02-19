@@ -4,8 +4,6 @@ import 'package:PawfectTasks/pages/settings/killM.dart';
 import 'package:PawfectTasks/pages/settings/notif.dart';
 import 'package:PawfectTasks/pages/settings/uInfo.dart';
 import 'package:PawfectTasks/pages/settings/user_customization.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:PawfectTasks/Components/AppTheme.dart';
 import 'package:PawfectTasks/pages/ProfilePane.dart';
@@ -19,6 +17,7 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   runApp(
     MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: const SplashScreen(),
       theme: lightMode,
       darkTheme: darkMode,

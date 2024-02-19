@@ -184,7 +184,7 @@ class _MyPetState extends State<MyPet> with SingleTickerProviderStateMixin{
           cPetName = user!.child('petStatus/labra/nickname').value.toString();
           cPetHp = user.child('petStatus/labra/health').value as int;
           cPetHunger = user.child('petStatus/labra/starvation').value as int;
-          cPetMood = user.child('petStatus/labta/mood').value.toString();
+          cPetMood = user.child('petStatus/labra/mood').value.toString();
         });
       }
     }, onError: (error){

@@ -8,6 +8,7 @@ const USER_COLLECTION = 'users';
 const ITEM_COLLECTION = 'items';
 const STREAK_COLLECTION = 'streaks';
 const PETS_COLLECTION = 'pets';
+const APP_COLLECTION = 'app';
 
 class DataBase{
   static FirebaseDatabase? firebaseDatabase;
@@ -15,6 +16,7 @@ class DataBase{
   static DatabaseReference? itemCollection;
   static DatabaseReference? streakCollection;
   static DatabaseReference? petsCollection;
+  static DatabaseReference? appCollection;
   static FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
 
   static void handleMessage(RemoteMessage? message){
@@ -75,6 +77,7 @@ class DataBase{
     itemCollection = firebaseDatabase?.ref().child(ITEM_COLLECTION);
     streakCollection = firebaseDatabase?.ref().child(STREAK_COLLECTION);
     petsCollection = firebaseDatabase?.ref().child(PETS_COLLECTION);
+    appCollection = firebaseDatabase?.ref().child(APP_COLLECTION);
     if (kDebugMode) {
       firebaseDatabase?.setLoggingEnabled(true);
     }

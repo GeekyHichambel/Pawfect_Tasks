@@ -2,6 +2,7 @@
     android:versionCode="0"
     android:versionName="test">
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY"/>
     <application
         android:label="Pawfect Tasks"
         android:name="${applicationName}"
