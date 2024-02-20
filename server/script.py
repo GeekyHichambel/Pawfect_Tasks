@@ -1,0 +1,81 @@
+import firebase_admin
+from firebase_admin import credentials, db
+from datetime import datetime
+import schedule
+import time
+import os
+from terminut import printf as print, inputf as input
+
+if os.name == "nt":
+    os.system("cls")
+else:
+    os.system("clear")
+
+cwd = os.getcwd()
+cred = credentials.Certificate(os.path.join(cwd, 'pawfecttasks-firebase-adminsdk-uwqy3-0e019a6eac.json'))
+firebase_admin.initialize_app(cred, {'databaseURL' : 'https://pawfecttasks-default-rtdb.asia-southeast1.firebasedatabase.app/'})
+print('(+) Server is up....')
+print('(+) Database connected Successfully.\n\n\n')
+
+def update_task():
+    try:
+        users_ref = db.reference('pets')
+
+        if users_ref is None:
+            raise ValueError('The user reference can\'t be found.\n')
+
+        print('(+) User Reference Set\n')
+
+        for username, user_data in users_ref.get().items():
+            pet_status_ref = users_ref.child(username).child('petStatus')
+
+            if pet_status_ref is None:
+                raise ValueError(f'(-) The pet_status_ref for user {username} can\'t be found.\n')
+
+            print(f'(+) Pet Status Reference Set for User: {username}')
+
+            if user_data is None:
+                raise ValueError(f'The user_data for user {username} can\'t be found.\n')
+
+            for pet_name, pet_stats in pet_status_ref.get().items():
+
+                last_fed = pet_stats.get('lastFed')
+                hunger = pet_stats.get('starvation')
+
+                date_format = "%Y-%m-%d %H:%M:%S.%f"
+                last_fed_time = datetime.strptime(last_fed, date_format)
+
+                if hunger == 100:
+                    #Pet is Hungry need to send the notification to user and start reducing HP
+                    print(f'(*) {pet_name} is hungry.\n')
+                    continue
+
+                current_time = datetime.now()
+                time_diff = current_time - last_fed_time   
+
+                new_hunger = int(time_diff.total_seconds() // 3600) * 10
+                new_hunger = min(max(new_hunger, 0), 100)
+
+                print(f'{hunger} : {new_hunger}')
+
+                if new_hunger == hunger:
+                    print('(*) Hunger is already full.\n')
+                    continue
+
+                pet_status_ref.child(pet_name).update({'starvation' : new_hunger})
+
+                print(f'(+) Successfully updated the hunger for {pet_name} to {new_hunger}\n\n')
+     
+    except Exception as e:
+        print(f"(!) Error: {e}")
+
+    finally:
+        print('(~) Next cycle after 15 minutes\n\n\n\n')
+
+
+schedule.every(15).minutes.do(update_task)
+
+update_task()
+while True:
+    schedule.run_pending()
+    time.sleep(1) 
