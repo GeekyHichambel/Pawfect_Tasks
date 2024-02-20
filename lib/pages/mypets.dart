@@ -233,15 +233,17 @@ class _MyPetState extends State<MyPet> with SingleTickerProviderStateMixin{
                     shadow: AppTheme.colors.blissCream,
                     child: Padding(
                       padding: const EdgeInsets.all(16.0),
-                      child: Gif(
-                        image: const AssetImage('assets/pets/labrador/idle_dog.gif'),
-                        controller: controller,
-                        autostart: Autostart.loop,
-                        placeholder: (context) => CircularProgressIndicator(color: AppTheme.colors.onsetBlue,),
-                        onFetchCompleted: (){
-                          controller.reset();
-                          controller.loop();
-                        },
+                      child: Center(
+                        child: Gif(
+                          image: const AssetImage('assets/pets/labrador/idle_dog.gif'),
+                          controller: controller,
+                          autostart: Autostart.loop,
+                          placeholder: (context) => CircularProgressIndicator(color: AppTheme.colors.onsetBlue,),
+                          onFetchCompleted: (){
+                            controller.reset();
+                            controller.loop();
+                          },
+                        ),
                       ),
                     )
                 ) : CircularProgressIndicator(color: AppTheme.colors.onsetBlue,)
@@ -266,7 +268,7 @@ class _MyPetState extends State<MyPet> with SingleTickerProviderStateMixin{
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Expanded(child: Image.asset('assets/feed.png', color: AppTheme.colors.onsetBlue,),),
-                    Text('Feed', style: TextStyle(color: AppTheme.colors.onsetBlue, fontFamily: Globals.sysFont, fontSize: 8),),
+                    Text('Feed', style: TextStyle(color: AppTheme.colors.lightBrown, fontFamily: Globals.sysFont, fontSize: 8),),
                   ],
                 )).animate(
                   effects: [
@@ -302,7 +304,7 @@ class _MyPetState extends State<MyPet> with SingleTickerProviderStateMixin{
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Expanded(child: Image.asset('assets/interact.png', color: AppTheme.colors.onsetBlue),),
-                        Text('Interact', style: TextStyle(color: AppTheme.colors.onsetBlue, fontFamily: Globals.sysFont, fontSize: 8),),
+                        Text('Interact', style: TextStyle(color: AppTheme.colors.lightBrown, fontFamily: Globals.sysFont, fontSize: 8),),
                       ],
                     )).animate(
                   effects: [

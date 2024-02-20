@@ -11,8 +11,9 @@ import '../Components/CustomBox.dart';
 class ImageInfo {
   final String name;
   final Uint8List imageData;
+  final int price;
 
-  ImageInfo(this.name, this.imageData);
+  ImageInfo(this.name, this.imageData, this.price);
 }
 
 class MarketPlace extends StatefulWidget{
@@ -42,13 +43,14 @@ class MarketPlaceState extends State<MarketPlace>{
       if (result != null){
         for (final Reference ref in result.items){
           final String imageName = ref.name;
-          final RegExp regExp = RegExp(r'^[0-9]\[(.+)\]\.png$');
-          final Match? match = regExp.firstMatch(imageName);
-          if (match != null && match.groupCount == 1) {
+          final RegExp regExp = RegExp(r'^[0-9]\[(.*?)\]\[(\d+)\]\.png$');
+           final Match? match = regExp.firstMatch(imageName);
+          if (match != null) {
             final String displayName = match.group(1)!;
+            final int price = int.parse(match.group(2)!);
             final Uint8List? imageData = await ref.getData();
             if (imageData != null) {
-              imageList.add(ImageInfo(displayName,imageData));
+              imageList.add(ImageInfo(displayName,imageData,price));
             }
           }
         }
@@ -77,7 +79,7 @@ class MarketPlaceState extends State<MarketPlace>{
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: Globals.LoggedIN? [
-            Text('⏺ Market Place ⏺', style: TextStyle(backgroundColor: AppTheme.colors.blissCream, fontFamily: Globals.sysFont, color: AppTheme.colors.onsetBlue, fontSize: 22, fontWeight: FontWeight.bold, fontFeatures: const [
+            Text('Market Place', style: TextStyle(fontFamily: Globals.sysFont, color: AppTheme.colors.lightBrown, fontSize: 22, fontWeight: FontWeight.w900, fontFeatures: const [
               FontFeature.caseSensitiveForms()
             ]),),
               const SizedBox(height: 20,),
@@ -126,7 +128,12 @@ class MarketPlaceState extends State<MarketPlace>{
                               return FadeInAnimation(delay: delay, child: Column(
                                 children: [
                                   Expanded(
-                                    child: Image.memory(snapshot.data![index].imageData),
+                                    child: GestureDetector(
+                                      onTap: (){
+                                        if(kDebugMode) print('Price: ${snapshot.data![index].price}');
+                                      },
+                                      child: Image.memory(snapshot.data![index].imageData),
+                                    ),
                                   ),
                                   Text(snapshot.data![index].name, style: TextStyle(fontSize: 10,fontFamily: Globals.sysFont)),
                                 ],
