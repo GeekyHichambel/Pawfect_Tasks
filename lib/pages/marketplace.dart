@@ -12,8 +12,9 @@ class ImageInfo {
   final String name;
   final Uint8List imageData;
   final int price;
+  final int foodValue;
 
-  ImageInfo(this.name, this.imageData, this.price);
+  ImageInfo(this.name, this.imageData, this.price, this.foodValue);
 }
 
 class MarketPlace extends StatefulWidget{
@@ -24,6 +25,7 @@ class MarketPlace extends StatefulWidget{
 
 class MarketPlaceState extends State<MarketPlace>{
   late int cPawCoin = 0;
+  late int cPetFood = 0;
   
   void setupUpdateListener(){
     DataBase.itemCollection?.child(Globals.user).child('pawCoin').onValue.listen((event) async { 
@@ -31,6 +33,14 @@ class MarketPlaceState extends State<MarketPlace>{
         final user = await DataBase.itemCollection?.child(Globals.user).get();
         setState(() {
           cPawCoin = user?.child('pawCoin').value as int;
+        });
+      }
+    });
+    DataBase.itemCollection?.child(Globals.user).child('petFood').onValue.listen((event) async {
+      if (event.snapshot.value != null){
+        final user = await DataBase.itemCollection?.child(Globals.user).get();
+        setState(() {
+          cPetFood = user?.child('petFood').value as int;
         });
       }
     });
@@ -43,14 +53,15 @@ class MarketPlaceState extends State<MarketPlace>{
       if (result != null){
         for (final Reference ref in result.items){
           final String imageName = ref.name;
-          final RegExp regExp = RegExp(r'^[0-9]\[(.*?)\]\[(\d+)\]\.png$');
+          final RegExp regExp = RegExp(r'^[0-9]\[(.*?)\]\[(\d+)\]\[(\d+)\]\.png$');
            final Match? match = regExp.firstMatch(imageName);
           if (match != null) {
             final String displayName = match.group(1)!;
             final int price = int.parse(match.group(2)!);
+            final int foodValue = int.parse(match.group(3)!);
             final Uint8List? imageData = await ref.getData();
             if (imageData != null) {
-              imageList.add(ImageInfo(displayName,imageData,price));
+              imageList.add(ImageInfo(displayName,imageData,price,foodValue));
             }
           }
         }
@@ -86,9 +97,23 @@ class MarketPlaceState extends State<MarketPlace>{
               FadeInAnimation(delay: 1, child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  Image.asset('assets/pawCoin.png', width: 20, height: 20,),
+                  Text('$cPetFood', style: TextStyle(fontSize: 19, fontFamily: Globals.sysFont),),
                   const SizedBox(width: 5,),
+                  Image.asset('assets/foodIcon.png', width: 20, height: 20,),
+                  const SizedBox(width: 10,),
+                  IconButton(onPressed: (){
+                    //TODO: Payment Gateway
+                  }, icon: const Icon(Icons.add),
+                    hoverColor: AppTheme.colors.lightOnsetBlue,
+                    style: ButtonStyle(
+                      elevation: const MaterialStatePropertyAll<double?>(5.0),
+                      iconColor: MaterialStatePropertyAll<Color?>(AppTheme.colors.pleasingWhite),
+                      backgroundColor: MaterialStatePropertyAll<Color?>(AppTheme.colors.gloryBlack),
+                    ),
+                  ),
                   Text('$cPawCoin', style: TextStyle(fontSize: 19, fontFamily: Globals.sysFont),),
+                  const SizedBox(width: 5,),
+                  Image.asset('assets/pawCoin.png', width: 20, height: 20,),
                 ],
               )),
             const SizedBox(height: 5,),
@@ -123,14 +148,13 @@ class MarketPlaceState extends State<MarketPlace>{
                             ),
                             itemCount: snapshot.data!.length,
                             itemBuilder: (context, index) {
-                              final double delay = ((index/3) + 1).floorToDouble();
-                              if(kDebugMode) print(delay);
-                              return FadeInAnimation(delay: delay, child: Column(
+                              return FadeInAnimation(delay: 1, child: Column(
                                 children: [
                                   Expanded(
                                     child: GestureDetector(
                                       onTap: (){
                                         if(kDebugMode) print('Price: ${snapshot.data![index].price}');
+                                        if(kDebugMode) print('Value: ${snapshot.data![index].foodValue}');
                                       },
                                       child: Image.memory(snapshot.data![index].imageData),
                                     ),

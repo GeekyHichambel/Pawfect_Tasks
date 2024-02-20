@@ -377,21 +377,42 @@ class _MyPetState extends State<MyPet> with SingleTickerProviderStateMixin{
                                           children: [
                                             Image.asset('assets/hp.png', width: 25, height: 25, fit: BoxFit.fill,),
                                             const SizedBox(height: 5,),
-                                            Text('$cPetHp', style: TextStyle(color: cPetHp <= 20? Colors.red : cPetHp <=50? Colors.orange : cPetHp <= 80? Colors.yellow : Colors.lightGreen,  fontFamily: Globals.sysFont),),
+                                            CustomBox(
+                                                color: Colors.white,
+                                                shadow: Colors.transparent,
+                                                child:  Padding(
+                                                  padding: const EdgeInsets.all(2.0),
+                                                  child: Text('$cPetHp', style: TextStyle(color: cPetHp <= 20? Colors.red : cPetHp <=50? Colors.orange : cPetHp <= 80? Colors.yellow : Colors.lightGreen,  fontFamily: Globals.sysFont,),),
+                                                ),
+                                            ),
                                           ],
                                         ),
                                         Column(
                                           children: [
-                                            Image.asset('assets/hunger.png', width: 25, height: 25, fit: BoxFit.fill,),
-                                            const SizedBox(height: 5,),
-                                            Text('$cPetHunger', style: TextStyle(color: cPetHunger <= 20? Colors.lightGreen : cPetHp <=50? Colors.yellow : cPetHp <= 80? Colors.orange : Colors.red, fontFamily: Globals.sysFont),),
-                                          ],
-                                        ),
-                                        Column(
-                                          children: [
-                                            Image.asset('assets/mood.png', width: 30, height: 30, fit: BoxFit.fill,),
+                                            Image.asset('assets/hunger.png', width: 30, height: 30, fit: BoxFit.fill,),
                                             const SizedBox(height: 0,),
-                                            Text(cPetMood, style: TextStyle(color: cPetMood == 'Happy'? Colors.pink : cPetMood == 'Normal' ? Colors.lightGreen : cPetMood == 'Sad' ? Colors.blueAccent : Colors.red, fontFamily: Globals.sysFont),),
+                                            CustomBox(
+                                              color: Colors.white,
+                                              shadow: Colors.transparent,
+                                              child:  Padding(
+                                                padding: const EdgeInsets.all(2.0),
+                                                child: Text('$cPetHunger', style: TextStyle(color: cPetHunger <= 20? Colors.lightGreen : cPetHp <=50? Colors.yellow : cPetHp <= 80? Colors.orange : Colors.red, fontFamily: Globals.sysFont,),),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        Column(
+                                          children: [
+                                            Image.asset('assets/mood.png', width: 25, height: 25, fit: BoxFit.fill,),
+                                            const SizedBox(height: 5,),
+                                            CustomBox(
+                                              color: Colors.white,
+                                              shadow: Colors.transparent,
+                                              child:  Padding(
+                                                padding: const EdgeInsets.all(2.0),
+                                                child: Text(cPetMood, style: TextStyle(color: cPetMood == 'Happy'? Colors.pink : cPetMood == 'Normal' ? Colors.lightGreen : cPetMood == 'Sad' ? Colors.blueAccent : Colors.red, fontFamily: Globals.sysFont,),),
+                                              ),
+                                            ),
                                           ],
                                         ),
                                       ],
