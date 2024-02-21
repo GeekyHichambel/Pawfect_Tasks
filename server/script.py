@@ -1,5 +1,5 @@
 import firebase_admin
-from firebase_admin import credentials, db
+from firebase_admin import credentials, db, messaging
 from datetime import datetime
 import schedule
 import time
@@ -20,9 +20,10 @@ print('(+) Database connected Successfully.\n\n\n')
 def update_task():
     try:
         users_ref = db.reference('pets')
+        all_users_ref = db.reference('users')
 
-        if users_ref is None:
-            raise ValueError('The user reference can\'t be found.\n')
+        if users_ref is None or all_users_ref is None:
+            raise ValueError(f'(-) The user reference can\'t be found.\n')
 
         print('(+) User Reference Set\n')
 
@@ -35,7 +36,7 @@ def update_task():
             print(f'(+) Pet Status Reference Set for User: {username}')
 
             if user_data is None:
-                raise ValueError(f'The user_data for user {username} can\'t be found.\n')
+                raise ValueError(f'(-) The user_data for user {username} can\'t be found.\n')
 
             for pet_name, pet_stats in pet_status_ref.get().items():
 
@@ -45,10 +46,50 @@ def update_task():
                 date_format = "%Y-%m-%d %H:%M:%S.%f"
                 last_fed_time = datetime.strptime(last_fed, date_format)
 
-                if hunger == 100:
-                    #Pet is Hungry need to send the notification to user and start reducing HP
+                if hunger >= 50:
+
                     print(f'(*) {pet_name} is hungry.\n')
-                    continue
+                    #Pet is Hungry need to send the notification to user and start reducing HP
+                    tokens_ref = all_users_ref.child(username).child('fcmTokens')
+                    time_difference_hours = None
+
+                    if all_users_ref.child(username).child('last_notification').get() is None:
+                        print(f'(-) Last Notification Time not found.')
+
+                    else:
+                        last_notification_time = all_users_ref.child(username).child('last_notification').get()
+                        date_format = "%Y-%m-%d %H:%M:%S.%f"
+                        last_notification_time = datetime.strptime(last_notification_time, date_format)
+                        time_difference = datetime.now() - last_notification_time
+                        time_difference_hours = int(time_difference.total_seconds() // 3600)
+
+                    if time_difference_hours is None or time_difference_hours > 6:
+                        if tokens_ref.get() is None:
+                            print(f'(-) The FCM Tokens reference can\'t be found. Hence Notifications can\'t be sent')
+
+                        else:
+                            fcm_tokens = tokens_ref.get()
+
+                            if fcm_tokens is None:
+                                print(f'(-) No FCM tokens found for {username}. Notifications can\'t be sent.')
+
+                                message = messaging.MulticastMessage(
+                                    notification=messaging.Notification(
+                                        title="Your Pet needs you",
+                                        body=f'Hi, {username} , {pet_name} is quite hungry and waiting to be fed. Hop on the app to feed him'
+                                    ),
+                                    tokens=fcm_tokens
+                                )
+
+                                response = messaging.send_multicast(message)
+                                print(f'(+) Notification sent successfully to {username}. ', response)
+
+                                all_users_ref.child(username).update({'last_notification' : datetime.now})
+
+                                if hunger == 100:
+                                    print('(*) Hunger is already full.\n')
+                                    continue
+
 
                 current_time = datetime.now()
                 time_diff = current_time - last_fed_time   
@@ -56,10 +97,8 @@ def update_task():
                 new_hunger = int(time_diff.total_seconds() // 3600) * 10
                 new_hunger = min(max(new_hunger, 0), 100)
 
-                print(f'{hunger} : {new_hunger}')
-
                 if new_hunger == hunger:
-                    print('(*) Hunger is already full.\n')
+                    print('(*) No updates required.\n')
                     continue
 
                 pet_status_ref.child(pet_name).update({'starvation' : new_hunger})
