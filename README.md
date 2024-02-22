@@ -1,4 +1,4 @@
-# Hit Me Up 
+# Pawfect Tasks 
 
 A todo-list application.
 
