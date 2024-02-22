@@ -8,7 +8,7 @@ class AppTheme{
 ThemeData lightMode = ThemeData(
   brightness: Brightness.light,
   colorScheme: ColorScheme.light(
-    background: AppTheme.colors.gloryBlack,
+    background: AppTheme.colors.friendlyWhite,
     primary: AppTheme.colors.pleasingWhite,
     secondary: AppTheme.colors.onsetBlue,
     tertiary: AppTheme.colors.blissCream,
@@ -16,11 +16,11 @@ ThemeData lightMode = ThemeData(
 );
 
 ThemeData darkMode = ThemeData(
-  brightness: Brightness.dark,
-  colorScheme: ColorScheme.dark(
-    background: AppTheme.colors.gloryBlack,
-    primary: AppTheme.colors.pleasingWhite,
-    secondary: AppTheme.colors.onsetBlue,
-    tertiary: AppTheme.colors.blissCream,
-  )
+    brightness: Brightness.light,
+    colorScheme: ColorScheme.light(
+      background: AppTheme.colors.friendlyWhite,
+      primary: AppTheme.colors.pleasingWhite,
+      secondary: AppTheme.colors.onsetBlue,
+      tertiary: AppTheme.colors.blissCream,
+    )
 );

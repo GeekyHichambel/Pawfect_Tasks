@@ -65,8 +65,10 @@ class _MainPageState extends State<MainPage>{
   Widget build(BuildContext context){
     return Scaffold(
       appBar: PreferredSize(preferredSize: const Size.fromHeight(100),
-        child: Padding(padding: const EdgeInsets.symmetric(vertical: 30.0,horizontal: 25.0),
-            child: Row(
+        child: Container(
+          color: AppTheme.colors.friendlyBlack,
+          child:Padding(padding: const EdgeInsets.only(left: 25.0,right: 25.0,top: 30.0,bottom: 20.0),
+                child:Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 GestureDetector(
@@ -80,7 +82,7 @@ class _MainPageState extends State<MainPage>{
                         textAlign: TextAlign.end,
                         style: TextStyle(
                           fontFamily: Globals.sysFont,
-                          color: Theme.of(context).colorScheme.primary,
+                          color: AppTheme.colors.friendlyWhite,
                           fontSize: 24,
                         ),
                       ),
@@ -96,7 +98,7 @@ class _MainPageState extends State<MainPage>{
                   'Hi, $UserName',
                   style: TextStyle(
                     fontFamily: Globals.sysFont,
-                    color: Theme.of(context).colorScheme.tertiary,
+                    color: AppTheme.colors.friendlyWhite,
                     fontSize: 22,
                   ),
                 ),
@@ -112,7 +114,7 @@ class _MainPageState extends State<MainPage>{
               ],
             )
         ),
-      ),
+      ),),
       body: PageView(
         onPageChanged: (index){
           setState(() {
@@ -125,10 +127,10 @@ class _MainPageState extends State<MainPage>{
       bottomNavigationBar: BottomNavigationBar(
         elevation: 5.0,
         type: BottomNavigationBarType.fixed,
-        selectedItemColor: AppTheme.colors.blissCream,
+        selectedItemColor: AppTheme.colors.onsetBlue,
         selectedFontSize: 0,
         unselectedFontSize: 0,
-        unselectedItemColor: AppTheme.colors.superPleasingWhite,
+        unselectedItemColor: AppTheme.colors.blissCream,
         useLegacyColorScheme: false,
         items: <BottomNavigationBarItem>[
           customNavigationBarItem(Icons.home, ''),
@@ -243,9 +245,9 @@ class _HomeState extends State<Home>{
           ),
         ),
       ),
-        backgroundColor: Theme.of(context).colorScheme.background,
+        backgroundColor: AppTheme.colors.friendlyWhite,
       body: Padding(
-        padding: const EdgeInsetsDirectional.only(start: 20,end: 20,bottom: 20,top: 0),
+        padding: const EdgeInsetsDirectional.only(start: 20,end: 20,bottom: 20,top: 20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -262,7 +264,7 @@ class _HomeState extends State<Home>{
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('Time', style: TextStyle(fontFamily: Globals.sysFont, color: Colors.white60, ),),
+                          Text('Time', style: TextStyle(fontFamily: Globals.sysFont, color: AppTheme.colors.friendlyWhite, ),),
                           const SizedBox(height: 8,),
                           Text(currentTime,style: TextStyle(fontFamily: Globals.sysFont, color: AppTheme.colors.pleasingWhite , fontSize: 18),)
                         ],
@@ -287,17 +289,17 @@ class _HomeState extends State<Home>{
                 'My Tasks',
                 style: TextStyle(
                   fontFamily: Globals.sysFont,
-                  color: Theme.of(context).colorScheme.primary,
+                  color: AppTheme.colors.friendlyBlack,
                   fontSize: 24,
                 ),
               ),),
             ),
             Expanded(child: Padding(padding: const EdgeInsets.all(16.0),
               child: FadeInAnimation(delay: 1.5,child: CustomBox(
-                color: AppTheme.colors.complimentaryBlack,
-                shadow: AppTheme.colors.blissCream,
+                color: AppTheme.colors.friendlyBlack,
+                shadow: Colors.transparent,
                 child: Center(
-                    child: Text((pendingTasks > 0) ? '$pendingTasks' : 'We\'re done for today!', style: const TextStyle(color: Colors.white),),),
+                    child: Text((pendingTasks > 0) ? '$pendingTasks' : 'We\'re done for today!', style: TextStyle(color: AppTheme.colors.friendlyWhite),),),
               ),)
             )
             ),

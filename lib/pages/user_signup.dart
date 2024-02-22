@@ -76,10 +76,8 @@ class _SignUpState extends State<SignUpPage>{
       const int xp = 0;
       const int petFood = 0;
       final String hashed = BCrypt.hashpw(userPassword, BCrypt.gensalt());
-      final token = await DataBase.firebaseMessaging.getToken();
       final Map<String, dynamic> userDoc = {
         'userpass' : hashed,
-        'fCMToken' : token,
       };
       final Map<String, dynamic> petsDoc = {
         'pets' : pets,
@@ -156,7 +154,7 @@ class _SignUpState extends State<SignUpPage>{
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      backgroundColor: AppTheme.colors.gloryBlack,
+      backgroundColor: AppTheme.colors.friendlyWhite,
       body: Padding(
         padding: const EdgeInsetsDirectional.symmetric(horizontal: 10.0, vertical: 10.0),
         child: Column(
@@ -169,7 +167,7 @@ class _SignUpState extends State<SignUpPage>{
                     Navigator.of(context).pop();
                   }, icon: Icon(Icons.close, weight: 30.0,
                     size: 30.0,
-                    color: AppTheme.colors.blissCream,
+                    color: AppTheme.colors.friendlyBlack,
                   )
                   )
                 ],
@@ -184,7 +182,7 @@ class _SignUpState extends State<SignUpPage>{
                     children: [
                       Text('Sign Up',
                         style: TextStyle(
-                          color: AppTheme.colors.pleasingWhite,
+                          color: AppTheme.colors.friendlyBlack,
                           fontWeight: FontWeight.bold,
                           fontFamily: Globals.sysFont,
                           fontSize: 32.0,
@@ -196,7 +194,7 @@ class _SignUpState extends State<SignUpPage>{
                   const SizedBox(height: 20.0,),
                   FadeInAnimation(delay: 1.25, child: Container(
                     decoration: BoxDecoration(
-                        color: Colors.grey,
+                        color: AppTheme.colors.friendlyBlack,
                         borderRadius: BorderRadius.circular(16.0)
                     ),
                     child: Padding(padding: const EdgeInsetsDirectional.symmetric(horizontal: 16.0,vertical: 32.0),
@@ -210,8 +208,8 @@ class _SignUpState extends State<SignUpPage>{
                               controller: userNameC,
                               focusNode: UfocusNode,
                               labelColor: AppTheme.colors.onsetBlue,
-                              bgColor: AppTheme.colors.blissCream,
-                              cursorColor: AppTheme.colors.pleasingWhite,
+                              bgColor: AppTheme.colors.friendlyWhite,
+                              cursorColor: Colors.grey,
                               textColor: AppTheme.colors.onsetBlue,
                               borderColor: AppTheme.colors.onsetBlue, obscureText: false,
                             ),
@@ -221,11 +219,11 @@ class _SignUpState extends State<SignUpPage>{
                                 controller: userPasswordC,
                                 focusNode: PfocusNode,
                                 inputType: TextInputType.visiblePassword,
-                                labelColor: AppTheme.colors.blissCream,
+                                labelColor: AppTheme.colors.friendlyWhite,
                                 cursorColor: AppTheme.colors.pleasingWhite,
                                 bgColor: AppTheme.colors.onsetBlue,
-                                textColor: AppTheme.colors.blissCream,
-                                borderColor: AppTheme.colors.blissCream,
+                                textColor: AppTheme.colors.friendlyWhite,
+                                borderColor: AppTheme.colors.friendlyWhite,
                                 fontSize: 16.0, obscureText: showP,
                                 suffixIcon: IconButton(
                                   icon: Icon(showP? Icons.visibility_outlined : Icons.visibility_off_outlined), onPressed: () {
@@ -233,7 +231,7 @@ class _SignUpState extends State<SignUpPage>{
                                       showP = !showP;
                                     });
                                 },
-                                  color: AppTheme.colors.blissCream,
+                                  color: AppTheme.colors.friendlyWhite,
                                 ),
                             ),
                             const SizedBox(height: 20,),
@@ -244,8 +242,8 @@ class _SignUpState extends State<SignUpPage>{
                               controller: userCPasswordC,
                               focusNode: CPfocusNode,
                               labelColor: AppTheme.colors.onsetBlue,
-                              bgColor: AppTheme.colors.blissCream,
-                              cursorColor: AppTheme.colors.pleasingWhite,
+                              bgColor: AppTheme.colors.friendlyWhite,
+                              cursorColor: Colors.grey,
                               textColor: AppTheme.colors.onsetBlue,
                               borderColor: AppTheme.colors.onsetBlue, obscureText: showCP,
                               suffixIcon: IconButton(
@@ -270,7 +268,7 @@ class _SignUpState extends State<SignUpPage>{
                                     decorationStyle: TextDecorationStyle.solid,
                                     decorationThickness: 3.5,
                                     decorationColor: AppTheme.colors.onsetBlue,
-                                    color: AppTheme.colors.complimentaryBlack,
+                                    color: AppTheme.colors.friendlyWhite,
                                   ),),
                                 )
                             ),
@@ -291,8 +289,8 @@ class _SignUpState extends State<SignUpPage>{
                                 },hoverColor: AppTheme.colors.lightOnsetBlue,
                                   style: ButtonStyle(
                                     elevation: const MaterialStatePropertyAll<double?>(5.0),
-                                    iconColor: MaterialStatePropertyAll<Color?>(AppTheme.colors.pleasingWhite),
-                                    backgroundColor: MaterialStatePropertyAll<Color?>(AppTheme.colors.gloryBlack),
+                                    iconColor: MaterialStatePropertyAll<Color?>(AppTheme.colors.onsetBlue),
+                                    backgroundColor: MaterialStatePropertyAll<Color?>(AppTheme.colors.friendlyWhite),
                                   ),
                                   icon: const Icon(Icons.login_rounded),)
                               ],

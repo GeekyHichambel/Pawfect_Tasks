@@ -1,3 +1,4 @@
+import 'package:PawfectTasks/db/database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -25,12 +26,12 @@ class _ProfilePaneState extends State<ProfilePane>{
         elevation: 5,
         alignment: Alignment.center,
         contentPadding: const EdgeInsets.all(20.0),
-        backgroundColor: AppTheme.colors.complimentaryBlack,
-        shadowColor: AppTheme.colors.blissCream,
+        backgroundColor: AppTheme.colors.friendlyBlack,
+        shadowColor: Colors.transparent,
         shape: const RoundedRectangleBorder(side: BorderSide.none, borderRadius: BorderRadius.all(Radius.circular(16.0))),
         content: Column(
           children: [
-            Text('Are you sure you want to Log Out?', style: TextStyle(fontFamily: Globals.sysFont),),
+            Text('Are you sure you want to Log Out?', style: TextStyle(fontFamily: Globals.sysFont, color: AppTheme.colors.friendlyWhite), textAlign: TextAlign.center,),
             const Expanded(child: SizedBox.shrink()),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -48,11 +49,11 @@ class _ProfilePaneState extends State<ProfilePane>{
                       Navigator.of(context).pushNamedAndRemoveUntil('/home', (route) => false);
                     }
                   });
-                }, style: ButtonStyle(backgroundColor: MaterialStatePropertyAll<Color>(AppTheme.colors.gloryBlack)),
+                }, style: ButtonStyle(backgroundColor: MaterialStatePropertyAll<Color>(AppTheme.colors.friendlyWhite)),
                     child: const Text('Logout', style: TextStyle(color: Colors.green),)),
                 ElevatedButton(onPressed: (){
                     Navigator.of(context).pop();
-                }, style: ButtonStyle(backgroundColor: MaterialStatePropertyAll<Color>(AppTheme.colors.gloryBlack)),
+                }, style: ButtonStyle(backgroundColor: MaterialStatePropertyAll<Color>(AppTheme.colors.friendlyWhite)),
                     child: const Text('Cancel', style: TextStyle(color: Colors.red),))
               ],
             )
@@ -67,6 +68,13 @@ class _ProfilePaneState extends State<ProfilePane>{
 
   Future<void> userLogout() async{
     try {
+      final User = await DataBase.userCollection?.child(Globals.user).get();
+      List tokens = [];
+      tokens.addAll(User?.child('fcmTokens').value as List);
+      tokens.remove(await DataBase.firebaseMessaging.getToken());
+      await DataBase.userCollection?.child(Globals.user).update({
+        'fcmTokens' : tokens,
+      });
       await Globals.prefs.delete(key: 'loggedIN');
       await Globals.prefs.delete(key: 'user');
       Globals.LoggedIN = false;
@@ -85,7 +93,7 @@ class _ProfilePaneState extends State<ProfilePane>{
   Widget build(BuildContext context){
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      backgroundColor: AppTheme.colors.gloryBlack,
+      backgroundColor: AppTheme.colors.friendlyWhite,
       body: Padding(
           padding: const EdgeInsetsDirectional.only(start: 10,end: 10,top: 20, bottom: 0),
           child: Column(
@@ -100,7 +108,7 @@ class _ProfilePaneState extends State<ProfilePane>{
                           Navigator.pop(context);
                         }, icon: Icon(Icons.arrow_back_ios_new_rounded, weight: 30.0,
                       size: 30.0,
-                      color: AppTheme.colors.blissCream,)),
+                      color: AppTheme.colors.friendlyBlack,)),
                     !Globals.LoggedIN?ElevatedButton(onPressed: (){
                       Navigator.of(context).pushNamed('/Ulogin');
                     }, style: ButtonStyle(
@@ -109,7 +117,8 @@ class _ProfilePaneState extends State<ProfilePane>{
                         child: Text(
                       'Log In',
                       style: TextStyle(
-                        color: AppTheme.colors.blissCream,
+                        color: AppTheme.colors.friendlyWhite
+                        ,
                       ),
                     )): ElevatedButton(onPressed: (){
                         setState(() {
@@ -117,7 +126,7 @@ class _ProfilePaneState extends State<ProfilePane>{
                         });
                     }, style: ButtonStyle(
                       shape: const MaterialStatePropertyAll<OutlinedBorder>(CircleBorder(side: BorderSide(color: Colors.red))),
-                      backgroundColor: MaterialStatePropertyAll<Color>(AppTheme.colors.gloryBlack),
+                      backgroundColor: MaterialStatePropertyAll<Color>(AppTheme.colors.friendlyWhite),
                     ),
                         child: const Icon( Icons.power_settings_new_rounded,
                           color: Colors.red,
@@ -135,16 +144,18 @@ class _ProfilePaneState extends State<ProfilePane>{
                       child: Material(
                         elevation: 5.0,
                         shadowColor: Colors.transparent,
-                        borderRadius: BorderRadius.circular(15.0),
+                        shape: CircleBorder(
+                          side: BorderSide(color: AppTheme.colors.onsetBlue, width: 2.5),
+                        ),
                         child: Container(
                           width: 200,
                           height: 200,
                           decoration: BoxDecoration(
-                              color: AppTheme.colors.complimentaryBlack,
+                              color: AppTheme.colors.onsetBlue,
                               shape: BoxShape.circle,
-                              boxShadow: [BoxShadow(
-                                color: AppTheme.colors.blissCream,
-                                offset: const Offset(0, 0),
+                              boxShadow: const [BoxShadow(
+                                color: Colors.transparent,
+                                offset: Offset(0, 0),
                                 blurRadius: 30.0,
                               ),
                               ]
@@ -156,7 +167,7 @@ class _ProfilePaneState extends State<ProfilePane>{
                               style: TextStyle(
                                 fontFamily: Globals.sysFont,
                                 fontSize: 80,
-                                color: AppTheme.colors.blissCream,
+                                color: AppTheme.colors.friendlyWhite,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -173,7 +184,7 @@ class _ProfilePaneState extends State<ProfilePane>{
                             onTap: (){
                               Navigator.of(context).pushNamed('/S>info');
                             },
-                            child: CustomBox(color: AppTheme.colors.onsetBlue,
+                            child: CustomBox(color: AppTheme.colors.friendlyBlack,
                               shadow: Colors.transparent,
                               height: 60,
                               child: Padding(
@@ -185,16 +196,16 @@ class _ProfilePaneState extends State<ProfilePane>{
                                         children: [
                                           Row(
                                             children: [
-                                              Text('User Info', style: TextStyle(color: AppTheme.colors.blissCream, fontSize: 14.0, fontWeight: FontWeight.bold, fontFamily: Globals.sysFont),),
+                                              Text('User Info', style: TextStyle(color: AppTheme.colors.friendlyWhite, fontSize: 14.0, fontWeight: FontWeight.bold, fontFamily: Globals.sysFont),),
                                               const SizedBox(width: 3,),
-                                              Icon(CupertinoIcons.profile_circled, color: AppTheme.colors.blissCream, size: 14.0,),
+                                              Icon(CupertinoIcons.profile_circled, color: AppTheme.colors.friendlyWhite, size: 14.0,),
                                             ],
                                           ),
                                           Text('Edit you user profile', style: TextStyle(color: AppTheme.colors.pleasingWhite, fontSize: 12.0, fontWeight: FontWeight.normal, fontFamily: Globals.sysFont),),
                                         ],
                                       ),
                                         Align(
-                                          child: Icon(CupertinoIcons.arrow_right_circle, color: AppTheme.colors.blissCream,),
+                                          child: Icon(CupertinoIcons.arrow_right_circle, color: AppTheme.colors.friendlyWhite,),
                                         )
                                       ]
                                   )
@@ -206,7 +217,7 @@ class _ProfilePaneState extends State<ProfilePane>{
                             onTap: (){
                               Navigator.of(context).pushNamed('/S>kill');
                             },
-                            child: CustomBox(color: AppTheme.colors.onsetBlue,
+                            child: CustomBox(color: AppTheme.colors.friendlyBlack,
                                 shadow: Colors.transparent,
                                 height: 60,
                                 child: Padding(
@@ -219,16 +230,16 @@ class _ProfilePaneState extends State<ProfilePane>{
                                         children: [
                                           Row(
                                             children: [
-                                              Text('Kill Mode', style: TextStyle(color: AppTheme.colors.blissCream, fontSize: 14.0, fontWeight: FontWeight.bold, fontFamily: Globals.sysFont),),
+                                              Text('Kill Mode', style: TextStyle(color: AppTheme.colors.friendlyWhite, fontSize: 14.0, fontWeight: FontWeight.bold, fontFamily: Globals.sysFont),),
                                               const SizedBox(width: 3,),
-                                              Icon(Icons.dangerous_rounded, color: AppTheme.colors.blissCream, size: 14.0,),
+                                              Icon(Icons.dangerous_rounded, color: AppTheme.colors.friendlyWhite, size: 14.0,),
                                             ],
                                           ),
                                           Text('Raise the stakes with kill mode', style: TextStyle(color: AppTheme.colors.pleasingWhite, fontSize: 12.0, fontWeight: FontWeight.normal, fontFamily: Globals.sysFont),),
                                         ],
                                       ),
                                       Align(
-                                        child: Icon(CupertinoIcons.arrow_right_circle, color: AppTheme.colors.blissCream,),
+                                        child: Icon(CupertinoIcons.arrow_right_circle, color: AppTheme.colors.friendlyWhite,),
                                       )
                                     ],
                                   ),
@@ -239,7 +250,7 @@ class _ProfilePaneState extends State<ProfilePane>{
                             onTap: (){
                               Navigator.of(context).pushNamed('/S>notif');
                             },
-                            child: CustomBox(color: AppTheme.colors.onsetBlue,
+                            child: CustomBox(color: AppTheme.colors.friendlyBlack,
                                 shadow: Colors.transparent,
                                 height: 60,
                                 child: Padding(
@@ -252,16 +263,16 @@ class _ProfilePaneState extends State<ProfilePane>{
                                           children: [
                                             Row(
                                               children: [
-                                                Text('Notifications', style: TextStyle(color: AppTheme.colors.blissCream, fontSize: 14.0, fontWeight: FontWeight.bold, fontFamily: Globals.sysFont),),
+                                                Text('Notifications', style: TextStyle(color: AppTheme.colors.friendlyWhite, fontSize: 14.0, fontWeight: FontWeight.bold, fontFamily: Globals.sysFont),),
                                                 const SizedBox(width: 3,),
-                                                Icon(Icons.notifications_active_rounded, color: AppTheme.colors.blissCream, size: 14.0,),
+                                                Icon(Icons.notifications_active_rounded, color: AppTheme.colors.friendlyWhite, size: 14.0,),
                                               ],
                                             ),
                                             Text('Notification settings', style: TextStyle(color: AppTheme.colors.pleasingWhite, fontSize: 12.0, fontWeight: FontWeight.normal, fontFamily: Globals.sysFont),),
                                           ],
                                         ),
                                         Align(
-                                          child: Icon(CupertinoIcons.arrow_right_circle, color: AppTheme.colors.blissCream,),
+                                          child: Icon(CupertinoIcons.arrow_right_circle, color: AppTheme.colors.friendlyWhite,),
                                         )
                                       ],
                                     )
@@ -271,7 +282,7 @@ class _ProfilePaneState extends State<ProfilePane>{
                           GestureDetector(
                             onTap: (){
                               Navigator.of(context).pushNamed('/S>custom');
-                            },child: CustomBox(color: AppTheme.colors.onsetBlue,
+                            },child: CustomBox(color: AppTheme.colors.friendlyBlack,
                               shadow: Colors.transparent,
                               height: 60,
                               child: Padding(
@@ -284,16 +295,16 @@ class _ProfilePaneState extends State<ProfilePane>{
                                         children: [
                                           Row(
                                             children: [
-                                              Text('Customization', style: TextStyle(color: AppTheme.colors.blissCream, fontSize: 14.0, fontWeight: FontWeight.bold, fontFamily: Globals.sysFont),),
+                                              Text('Customization', style: TextStyle(color: AppTheme.colors.friendlyWhite, fontSize: 14.0, fontWeight: FontWeight.bold, fontFamily: Globals.sysFont),),
                                               const SizedBox(width: 3,),
-                                              Icon(Icons.dashboard_customize_rounded, color: AppTheme.colors.blissCream, size: 14.0,),
+                                              Icon(Icons.dashboard_customize_rounded, color: AppTheme.colors.friendlyWhite, size: 14.0,),
                                             ],
                                           ),
                                           Text('Customization settings', style: TextStyle(color: AppTheme.colors.pleasingWhite, fontSize: 12.0, fontWeight: FontWeight.normal, fontFamily: Globals.sysFont),),
                                         ],
                                       ),
                                       Align(
-                                        child: Icon(CupertinoIcons.arrow_right_circle, color: AppTheme.colors.blissCream,),
+                                        child: Icon(CupertinoIcons.arrow_right_circle, color: AppTheme.colors.friendlyWhite,),
                                       )
                                     ],
                                   )
@@ -304,7 +315,7 @@ class _ProfilePaneState extends State<ProfilePane>{
                             onTap: (){
                               Navigator.of(context).pushNamed('/S>feed');
                             },
-                            child: CustomBox(color: AppTheme.colors.onsetBlue,
+                            child: CustomBox(color: AppTheme.colors.friendlyBlack,
                                 shadow: Colors.transparent,
                                 height: 60,
                                 child: Padding(
@@ -317,16 +328,19 @@ class _ProfilePaneState extends State<ProfilePane>{
                                           children: [
                                             Row(
                                               children: [
-                                                Text('Customer Feedback', style: TextStyle(color: AppTheme.colors.blissCream, fontSize: 14.0, fontWeight: FontWeight.bold, fontFamily: Globals.sysFont),),
+                                                Text('Customer Feedback', style: TextStyle(color: AppTheme.colors.friendlyWhite
+                                                    , fontSize: 14.0, fontWeight: FontWeight.bold, fontFamily: Globals.sysFont),),
                                                 const SizedBox(width: 3,),
-                                                Icon(Icons.feedback_rounded, color: AppTheme.colors.blissCream, size: 14.0,),
+                                                Icon(Icons.feedback_rounded, color: AppTheme.colors.friendlyWhite
+                                                  , size: 14.0,),
                                               ],
                                             ),
                                             Text('Give us your valuable feedback', style: TextStyle(color: AppTheme.colors.pleasingWhite, fontSize: 12.0, fontWeight: FontWeight.normal, fontFamily: Globals.sysFont),),
                                           ],
                                         ),
                                         Align(
-                                          child: Icon(CupertinoIcons.arrow_right_circle, color: AppTheme.colors.blissCream,),
+                                          child: Icon(CupertinoIcons.arrow_right_circle, color: AppTheme.colors.friendlyWhite
+                                            ,),
                                         )
                                       ],
                                     )
@@ -337,7 +351,7 @@ class _ProfilePaneState extends State<ProfilePane>{
                             onTap: (){
                               Navigator.of(context).pushNamed('/S>about');
                             },
-                            child: CustomBox(color: AppTheme.colors.onsetBlue,
+                            child: CustomBox(color: AppTheme.colors.friendlyBlack,
                                 shadow: Colors.transparent,
                                 height: 60,
                                 child: Padding(
@@ -350,16 +364,19 @@ class _ProfilePaneState extends State<ProfilePane>{
                                           children: [
                                             Row(
                                               children: [
-                                                Text('About us', style: TextStyle(color: AppTheme.colors.blissCream, fontSize: 14.0, fontWeight: FontWeight.bold, fontFamily: Globals.sysFont),),
+                                                Text('About us', style: TextStyle(color: AppTheme.colors.friendlyWhite
+                                                    , fontSize: 14.0, fontWeight: FontWeight.bold, fontFamily: Globals.sysFont),),
                                                 const SizedBox(width: 3,),
-                                                Icon(CupertinoIcons.info_circle, color: AppTheme.colors.blissCream, size: 14.0,),
+                                                Icon(CupertinoIcons.info_circle, color: AppTheme.colors.friendlyWhite
+                                                  , size: 14.0,),
                                               ],
                                             ),
                                             Text('Get to know more about us', style: TextStyle(color: AppTheme.colors.pleasingWhite, fontSize: 12.0, fontWeight: FontWeight.normal, fontFamily: Globals.sysFont),),
                                           ],
                                         ),
                                         Align(
-                                          child: Icon(CupertinoIcons.arrow_right_circle, color: AppTheme.colors.blissCream,),
+                                          child: Icon(CupertinoIcons.arrow_right_circle, color: AppTheme.colors.friendlyWhite
+                                            ,),
                                         )
                                       ],
                                     )

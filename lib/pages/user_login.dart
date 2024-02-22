@@ -1,3 +1,4 @@
+import 'package:PawfectTasks/Components/CustomAppBar.dart';
 import 'package:bcrypt/bcrypt.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -47,6 +48,29 @@ class _LoginState extends State<LoginPage>{
         throw Exception('Password is incorrect');
       }
       result = true;
+      final fcmToken = await DataBase.firebaseMessaging.getToken();
+      final User = await DataBase.userCollection?.child(username).get();
+      if (! User!.hasChild('fcmTokens')){
+        await DataBase.userCollection?.child(username).update({
+          'fcmTokens' : [fcmToken],
+        });
+      }else {
+        List tokens = [];
+        tokens.addAll(User.child('fcmTokens').value as List);
+        if (tokens.isEmpty) {
+          tokens.add(fcmToken);
+          await DataBase.userCollection?.child(username).update({
+            'fcmTokens': tokens,
+          });
+        } else if (tokens.contains(fcmToken)) {
+          if (kDebugMode) print('Token has already been assigned to the user.');
+        } else {
+          tokens.add(fcmToken);
+          await DataBase.userCollection?.child(username).update({
+            'fcmTokens': tokens,
+          });
+        }
+      }
       await Globals.prefs.write(key: 'loggedIN', value: 'true');
       await Globals.prefs.write(key: 'user', value: username);
       Globals.LoggedIN = true;
@@ -86,24 +110,13 @@ class _LoginState extends State<LoginPage>{
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      backgroundColor: AppTheme.colors.gloryBlack,
+      backgroundColor: AppTheme.colors.friendlyWhite,
       body: Padding(
         padding: const EdgeInsetsDirectional.symmetric(horizontal: 10.0, vertical: 10.0),
         child: Column(
           children: [
-            Padding(padding: const EdgeInsetsDirectional.symmetric(horizontal: 0.0, vertical: 10.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  IconButton(onPressed: (){
-                    Navigator.of(context).pop();
-                  }, icon: Icon(Icons.close,weight: 30.0,
-                    size: 30.0,
-                    color: AppTheme.colors.blissCream,
-                  )
-                  )
-                ],
-              ),
+            const Padding(padding: EdgeInsetsDirectional.symmetric(horizontal: 0.0, vertical: 10.0),
+              child: CustomAppBar()
             ),
             Expanded(child: Padding(
               padding: const EdgeInsetsDirectional.all(16.0),
@@ -114,7 +127,7 @@ class _LoginState extends State<LoginPage>{
                     children: [
                       Text('Log In',
                         style: TextStyle(
-                          color: AppTheme.colors.pleasingWhite,
+                          color: AppTheme.colors.friendlyBlack,
                           fontWeight: FontWeight.bold,
                           fontFamily: Globals.sysFont,
                           fontSize: 32.0,
@@ -126,7 +139,7 @@ class _LoginState extends State<LoginPage>{
                   const SizedBox(height: 20.0,),
                   FadeInAnimation(delay: 1.25, child: Container(
                     decoration: BoxDecoration(
-                        color: Colors.grey,
+                        color: AppTheme.colors.friendlyBlack,
                         borderRadius: BorderRadius.circular(16.0)
                     ),
                     child: Padding(padding: const EdgeInsetsDirectional.symmetric(horizontal: 16.0,vertical: 32.0),
@@ -140,8 +153,8 @@ class _LoginState extends State<LoginPage>{
                               focusNode: UfocusNode,
                               controller: userNameC,
                               labelColor: AppTheme.colors.onsetBlue,
-                              bgColor: AppTheme.colors.blissCream,
-                              cursorColor: AppTheme.colors.pleasingWhite,
+                              bgColor: AppTheme.colors.friendlyWhite,
+                              cursorColor: Colors.grey,
                               textColor: AppTheme.colors.onsetBlue,
                               borderColor: AppTheme.colors.onsetBlue, obscureText: false,
                             ),
@@ -151,18 +164,18 @@ class _LoginState extends State<LoginPage>{
                                 focusNode: PfocusNode,
                                 controller: userPasswordC,
                                 inputType: TextInputType.visiblePassword,
-                                labelColor: AppTheme.colors.blissCream,
+                                labelColor: AppTheme.colors.friendlyWhite,
                                 cursorColor: AppTheme.colors.pleasingWhite,
                                 bgColor: AppTheme.colors.onsetBlue,
-                                textColor: AppTheme.colors.blissCream,
-                                borderColor: AppTheme.colors.blissCream,
+                                textColor: AppTheme.colors.friendlyWhite,
+                                borderColor: AppTheme.colors.friendlyWhite,
                                 suffixIcon: IconButton(
                                   icon: Icon(showP? Icons.visibility_outlined : Icons.visibility_off_outlined), onPressed: () {
                                   setState(() {
                                     showP = !showP;
                                   });
                                 },
-                                  color: AppTheme.colors.blissCream,
+                                  color: AppTheme.colors.friendlyWhite,
                                 ),
                                 fontSize: 16.0, obscureText: showP,),
                             const SizedBox(height: 8,),
@@ -192,7 +205,7 @@ class _LoginState extends State<LoginPage>{
                                     decorationStyle: TextDecorationStyle.solid,
                                     decorationThickness: 3.5,
                                     decorationColor: AppTheme.colors.onsetBlue,
-                                    color: AppTheme.colors.complimentaryBlack,
+                                    color: AppTheme.colors.friendlyWhite,
                                   ),),
                                 )
                             ),
@@ -215,8 +228,8 @@ class _LoginState extends State<LoginPage>{
                                 },hoverColor: AppTheme.colors.lightOnsetBlue,
                                   style: ButtonStyle(
                                     elevation: const MaterialStatePropertyAll<double?>(5.0),
-                                    iconColor: MaterialStatePropertyAll<Color?>(AppTheme.colors.pleasingWhite),
-                                    backgroundColor: MaterialStatePropertyAll<Color?>(AppTheme.colors.gloryBlack),
+                                    iconColor: MaterialStatePropertyAll<Color?>(AppTheme.colors.onsetBlue),
+                                    backgroundColor: MaterialStatePropertyAll<Color?>(AppTheme.colors.friendlyWhite),
                                   ),
                                   icon: const Icon(Icons.login_rounded),)
                               ],

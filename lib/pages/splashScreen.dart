@@ -57,7 +57,7 @@ class _SplashScreenState  extends State<SplashScreen> with SingleTickerProviderS
   @override
   Widget build(BuildContext context) {
       return Scaffold(
-        backgroundColor: AppTheme.colors.gloryBlack,
+        backgroundColor: AppTheme.colors.friendlyWhite,
         body: load? Lottie.asset('assets/splashScreen.json',
               height: MediaQuery.of(context).size.height,
               width: MediaQuery.of(context).size.width,
@@ -80,10 +80,10 @@ class _SplashScreenState  extends State<SplashScreen> with SingleTickerProviderS
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Image(image: AssetImage('assets/img.png')),
-                LinearProgressIndicator(color: AppTheme.colors.onsetBlue, borderRadius: BorderRadius.circular(10),),
+                const Image(image: AssetImage('assets/fect tasks.png')),
+                LinearProgressIndicator(color: AppTheme.colors.onsetBlue, borderRadius: BorderRadius.circular(10), backgroundColor: AppTheme.colors.friendlyBlack,),
                 const SizedBox(height: 20,),
-                Center(child: Text('Onboarding now, please hang on tightly', style: TextStyle(color: AppTheme.colors.blissCream,fontSize: 14,fontFamily: Globals.sysFont),),)
+                Center(child: Text('Onboarding now, please hang on tightly', style: TextStyle(color: Colors.grey,fontSize: 14,fontFamily: Globals.sysFont),),)
               ],
             ),
           )

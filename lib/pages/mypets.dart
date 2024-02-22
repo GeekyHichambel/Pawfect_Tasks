@@ -119,22 +119,21 @@ class _MyPetState extends State<MyPet> with SingleTickerProviderStateMixin{
           return SizedBox(height: 300,
             child: AlertDialog(
               scrollable: true,
-              elevation: 5,
               alignment: Alignment.center,
               contentPadding: const EdgeInsets.all(20.0),
-              backgroundColor: AppTheme.colors.complimentaryBlack,
-              shadowColor: AppTheme.colors.blissCream,
+              backgroundColor: AppTheme.colors.friendlyBlack,
+              shadowColor: Colors.transparent,
               shape: const RoundedRectangleBorder(side: BorderSide.none, borderRadius: BorderRadius.all(Radius.circular(16.0))),
               content: Column(
                 children: [
-                  Text('Name your buddy!', style: TextStyle(fontFamily: Globals.sysFont),),
+                  Text('Name your buddy!', style: TextStyle(fontFamily: Globals.sysFont, color: AppTheme.colors.friendlyWhite),),
                   const SizedBox(height: 20,),
                   CustomTextField(
                     inputType: TextInputType.name,
                     fontSize: 16.0,
                     controller: NameC,
                     labelColor: AppTheme.colors.onsetBlue,
-                    bgColor: AppTheme.colors.blissCream,
+                    bgColor: AppTheme.colors.friendlyWhite,
                     cursorColor: AppTheme.colors.pleasingWhite,
                     textColor: AppTheme.colors.onsetBlue,
                     borderColor: AppTheme.colors.onsetBlue, obscureText: false,
@@ -155,12 +154,12 @@ class _MyPetState extends State<MyPet> with SingleTickerProviderStateMixin{
                           NameC.clear();
                           Navigator.of(context).pop();
                         });
-                      }, style: ButtonStyle(backgroundColor: MaterialStatePropertyAll<Color>(AppTheme.colors.gloryBlack)),
+                      }, style: ButtonStyle(backgroundColor: MaterialStatePropertyAll<Color>(AppTheme.colors.friendlyWhite)),
                           child: const Text('Save', style: TextStyle(color: Colors.green),)),
                       ElevatedButton(onPressed: (){
                         NameC.clear();
                         Navigator.of(context).pop();
-                      }, style: ButtonStyle(backgroundColor: MaterialStatePropertyAll<Color>(AppTheme.colors.gloryBlack)),
+                      }, style: ButtonStyle(backgroundColor: MaterialStatePropertyAll<Color>(AppTheme.colors.friendlyWhite)),
                           child: const Text('Cancel', style: TextStyle(color: Colors.red),))
                     ],
                   )
@@ -222,15 +221,15 @@ class _MyPetState extends State<MyPet> with SingleTickerProviderStateMixin{
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Padding(
-        padding: const EdgeInsetsDirectional.symmetric(horizontal: 30,vertical: 20),
+        padding: const EdgeInsetsDirectional.symmetric(horizontal: 30,vertical: 25),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: Globals.LoggedIN? [
              Expanded(child: Center(
                 child: isLoaded? CustomBox(
-                    color: AppTheme.colors.complimentaryBlack,
-                    shadow: AppTheme.colors.blissCream,
+                    color: AppTheme.colors.friendlyBlack,
+                    shadow: Colors.transparent,
                     child: Padding(
                       padding: const EdgeInsets.all(16.0),
                       child: Center(
@@ -257,18 +256,18 @@ class _MyPetState extends State<MyPet> with SingleTickerProviderStateMixin{
 
                 }, style: ButtonStyle(
                     fixedSize: const MaterialStatePropertyAll(Size(65,65)),
-                  backgroundColor: MaterialStatePropertyAll(AppTheme.colors.blissCream),
-                  elevation: const MaterialStatePropertyAll(5),
-                  padding: const MaterialStatePropertyAll(EdgeInsetsDirectional.all(16.0)),
-                  shape: const MaterialStatePropertyAll<OutlinedBorder>(CircleBorder(
-                    side: BorderSide.none,
-                  ))
+                    backgroundColor: MaterialStatePropertyAll(AppTheme.colors.onsetBlue),
+                    elevation: const MaterialStatePropertyAll(5),
+                    padding: const MaterialStatePropertyAll(EdgeInsetsDirectional.all(16.0)),
+                    shape: MaterialStatePropertyAll<OutlinedBorder>(CircleBorder(
+                      side: BorderSide(color: AppTheme.colors.onsetBlue, width: 2.5),
+                    ))
                 ),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Expanded(child: Image.asset('assets/feed.png', color: AppTheme.colors.onsetBlue,),),
-                    Text('Feed', style: TextStyle(color: AppTheme.colors.lightBrown, fontFamily: Globals.sysFont, fontSize: 8),),
+                    Expanded(child: Image.asset('assets/feed.png', color: AppTheme.colors.friendlyWhite,),),
+                    Text('Feed', style: TextStyle(color: AppTheme.colors.friendlyWhite, fontFamily: Globals.sysFont, fontSize: 8),),
                   ],
                 )).animate(
                   effects: [
@@ -293,18 +292,18 @@ class _MyPetState extends State<MyPet> with SingleTickerProviderStateMixin{
 
                 }, style: ButtonStyle(
                     fixedSize: const MaterialStatePropertyAll(Size(65,65)),
-                    backgroundColor: MaterialStatePropertyAll(AppTheme.colors.blissCream),
+                    backgroundColor: MaterialStatePropertyAll(AppTheme.colors.onsetBlue),
                     elevation: const MaterialStatePropertyAll(5),
                     padding: const MaterialStatePropertyAll(EdgeInsetsDirectional.all(16.0)),
-                    shape: const MaterialStatePropertyAll<OutlinedBorder>(CircleBorder(
-                      side: BorderSide.none,
+                    shape: MaterialStatePropertyAll<OutlinedBorder>(CircleBorder(
+                      side: BorderSide(color: AppTheme.colors.onsetBlue, width: 2.5),
                     ))
                 ),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Expanded(child: Image.asset('assets/interact.png', color: AppTheme.colors.onsetBlue),),
-                        Text('Interact', style: TextStyle(color: AppTheme.colors.lightBrown, fontFamily: Globals.sysFont, fontSize: 8),),
+                        Expanded(child: Image.asset('assets/interact.png', color: AppTheme.colors.friendlyWhite),),
+                        Text('Interact', style: TextStyle(color: AppTheme.colors.friendlyWhite, fontFamily: Globals.sysFont, fontSize: 8),),
                       ],
                     )).animate(
                   effects: [
@@ -328,7 +327,7 @@ class _MyPetState extends State<MyPet> with SingleTickerProviderStateMixin{
               ],
             ),
             const SizedBox(height: 20,),
-            Text(getTip(), style: TextStyle(color: AppTheme.colors.blissCream, fontFamily: Globals.sysFont),).animate(
+            Text(getTip(), style: TextStyle(color: AppTheme.colors.friendlyBlack, fontFamily: Globals.sysFont), textAlign: TextAlign.center,).animate(
               onInit: (controller){
                 controller.forward();
               },
@@ -352,7 +351,7 @@ class _MyPetState extends State<MyPet> with SingleTickerProviderStateMixin{
                   Expanded(child: FadeInAnimation(
                             delay: 1,
                             child: CustomBox(
-                              color: AppTheme.colors.onsetBlue,
+                              color: AppTheme.colors.friendlyBlack,
                               shadow: Colors.transparent,
                               child: Padding(
                                 padding: const EdgeInsets.all(16.0),
@@ -362,11 +361,11 @@ class _MyPetState extends State<MyPet> with SingleTickerProviderStateMixin{
                                     Row(
                                       mainAxisAlignment: MainAxisAlignment.start,
                                       children: [
-                                        Text(cPetName, style: TextStyle(color: Colors.white, fontFamily: Globals.sysFont, fontSize: 20),),
+                                        Text(cPetName, style: TextStyle(color: AppTheme.colors.friendlyWhite, fontFamily: Globals.sysFont, fontSize: 20),),
                                         const SizedBox(width: 10,),
                                         IconButton(onPressed: (){
                                           openDialog(context);
-                                        }, icon: const Icon(Icons.edit_rounded), color: AppTheme.colors.pleasingWhite)
+                                        }, icon: const Icon(Icons.edit_rounded), color: AppTheme.colors.blissCream)
                                       ],
                                     ),
                                     const SizedBox(height: 20,),
@@ -378,7 +377,7 @@ class _MyPetState extends State<MyPet> with SingleTickerProviderStateMixin{
                                             Image.asset('assets/hp.png', width: 25, height: 25, fit: BoxFit.fill,),
                                             const SizedBox(height: 5,),
                                             CustomBox(
-                                                color: Colors.white,
+                                                color: AppTheme.colors.friendlyWhite,
                                                 shadow: Colors.transparent,
                                                 child:  Padding(
                                                   padding: const EdgeInsets.all(2.0),
@@ -392,7 +391,7 @@ class _MyPetState extends State<MyPet> with SingleTickerProviderStateMixin{
                                             Image.asset('assets/hunger.png', width: 30, height: 30, fit: BoxFit.fill,),
                                             const SizedBox(height: 0,),
                                             CustomBox(
-                                              color: Colors.white,
+                                              color: AppTheme.colors.friendlyWhite,
                                               shadow: Colors.transparent,
                                               child:  Padding(
                                                 padding: const EdgeInsets.all(2.0),
@@ -406,7 +405,7 @@ class _MyPetState extends State<MyPet> with SingleTickerProviderStateMixin{
                                             Image.asset('assets/mood.png', width: 25, height: 25, fit: BoxFit.fill,),
                                             const SizedBox(height: 5,),
                                             CustomBox(
-                                              color: Colors.white,
+                                              color: AppTheme.colors.friendlyWhite,
                                               shadow: Colors.transparent,
                                               child:  Padding(
                                                 padding: const EdgeInsets.all(2.0),
@@ -427,7 +426,7 @@ class _MyPetState extends State<MyPet> with SingleTickerProviderStateMixin{
           ] : [
             Image.asset('assets/loginFirst.png', height: 200, width: 200, fit: BoxFit.fill,),
             const SizedBox(height: 20,),
-            Center(child: Text('Kindly login first to access this section', style: TextStyle(fontWeight: FontWeight.bold,color: AppTheme.colors.pleasingWhite, fontFamily: Globals.sysFont, fontSize: 14)),),
+            Center(child: Text('Kindly login first to access this section', style: TextStyle(fontWeight: FontWeight.bold,color: AppTheme.colors.friendlyBlack, fontFamily: Globals.sysFont, fontSize: 14)),),
           ],
         )
       )

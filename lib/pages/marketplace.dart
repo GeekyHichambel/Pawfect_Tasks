@@ -85,33 +85,43 @@ class MarketPlaceState extends State<MarketPlace>{
   Widget build(BuildContext context){
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      body: Padding(padding: const EdgeInsets.only(top: 0, bottom: 20, left: 30, right: 30),
+      body: Padding(padding: const EdgeInsets.only(top: 20, bottom: 20, left: 30, right: 30),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: Globals.LoggedIN? [
-            Text('Market Place', style: TextStyle(fontFamily: Globals.sysFont, color: AppTheme.colors.lightBrown, fontSize: 22, fontWeight: FontWeight.w900, fontFeatures: const [
+            Text('Market Place', style: TextStyle(fontFamily: Globals.sysFont, color: AppTheme.colors.lightBrown,shadows: [
+              Shadow(color: AppTheme.colors.blissCream, offset: Offset.fromDirection(1.0))
+            ], fontSize: 22, fontWeight: FontWeight.w900, fontFeatures: const [
               FontFeature.caseSensitiveForms()
             ]),),
               const SizedBox(height: 20,),
               FadeInAnimation(delay: 1, child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  Text('$cPetFood', style: TextStyle(fontSize: 19, fontFamily: Globals.sysFont),),
+                  Text('$cPetFood', style: TextStyle(fontSize: 19, fontFamily: Globals.sysFont, color: AppTheme.colors.onsetBlue),),
                   const SizedBox(width: 5,),
                   Image.asset('assets/foodIcon.png', width: 20, height: 20,),
-                  const SizedBox(width: 10,),
-                  IconButton(onPressed: (){
-                    //TODO: Payment Gateway
-                  }, icon: const Icon(Icons.add),
-                    hoverColor: AppTheme.colors.lightOnsetBlue,
-                    style: ButtonStyle(
-                      elevation: const MaterialStatePropertyAll<double?>(5.0),
-                      iconColor: MaterialStatePropertyAll<Color?>(AppTheme.colors.pleasingWhite),
-                      backgroundColor: MaterialStatePropertyAll<Color?>(AppTheme.colors.gloryBlack),
+                  const SizedBox(width: 15,),
+                  SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: IconButton(onPressed: (){
+                      //TODO: Payment Gateway
+                    }, icon: const Icon(Icons.add),
+                      hoverColor: AppTheme.colors.lightOnsetBlue,
+                      style: ButtonStyle(
+                        iconSize: const MaterialStatePropertyAll<double?>(10),
+                        padding: const MaterialStatePropertyAll<EdgeInsets>(EdgeInsets.all(5.0)),
+                        shape: const MaterialStatePropertyAll<OutlinedBorder?>(RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20.0)))),
+                        elevation: const MaterialStatePropertyAll<double?>(5.0),
+                        iconColor: MaterialStatePropertyAll<Color?>(AppTheme.colors.pleasingWhite),
+                        backgroundColor: MaterialStatePropertyAll<Color?>(AppTheme.colors.friendlyBlack),
+                      ),
                     ),
                   ),
-                  Text('$cPawCoin', style: TextStyle(fontSize: 19, fontFamily: Globals.sysFont),),
+                  const SizedBox(width: 5,),
+                  Text('$cPawCoin', style: TextStyle(fontSize: 19, fontFamily: Globals.sysFont, color: AppTheme.colors.onsetBlue),),
                   const SizedBox(width: 5,),
                   Image.asset('assets/pawCoin.png', width: 20, height: 20,),
                 ],
@@ -119,8 +129,8 @@ class MarketPlaceState extends State<MarketPlace>{
             const SizedBox(height: 5,),
             Expanded(child: Padding(padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 0.0),
                 child: FadeInAnimation(delay: 1.5,child: CustomBox(
-                  color: AppTheme.colors.complimentaryBlack,
-                  shadow: AppTheme.colors.blissCream,
+                  color: AppTheme.colors.friendlyBlack,
+                  shadow: Colors.transparent,
                   child: FutureBuilder<List<ImageInfo>>(
                     future: fetchImages(),
                     builder: (context, snapshot){
@@ -159,7 +169,7 @@ class MarketPlaceState extends State<MarketPlace>{
                                       child: Image.memory(snapshot.data![index].imageData),
                                     ),
                                   ),
-                                  Text(snapshot.data![index].name, style: TextStyle(fontSize: 10,fontFamily: Globals.sysFont)),
+                                  Text(snapshot.data![index].name, style: TextStyle(fontSize: 10,fontFamily: Globals.sysFont, color: AppTheme.colors.friendlyWhite)),
                                 ],
                               ));
                             },
