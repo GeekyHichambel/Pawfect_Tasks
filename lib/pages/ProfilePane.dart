@@ -70,8 +70,12 @@ class _ProfilePaneState extends State<ProfilePane>{
     try {
       final User = await DataBase.userCollection?.child(Globals.user).get();
       List tokens = [];
-      tokens.addAll(User?.child('fcmTokens').value as List);
-      tokens.remove(await DataBase.firebaseMessaging.getToken());
+      if (User?.child('fcmTokens').value != null) {
+        tokens.addAll(User
+            ?.child('fcmTokens')
+            .value as List);
+        tokens.remove(await DataBase.firebaseMessaging.getToken());
+      }
       await DataBase.userCollection?.child(Globals.user).update({
         'fcmTokens' : tokens,
       });

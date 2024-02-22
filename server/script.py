@@ -1,6 +1,6 @@
 import firebase_admin
 from firebase_admin import credentials, db, messaging
-from datetime import datetime
+from datetime import datetime, timedelta
 import schedule
 import time
 import os
@@ -52,6 +52,7 @@ def update_task():
                     #Pet is Hungry need to send the notification to user and start reducing HP
                     tokens_ref = all_users_ref.child(username).child('fcmTokens')
                     time_difference_hours = None
+                    time_difference = None
 
                     if all_users_ref.child(username).child('last_notification').get() is None:
                         print(f'(-) Last Notification Time not found.')
@@ -88,7 +89,9 @@ def update_task():
                                 all_users_ref.child(username).update({'last_notification' : str(datetime.now())})
 
                     else:
-                        print(f'(*) Notification can\'t be sent as the last notification was sent in the last 6 hours\n')
+                        print(f'(*) Notification can\'t be sent as the last notification was sent in the last 6 hours')
+                        time_left = timedelta(hours=6) - time_difference
+                        print(f'(*) Time left for next notification: {time_left}\n')
 
 
                 current_time = datetime.now()
@@ -114,7 +117,8 @@ def update_task():
         print(f"(!) Error: {e}")
 
     finally:
-        print('(~) Next cycle after 15 minutes\n\n\n\n')
+        print('(~) Next cycle after 15 minutes\n')
+        print(f'(~) > > > > > > > > > > > > > > > > > > > > > > > > > > > > > > < < < < < < < < < < < < < < < < < < < < < < < < < < < < < <\n\n\n')
 
 
 schedule.every(15).minutes.do(update_task)

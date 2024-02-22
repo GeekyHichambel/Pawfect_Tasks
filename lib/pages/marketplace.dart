@@ -183,7 +183,7 @@ class MarketPlaceState extends State<MarketPlace>{
       ] : [
             Image.asset('assets/loginFirst.png', height: 200, width: 200, fit: BoxFit.fill,),
             const SizedBox(height: 20,),
-            Center(child: Text('Kindly login first to access this section', style: TextStyle(fontWeight: FontWeight.bold,color: AppTheme.colors.pleasingWhite, fontFamily: Globals.sysFont, fontSize: 14)),),
+            Center(child: Text('Kindly login first to access this section', style: TextStyle(fontWeight: FontWeight.bold,color: AppTheme.colors.friendlyBlack, fontFamily: Globals.sysFont, fontSize: 14)),),
           ],
         ),
       ),
