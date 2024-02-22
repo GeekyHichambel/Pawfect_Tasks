@@ -63,16 +63,17 @@ def update_task():
                         time_difference = datetime.now() - last_notification_time
                         time_difference_hours = int(time_difference.total_seconds() // 3600)
 
-                    if time_difference_hours is None or time_difference_hours > 6:
+                    if time_difference_hours is None or time_difference_hours >= 6:
                         if tokens_ref.get() is None:
-                            print(f'(-) The FCM Tokens reference can\'t be found. Hence Notifications can\'t be sent')
+                            print(f'(-) The FCM Tokens reference can\'t be found. Hence Notifications can\'t be sent\n')
 
                         else:
                             fcm_tokens = tokens_ref.get()
 
                             if fcm_tokens is None:
-                                print(f'(-) No FCM tokens found for {username}. Notifications can\'t be sent.')
+                                print(f'(-) No FCM tokens found for {username}. Notifications can\'t be sent.\n')
 
+                            else:
                                 message = messaging.MulticastMessage(
                                     notification=messaging.Notification(
                                         title="Your Pet needs you",
@@ -84,11 +85,10 @@ def update_task():
                                 response = messaging.send_multicast(message)
                                 print(f'(+) Notification sent successfully to {username}. ', response)
 
-                                all_users_ref.child(username).update({'last_notification' : datetime.now})
+                                all_users_ref.child(username).update({'last_notification' : str(datetime.now())})
 
-                                if hunger == 100:
-                                    print('(*) Hunger is already full.\n')
-                                    continue
+                    else:
+                        print(f'(*) Notification can\'t be sent as the last notification was sent in the last 6 hours\n')
 
 
                 current_time = datetime.now()
@@ -97,6 +97,9 @@ def update_task():
                 new_hunger = int(time_diff.total_seconds() // 3600) * 10
                 new_hunger = min(max(new_hunger, 0), 100)
 
+                print(f'''(*) Previous hunger: {hunger}
+             New hunger: {new_hunger}''')
+
                 if new_hunger == hunger:
                     print('(*) No updates required.\n')
                     continue
@@ -104,7 +107,9 @@ def update_task():
                 pet_status_ref.child(pet_name).update({'starvation' : new_hunger})
 
                 print(f'(+) Successfully updated the hunger for {pet_name} to {new_hunger}\n\n')
-     
+
+            print(f'(~) - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -\n')
+
     except Exception as e:
         print(f"(!) Error: {e}")
 
