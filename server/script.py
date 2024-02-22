@@ -4,6 +4,7 @@ from datetime import datetime, timedelta
 import schedule
 import time
 import os
+import pytz
 from terminut import printf as print, inputf as input
 
 if os.name == "nt":
@@ -43,7 +44,7 @@ def update_task():
                 last_fed = pet_stats.get('lastFed')
                 hunger = pet_stats.get('starvation')
 
-                date_format = "%Y-%m-%d %H:%M:%S.%f"
+                date_format = "%Y-%m-%d %H:%M:%S.%f%z"
                 last_fed_time = datetime.strptime(last_fed, date_format)
 
                 if hunger >= 50:
@@ -59,9 +60,9 @@ def update_task():
 
                     else:
                         last_notification_time = all_users_ref.child(username).child('last_notification').get()
-                        date_format = "%Y-%m-%d %H:%M:%S.%f"
+                        date_format = "%Y-%m-%d %H:%M:%S.%f%z"
                         last_notification_time = datetime.strptime(last_notification_time, date_format)
-                        time_difference = datetime.now() - last_notification_time
+                        time_difference = datetime.now(pytz.timezone('Asia/Kolkata')) - last_notification_time
                         time_difference_hours = int(time_difference.total_seconds() // 3600)
 
                     if time_difference_hours is None or time_difference_hours >= 6:
@@ -86,7 +87,7 @@ def update_task():
                                 response = messaging.send_multicast(message)
                                 print(f'(+) Notification sent successfully to {username}. ', response)
 
-                                all_users_ref.child(username).update({'last_notification' : str(datetime.now())})
+                                all_users_ref.child(username).update({'last_notification' : str(datetime.now(pytz.timezone('Asia/Kolkata')))})
 
                     else:
                         print(f'(*) Notification can\'t be sent as the last notification was sent in the last 6 hours')
@@ -94,7 +95,7 @@ def update_task():
                         print(f'(*) Time left for next notification: {time_left}\n')
 
 
-                current_time = datetime.now()
+                current_time = datetime.now(pytz.timezone('Asia/Kolkata'))
                 time_diff = current_time - last_fed_time   
 
                 new_hunger = int(time_diff.total_seconds() // 3600) * 10
