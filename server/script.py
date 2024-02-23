@@ -152,7 +152,7 @@ def last_user_online():
                     time_difference = datetime.now(pytz.timezone('Asia/Kolkata')) - last_online_time
                     time_difference_hours = int(time_difference.total_seconds() // 3600)
 
-                    if time_difference_hours >= 24 or True:
+                    if time_difference_hours >= 24:
                         if tokens_ref is None:
                             print(f'(-) Tokens ref can\'t be found.\n')
 
