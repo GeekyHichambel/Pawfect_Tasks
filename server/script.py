@@ -174,6 +174,9 @@ def last_user_online():
                                 response = messaging.send_multicast(message)
                                 print(f'(+) Notification sent successfully to {username}. ', response)
 
+                    else:
+                        print(f'(~) Notification can\'t be sent as the user was online in last 24 hours.\n')
+
     except Exception as e:
         print(f"(!) Error: {e}")
 
