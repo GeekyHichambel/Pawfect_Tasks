@@ -43,6 +43,7 @@ def update_task():
 
                 last_fed = pet_stats.get('lastFed')
                 hunger = pet_stats.get('starvation')
+                nickname = pet_stats.get('nickname')
 
                 date_format = "%Y-%m-%d %H:%M:%S.%f%z"
                 last_fed_time = datetime.strptime(last_fed, date_format)
@@ -55,11 +56,11 @@ def update_task():
                     time_difference_hours = None
                     time_difference = None
 
-                    if all_users_ref.child(username).child('last_notification').get() is None:
+                    if all_users_ref.child(username).child('stats').child('last_notification').get() is None:
                         print(f'(-) Last Notification Time not found.')
 
                     else:
-                        last_notification_time = all_users_ref.child(username).child('last_notification').get()
+                        last_notification_time = all_users_ref.child(username).child('stats').child('last_notification').get()
                         date_format = "%Y-%m-%d %H:%M:%S.%f%z"
                         last_notification_time = datetime.strptime(last_notification_time, date_format)
                         time_difference = datetime.now(pytz.timezone('Asia/Kolkata')) - last_notification_time
@@ -79,7 +80,7 @@ def update_task():
                                 message = messaging.MulticastMessage(
                                     notification=messaging.Notification(
                                         title="Your Pet needs you",
-                                        body=f'Hi, {username} , {pet_name} is quite hungry and waiting to be fed. Hop on the app to feed him'
+                                        body=f'Hi, {username}.\n{nickname} is quite hungry and waiting to be fed. Hop on the app to feed him'
                                     ),
                                     tokens=fcm_tokens
                                 )
@@ -87,7 +88,7 @@ def update_task():
                                 response = messaging.send_multicast(message)
                                 print(f'(+) Notification sent successfully to {username}. ', response)
 
-                                all_users_ref.child(username).update({'last_notification' : str(datetime.now(pytz.timezone('Asia/Kolkata')))})
+                                all_users_ref.child(username).child('stats').update({'last_notification' : str(datetime.now(pytz.timezone('Asia/Kolkata')))})
 
                     else:
                         print(f'(*) Notification can\'t be sent as the last notification was sent in the last 6 hours')
@@ -96,7 +97,7 @@ def update_task():
 
 
                 current_time = datetime.now(pytz.timezone('Asia/Kolkata'))
-                time_diff = current_time - last_fed_time   
+                time_diff = current_time - last_fed_time
 
                 new_hunger = int(time_diff.total_seconds() // 3600) * 10
                 new_hunger = min(max(new_hunger, 0), 100)
@@ -118,13 +119,77 @@ def update_task():
         print(f"(!) Error: {e}")
 
     finally:
-        print('(~) Next cycle after 15 minutes\n')
+        print('(~) Next updation cycle after 15 minutes\n')
         print(f'(~) > > > > > > > > > > > > > > > > > > > > > > > > > > > > > > < < < < < < < < < < < < < < < < < < < < < < < < < < < < < <\n\n\n')
 
 
+def last_user_online():
+    try:
+        users_ref = db.reference('users')
+
+        if users_ref is None:
+            raise ValueError(f'(-) The users reference can\'t be found.\n')
+
+        print(f'(+) Users reference set\n')
+
+        for username, user_data in users_ref.get().items():
+            stats_ref = users_ref.child(username).child('stats')
+
+            if stats_ref is None:
+                print(f'(-) Stats for the user : {username} can\'t be found\n')
+
+            else:
+                print(f'(+) Stats Reference Set for User: {username}\n')
+
+                if stats_ref.child('last_online').get() is None:
+                    print(f'(-) Last online time can\'t be found for the User: {username}\n')
+
+                else:
+                    last_online = stats_ref.child('last_online').get()
+                    date_format = "%Y-%m-%d %H:%M:%S.%f%z"
+                    last_online_time = datetime.strptime(last_online, date_format)
+                    tokens_ref = users_ref.child(username).child('fcmTokens')
+                    time_difference = datetime.now(pytz.timezone('Asia/Kolkata')) - last_online_time
+                    time_difference_hours = int(time_difference.total_seconds() // 3600)
+
+                    if time_difference_hours >= 24 or True:
+                        if tokens_ref is None:
+                            print(f'(-) Tokens ref can\'t be found.\n')
+
+                        else:
+                            fcm_tokens = tokens_ref.get()
+
+                            if fcm_tokens is None:
+                                print(f'(-) FCM tokens not found for User: {username}\n')
+
+                            else:
+                                message = messaging.MulticastMessage(
+                                    notification=messaging.Notification(
+                                        title="Long time no see 😯",
+                                        body=f'Hi, {username}.\nIts been so long since you last came online. Don\'t get swayed away by distractions, get back on track ASAP.'
+                                    ),
+                                    tokens=fcm_tokens
+                                )
+
+                                response = messaging.send_multicast(message)
+                                print(f'(+) Notification sent successfully to {username}. ', response)
+
+    except Exception as e:
+        print(f"(!) Error: {e}")
+
+    finally:
+        print('(~) Next user check online cycle after 4 hours.\n')
+        print(f'(~) > > > > > > > > > > > > > > > > > > > > > > > > > > > > > > < < < < < < < < < < < < < < < < < < < < < < < < < < < < < <\n\n\n')
+
+
+
+
 schedule.every(15).minutes.do(update_task)
+schedule.every(4).hours.do(last_user_online)
 
 update_task()
+last_user_online()
+
 while True:
     schedule.run_pending()
-    time.sleep(1) 
+    time.sleep(1)

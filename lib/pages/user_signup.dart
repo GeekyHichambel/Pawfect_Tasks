@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:PawfectTasks/Components/Animations.dart';
 import 'package:PawfectTasks/db/database.dart';
+import 'package:timezone/timezone.dart';
 import '../Components/AppTheme.dart';
 import '../Components/CustomTextField.dart';
 import '../GLOBALS.dart';
@@ -61,7 +62,7 @@ class _SignUpState extends State<SignUpPage>{
         GlobalVar.globalVar.showToast('User already exists');
         throw Exception('User already exists');
       }
-      final TimeStamp = DateTime.now();
+      final TimeStamp = TZDateTime.now(getLocation('Asia/Kolkata'));
       final List<String> pets = ['labra'];
       final Map<String, dynamic> petParams = {'mood' : 'Happy',
         'health' : 100,

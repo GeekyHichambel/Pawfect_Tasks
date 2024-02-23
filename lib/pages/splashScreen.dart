@@ -47,7 +47,8 @@ class _SplashScreenState  extends State<SplashScreen> with SingleTickerProviderS
     await DataBase.initNotifications();
     await Globals.updatePref();
     await Globals.updatePetStatus();
-    await GlobalVar.globalVar.loadImages('assets/pets/labrador/idle_dog.gif');
+    await Globals.lastOnline();
+    await GlobalVar.globalVar.loadImages('assets/pets/labrador/idle_dog.gif', 'GIF');
   }
 
   void navigateToHome(BuildContext context) {

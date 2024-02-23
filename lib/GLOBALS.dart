@@ -6,6 +6,7 @@ import 'dart:io';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:PawfectTasks/Components/AppTheme.dart';
+import 'package:timezone/timezone.dart';
 
 @immutable
 class Globals {
@@ -22,9 +23,8 @@ class Globals {
           ?.child('petStatus/labra/starvation')
           .value as int;
       if (initialHunger == 100) return;
-      DateTime lastFed = DateTime.parse(
-          data!.child('petStatus/labra/lastFed').value.toString());
-      Duration timeDifference = DateTime.now().difference(lastFed);
+      TZDateTime lastFed = TZDateTime.parse(getLocation('Asia/Kolkata'),data!.child('petStatus/labra/lastFed').value.toString());
+      Duration timeDifference = TZDateTime.now(getLocation('Asia/Kolkata')).difference(lastFed);
       int newHunger = (timeDifference.inHours / 1).floor() * 10;
       newHunger = newHunger.clamp(0, 100);
       if (initialHunger == newHunger) return;
@@ -40,12 +40,22 @@ class Globals {
     }
   }
 
-  Future<void> loadImages(String assetPath) async{
+  static Future<void> lastOnline() async{
+    if (LoggedIN) {
+      await DataBase.userCollection?.child(user).child('stats').update({
+        'last_online' : TZDateTime.now(getLocation('Asia/Kolkata')).toString(),
+      });
+    }
+  }
+
+  Future<void> loadImages(String assetPath, String type) async{
     try{
-      await fetchGif(AssetImage(assetPath));
-      gifLoaded = true;
-      if (kDebugMode) {
-        print('Successfully loaded and cached images correctly');
+      if (type == 'GIF') {
+        await fetchGif(AssetImage(assetPath));
+        gifLoaded = true;
+        if (kDebugMode) {
+          print('Successfully loaded and cached images correctly');
+        }
       }
     }catch(e){
       if(kDebugMode){

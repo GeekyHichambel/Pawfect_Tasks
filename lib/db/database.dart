@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:timezone/data/latest_all.dart' as tz;
 
 const USER_COLLECTION = 'users';
 const ITEM_COLLECTION = 'items';
@@ -79,6 +80,7 @@ class DataBase{
     streakCollection = firebaseDatabase?.ref().child(STREAK_COLLECTION);
     petsCollection = firebaseDatabase?.ref().child(PETS_COLLECTION);
     marketStorage = FirebaseStorage.instance.ref().child('pics');
+    tz.initializeTimeZones();
     if (kDebugMode) {
       firebaseDatabase?.setLoggingEnabled(true);
     }
