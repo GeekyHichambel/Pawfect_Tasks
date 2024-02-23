@@ -1,9 +1,11 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 
 const USER_COLLECTION = 'users';
@@ -19,9 +21,28 @@ class DataBase{
   static DatabaseReference? petsCollection;
   static Reference? marketStorage;
   static FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
+  static AndroidNotificationChannel androidChannel = const AndroidNotificationChannel(
+      'high_importance_channel',
+      'High Importance Notifications',
+      description: 'This channel is for important notifications.',
+      importance: Importance.defaultImportance,
+      );
+  static FlutterLocalNotificationsPlugin localNotifications = FlutterLocalNotificationsPlugin();
 
   static void handleMessage(RemoteMessage? message){
     if (message == null) return;
+  }
+
+  static Future initLocalNotifications() async{
+    const IOS = DarwinInitializationSettings();
+    const Android = AndroidInitializationSettings('@drawable/logo_bg');
+    const settings = InitializationSettings(android: Android,iOS: IOS);
+
+    await localNotifications.initialize(
+      settings,
+    );
+    final platform = localNotifications.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
+    await platform?.createNotificationChannel(androidChannel);
   }
 
   static Future initPushNotifications() async{
@@ -34,12 +55,30 @@ class DataBase{
     FirebaseMessaging.instance.getInitialMessage().then((handleMessage));
     FirebaseMessaging.onMessageOpenedApp.listen(handleMessage);
     FirebaseMessaging.onBackgroundMessage((_firebaseMessagingBackgroundHandler));
+    FirebaseMessaging.onMessage.listen((event) {
+      final notification = event.notification;
+      if (notification == null) return;
+        localNotifications.show(
+            notification.hashCode,
+            notification.title,
+            notification.body,
+            NotificationDetails(
+              android: AndroidNotificationDetails(
+                androidChannel.id,
+                androidChannel.name,
+                channelDescription: androidChannel.description,
+                icon: '@drawable/logo_bg',
+              ),
+            ),
+          payload: jsonEncode(event.toMap()),
+        );
+    });
   }
 
   static Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage remoteMessage) async{
     FirebaseMessaging.onMessage.listen((RemoteMessage remoteMessage){
       if (kDebugMode) {
-        print('A new background message received.');
+        print('A new  message received.');
       }
     });
   }
@@ -59,6 +98,7 @@ class DataBase{
       print('Token: $FCMtoken');
     }
     initPushNotifications();
+    initLocalNotifications();
   }
 
   static connect() async{
