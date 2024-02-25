@@ -70,8 +70,8 @@ class _MainPageState extends State<MainPage>{
             color: AppTheme.colors.onsetBlue,
             border: Border(bottom: BorderSide(color: AppTheme.colors.darkOnsetBlue, strokeAlign: BorderSide.strokeAlignInside, width: 2.0))
           ),
-          child:Padding(padding: const EdgeInsets.only(left: 25.0,right: 25.0,top: 30.0,bottom: 20.0),
-                child:Row(
+          child:Padding(padding: const EdgeInsets.only(left: 25.0,right: 25.0,top: 40.0,bottom: 20.0),
+                child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 GestureDetector(
@@ -105,15 +105,19 @@ class _MainPageState extends State<MainPage>{
                     fontSize: 22,
                   ),
                 ),
-                GestureDetector(
-                    onTap: (){
-                      Navigator.of(context).push(Animations.animations.customRightSlideIn(const ProfilePane()));
-                    },
-                    child: Image.asset('assets/profile_icon.png',
-                      width: 25,
-                      height: 25,
+                Row(
+                  children: [
+                    GestureDetector(
+                        onTap: (){
+                          Navigator.of(context).push(Animations.animations.customRightSlideIn(const ProfilePane()));
+                        },
+                        child: Image.asset('assets/profile_icon.png',
+                          width: 25,
+                          height: 25,
+                        )
                     )
-                )
+                  ],
+                ),
               ],
             )
         ),

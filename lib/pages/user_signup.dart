@@ -89,6 +89,7 @@ class _SignUpState extends State<SignUpPage>{
       final Map<String, dynamic> streakDoc = {
         'streak' : streak,
         'xp' : xp,
+        'league' : 'Rookie',
       };
       final Map<String, dynamic> itemsDoc = {
         'pawCoin' : pawCoin,
