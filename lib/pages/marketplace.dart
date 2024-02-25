@@ -1,3 +1,4 @@
+import 'dart:ffi';
 import 'dart:ui';
 import 'package:PawfectTasks/Components/AppTheme.dart';
 import 'package:PawfectTasks/GLOBALS.dart';
@@ -5,6 +6,7 @@ import 'package:PawfectTasks/db/database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import '../Components/Animations.dart';
 import '../Components/CustomBox.dart';
 
@@ -26,6 +28,7 @@ class MarketPlace extends StatefulWidget{
 class MarketPlaceState extends State<MarketPlace>{
   late int cPawCoin = 0;
   late int cPetFood = 0;
+  bool loading = false;
   
   void setupUpdateListener(){
     DataBase.itemCollection?.child(Globals.user).child('pawCoin').onValue.listen((event) async { 
@@ -73,6 +76,96 @@ class MarketPlaceState extends State<MarketPlace>{
     }
   }
 
+Future<void> buyFood(BuildContext context,int foodValue, int cost) async{
+    final user = await DataBase.itemCollection?.child(Globals.user).get();
+    final int currentPawCoins = user?.child('pawCoin').value as int;
+    final int currentPetFood = user?.child('petFood').value as int;
+    if (currentPawCoins < cost){
+      GlobalVar.globalVar.showToast('You don\'t have enough Paw Coins.');
+      setState(() {
+        loading = false;
+      });
+      return;
+    }
+    final newPawCoins = currentPawCoins - cost;
+    final newPetFood = currentPetFood + foodValue;
+    await DataBase.itemCollection?.child(Globals.user).update(
+      {
+        'pawCoin' : newPawCoins,
+        'petFood' : newPetFood,
+      }
+    );
+}
+
+Future<void> openDialog(BuildContext context, name, price, foodValue) async{
+    await showDialog(
+        context: context, builder: (context){
+      return StatefulBuilder(
+          builder: (BuildContext context, StateSetter setState){
+            return SizedBox(height: 300,
+              child: AlertDialog(
+                scrollable: true,
+                alignment: Alignment.center,
+                contentPadding: const EdgeInsets.all(20.0),
+                backgroundColor: AppTheme.colors.friendlyBlack,
+                shadowColor: Colors.transparent,
+                shape: const RoundedRectangleBorder(side: BorderSide.none, borderRadius: BorderRadius.all(Radius.circular(16.0))),
+                content: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text('Would you like to buy a $name?', style: TextStyle(color: AppTheme.colors.friendlyWhite, fontFamily: Globals.sysFont, fontSize: 12, fontWeight: FontWeight.w700), textAlign: TextAlign.center),
+                    const SizedBox(height: 20,),
+                    Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text('+$foodValue', style: TextStyle(color: AppTheme.colors.lightBrown, fontFamily: Globals.sysFont, fontSize: 18),),
+                          const SizedBox(width: 5,),
+                          Image.asset('assets/foodIcon.png', width: 24, height: 24,),
+                        ],
+                      ),
+                    const SizedBox(height: 20,),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text('Cost: $price', style: TextStyle(color: AppTheme.colors.friendlyWhite, fontFamily: Globals.sysFont, fontSize: 18),),
+                        const SizedBox(width: 5,),
+                        Image.asset('assets/pawCoin.png', width: 24, height: 24,),
+                      ],
+                    ),
+                    const SizedBox(height: 20,),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        loading? CircularProgressIndicator(color: AppTheme.colors.onsetBlue,) :  ElevatedButton(onPressed: (){
+                          setState(() {
+                            loading = true;
+                          });
+                          buyFood(context, foodValue, price).then((_){
+                            setState(() {
+                              loading = false;
+                            });
+                            Navigator.of(context).pop();
+                          });
+                        }, style: ButtonStyle(backgroundColor: MaterialStatePropertyAll<Color>(AppTheme.colors.friendlyWhite,)),
+                            child: const Text('Hell Yeah!', style: TextStyle(color: Colors.green),)),
+                        ElevatedButton(onPressed: (){
+                          Navigator.of(context).pop();
+                        }, style: ButtonStyle(backgroundColor: MaterialStatePropertyAll<Color>(AppTheme.colors.friendlyWhite)),
+                            child: const Text('Nope', style: TextStyle(color: Colors.red),))
+                      ],
+                    )
+                  ],
+                ),
+              ),
+            ).animate(effects: [
+              FadeEffect(duration: 200.ms, curve: Curves.fastLinearToSlowEaseIn),
+              ScaleEffect(duration: 200.ms, curve: Curves.easeIn)
+            ]);
+          }
+      );
+    });
+  }
+
   @override
   void initState(){
     super.initState();
@@ -99,7 +192,7 @@ class MarketPlaceState extends State<MarketPlace>{
               FadeInAnimation(delay: 1, child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  Text('$cPetFood', style: TextStyle(fontSize: 19, fontFamily: Globals.sysFont, color: AppTheme.colors.onsetBlue),),
+                  Text('$cPetFood', style: TextStyle(fontSize: 12, fontFamily: Globals.sysFont, color: AppTheme.colors.onsetBlue),),
                   const SizedBox(width: 5,),
                   Image.asset('assets/foodIcon.png', width: 20, height: 20,),
                   const SizedBox(width: 15,),
@@ -109,7 +202,7 @@ class MarketPlaceState extends State<MarketPlace>{
                     child: IconButton(onPressed: (){
                       //TODO: Payment Gateway
                     }, icon: const Icon(Icons.add),
-                      hoverColor: AppTheme.colors.lightOnsetBlue,
+                      hoverColor: AppTheme.colors.darkOnsetBlue,
                       style: ButtonStyle(
                         iconSize: const MaterialStatePropertyAll<double?>(10),
                         padding: const MaterialStatePropertyAll<EdgeInsets>(EdgeInsets.all(5.0)),
@@ -121,7 +214,7 @@ class MarketPlaceState extends State<MarketPlace>{
                     ),
                   ),
                   const SizedBox(width: 5,),
-                  Text('$cPawCoin', style: TextStyle(fontSize: 19, fontFamily: Globals.sysFont, color: AppTheme.colors.onsetBlue),),
+                  Text('$cPawCoin', style: TextStyle(fontSize: 12, fontFamily: Globals.sysFont, color: AppTheme.colors.onsetBlue),),
                   const SizedBox(width: 5,),
                   Image.asset('assets/pawCoin.png', width: 20, height: 20,),
                 ],
@@ -129,7 +222,12 @@ class MarketPlaceState extends State<MarketPlace>{
             const SizedBox(height: 5,),
             Expanded(child: Padding(padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 0.0),
                 child: FadeInAnimation(delay: 1.5,child: CustomBox(
-                  color: AppTheme.colors.friendlyBlack,
+                  color: AppTheme.colors.friendlyWhite,
+                  border: Border(
+                      top: BorderSide(color: AppTheme.colors.blissCream, width: 2.0, strokeAlign: BorderSide.strokeAlignInside),
+                      left: BorderSide(color: AppTheme.colors.blissCream, width: 2.0, strokeAlign: BorderSide.strokeAlignInside),
+                      right: BorderSide(color: AppTheme.colors.blissCream, width: 2.0, strokeAlign: BorderSide.strokeAlignInside),
+                      bottom: BorderSide(color: AppTheme.colors.blissCream, width: 5.0, strokeAlign: BorderSide.strokeAlignInside)),
                   shadow: Colors.transparent,
                   child: FutureBuilder<List<ImageInfo>>(
                     future: fetchImages(),
@@ -139,11 +237,11 @@ class MarketPlaceState extends State<MarketPlace>{
                           child: CircularProgressIndicator(color: AppTheme.colors.onsetBlue,)
                         );
                       } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                        return const Center(
+                        return Center(
                           child: Text(
                             'MarketPlace is Empty',
                             style: TextStyle(
-                              color: Colors.white,
+                              color: AppTheme.colors.friendlyBlack,
                             )
                           )
                         );
@@ -163,13 +261,12 @@ class MarketPlaceState extends State<MarketPlace>{
                                   Expanded(
                                     child: GestureDetector(
                                       onTap: (){
-                                        if(kDebugMode) print('Price: ${snapshot.data![index].price}');
-                                        if(kDebugMode) print('Value: ${snapshot.data![index].foodValue}');
-                                      },
+                                   openDialog(context, snapshot.data![index].name, snapshot.data![index].price, snapshot.data![index].foodValue);
+                                  },
                                       child: Image.memory(snapshot.data![index].imageData),
                                     ),
                                   ),
-                                  Text(snapshot.data![index].name, style: TextStyle(fontSize: 10,fontFamily: Globals.sysFont, color: AppTheme.colors.friendlyWhite)),
+                                  Text(snapshot.data![index].name, style: TextStyle(fontSize: 10,fontFamily: Globals.sysFont, color: AppTheme.colors.friendlyBlack)),
                                 ],
                               ));
                             },

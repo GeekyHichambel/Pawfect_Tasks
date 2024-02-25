@@ -10,11 +10,10 @@ import 'package:timezone/timezone.dart';
 
 @immutable
 class Globals {
-  static String sysFont = 'Onset';
+  static String sysFont = 'Poppins';
   static FlutterSecureStorage prefs = const FlutterSecureStorage();
   static late bool LoggedIN;
   static late String user;
-  static late bool gifLoaded;
 
   static Future<void> updatePetStatus() async {
     if (LoggedIN) {
@@ -52,7 +51,6 @@ class Globals {
     try{
       if (type == 'GIF') {
         await fetchGif(AssetImage(assetPath));
-        gifLoaded = true;
         if (kDebugMode) {
           print('Successfully loaded and cached images correctly');
         }
@@ -86,7 +84,7 @@ class Globals {
     if (!Platform.isWindows) {
       Fluttertoast.showToast(msg: message,
         toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.TOP,
+        gravity: ToastGravity.SNACKBAR,
         timeInSecForIosWeb: 2,
         backgroundColor: AppTheme.colors.onsetBlue,
         textColor: AppTheme.colors.friendlyWhite,

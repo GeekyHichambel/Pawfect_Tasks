@@ -13,7 +13,7 @@ class CustomAppBar extends StatelessWidget{
       Navigator.of(context).pop();
     }, icon: const Icon(Icons.close_rounded, weight: 30.0,),
     iconSize: 30.0,
-    color: AppTheme.colors.friendlyBlack,
+    color: AppTheme.colors.blissCream,
     ),]);
   }
 }

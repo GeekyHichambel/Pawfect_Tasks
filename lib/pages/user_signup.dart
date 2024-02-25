@@ -1,5 +1,7 @@
+import 'package:PawfectTasks/Components/CustomAppBar.dart';
 import 'package:bcrypt/bcrypt.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:PawfectTasks/Components/Animations.dart';
 import 'package:PawfectTasks/db/database.dart';
@@ -160,19 +162,8 @@ class _SignUpState extends State<SignUpPage>{
         padding: const EdgeInsetsDirectional.symmetric(horizontal: 10.0, vertical: 10.0),
         child: Column(
           children: [
-            Padding(padding: const EdgeInsetsDirectional.symmetric(horizontal: 0.0, vertical: 10.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  IconButton(onPressed: (){
-                    Navigator.of(context).pop();
-                  }, icon: Icon(Icons.close, weight: 30.0,
-                    size: 30.0,
-                    color: AppTheme.colors.friendlyBlack,
-                  )
-                  )
-                ],
-              ),
+            const Padding(padding: EdgeInsetsDirectional.symmetric(horizontal: 0.0, vertical: 10.0),
+              child: CustomAppBar(),
             ),
             Expanded(child: Padding(
               padding: const EdgeInsetsDirectional.all(16.0),
@@ -287,7 +278,7 @@ class _SignUpState extends State<SignUpPage>{
                                     });
                                     if (result){Navigator.of(context).pushReplacementNamed('/Ulogin');}
                                   });
-                                },hoverColor: AppTheme.colors.lightOnsetBlue,
+                                },hoverColor: AppTheme.colors.darkOnsetBlue,
                                   style: ButtonStyle(
                                     elevation: const MaterialStatePropertyAll<double?>(5.0),
                                     iconColor: MaterialStatePropertyAll<Color?>(AppTheme.colors.onsetBlue),
@@ -304,6 +295,29 @@ class _SignUpState extends State<SignUpPage>{
               ),
             )
             ),
+            Center(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: RichText(
+                    textAlign: TextAlign.center,
+                    text: TextSpan(
+                        text: 'By Signing up you agree to our ',
+                        style: TextStyle(color: AppTheme.colors.blissCream, fontSize: 24),
+                        children: [
+                          TextSpan(text: 'Terms ', style: const TextStyle(fontWeight: FontWeight.w700), recognizer: TapGestureRecognizer()
+                          ..onTap = (){
+                            Navigator.of(context).pushNamed('/S>terms');
+                          }),
+                          const TextSpan(text: 'and '),
+                          TextSpan(text: 'Conditions', style: const TextStyle(fontWeight: FontWeight.w700), recognizer: TapGestureRecognizer()
+                          ..onTap = (){
+                            Navigator.of(context).pushNamed('/S>terms');
+                          }),
+                        ]
+                    )
+                ),
+              )
+            )
           ],
         ),
       ),

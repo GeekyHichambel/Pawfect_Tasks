@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'dart:math';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:gif/gif.dart';
 import 'package:PawfectTasks/Components/Animations.dart';
 import 'package:PawfectTasks/Components/AppTheme.dart';
 import 'package:PawfectTasks/Components/CustomBox.dart';
@@ -19,14 +19,13 @@ class MyPet extends StatefulWidget{
 }
 
 class _MyPetState extends State<MyPet> with SingleTickerProviderStateMixin{
-  late GifController controller;
+  final ImageProvider imageProvider = const CachedNetworkImageProvider('https://media.discordapp.net/attachments/767980613960990727/1211227145251196969/idle_dog.gif?ex=65ed6e2e&is=65daf92e&hm=d811b6949d85bc3cd9bfae8b5107eea40f67a043f8a34788c058435f96f3b682&=&width=550&height=550');
   late String cPetName = 'Labra';
   late int cPetHp = 100;
   late int cPetHunger = 0;
   late String cPetMood = 'Happy';
   final TextEditingController NameC = TextEditingController();
   bool loading = false;
-  bool isLoaded = false;
 
   String getTip(){
     Random random = Random();
@@ -194,7 +193,6 @@ class _MyPetState extends State<MyPet> with SingleTickerProviderStateMixin{
   @override
   void initState(){
     super.initState();
-    controller = GifController(vsync: this);
     if (mounted) {
       getPetDetails();
       setupListener();
@@ -203,21 +201,18 @@ class _MyPetState extends State<MyPet> with SingleTickerProviderStateMixin{
 
   @override
   void didChangeDependencies(){
-      setState(() {
-        isLoaded = Globals.gifLoaded;
-      });
     super.didChangeDependencies();
 }
 
   @override
   void dispose(){
     NameC.dispose();
-    controller.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context){
+    precacheImage(imageProvider, context);
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Padding(
@@ -227,25 +222,23 @@ class _MyPetState extends State<MyPet> with SingleTickerProviderStateMixin{
           crossAxisAlignment: CrossAxisAlignment.center,
           children: Globals.LoggedIN? [
              Expanded(child: Center(
-                child: isLoaded? CustomBox(
-                    color: AppTheme.colors.friendlyBlack,
+                child: CustomBox(
+                    color: AppTheme.colors.friendlyWhite,
+                    border: Border(
+                        top: BorderSide(color: AppTheme.colors.blissCream, width: 2.0, strokeAlign: BorderSide.strokeAlignInside),
+                        left: BorderSide(color: AppTheme.colors.blissCream, width: 2.0, strokeAlign: BorderSide.strokeAlignInside),
+                        right: BorderSide(color: AppTheme.colors.blissCream, width: 2.0, strokeAlign: BorderSide.strokeAlignInside),
+                        bottom: BorderSide(color: AppTheme.colors.blissCream, width: 5.0, strokeAlign: BorderSide.strokeAlignInside)),
                     shadow: Colors.transparent,
                     child: Padding(
                       padding: const EdgeInsets.all(16.0),
                       child: Center(
-                        child: Gif(
-                          image: const AssetImage('assets/pets/labrador/idle_dog.gif'),
-                          controller: controller,
-                          autostart: Autostart.loop,
-                          placeholder: (context) => CircularProgressIndicator(color: AppTheme.colors.onsetBlue,),
-                          onFetchCompleted: (){
-                            controller.reset();
-                            controller.loop();
-                          },
-                        ),
+                        child: Image(
+                          image: imageProvider,
+                        )
                       ),
                     )
-                ) : CircularProgressIndicator(color: AppTheme.colors.onsetBlue,)
+                ),
             ) ,
             ),
             const SizedBox(height: 20,),
@@ -260,14 +253,14 @@ class _MyPetState extends State<MyPet> with SingleTickerProviderStateMixin{
                     elevation: const MaterialStatePropertyAll(5),
                     padding: const MaterialStatePropertyAll(EdgeInsetsDirectional.all(16.0)),
                     shape: MaterialStatePropertyAll<OutlinedBorder>(CircleBorder(
-                      side: BorderSide(color: AppTheme.colors.onsetBlue, width: 2.5),
+                      side: BorderSide(color: AppTheme.colors.onsetBlue, width: 2.5, strokeAlign: BorderSide.strokeAlignInside),
                     ))
                 ),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Expanded(child: Image.asset('assets/feed.png', color: AppTheme.colors.friendlyWhite,),),
-                    Text('Feed', style: TextStyle(color: AppTheme.colors.friendlyWhite, fontFamily: Globals.sysFont, fontSize: 8),),
+                    Text('Feed', style: TextStyle(color: AppTheme.colors.friendlyWhite, fontFamily: Globals.sysFont, fontSize: 7),),
                   ],
                 )).animate(
                   effects: [
@@ -302,8 +295,8 @@ class _MyPetState extends State<MyPet> with SingleTickerProviderStateMixin{
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Expanded(child: Image.asset('assets/interact.png', color: AppTheme.colors.friendlyWhite),),
-                        Text('Interact', style: TextStyle(color: AppTheme.colors.friendlyWhite, fontFamily: Globals.sysFont, fontSize: 8),),
+                        Expanded(child: Image.asset('assets/interact.png', color: AppTheme.colors.friendlyWhite,),),
+                        Text('Interact', style: TextStyle(color: AppTheme.colors.friendlyWhite, fontFamily: Globals.sysFont, fontSize: 7),),
                       ],
                     )).animate(
                   effects: [
@@ -351,8 +344,13 @@ class _MyPetState extends State<MyPet> with SingleTickerProviderStateMixin{
                   Expanded(child: FadeInAnimation(
                             delay: 1,
                             child: CustomBox(
-                              color: AppTheme.colors.friendlyBlack,
+                              color: AppTheme.colors.onsetBlue,
                               shadow: Colors.transparent,
+                              border: Border(
+                                  top: BorderSide(color: AppTheme.colors.darkOnsetBlue, width: 2.0, strokeAlign: BorderSide.strokeAlignInside),
+                                  left: BorderSide(color: AppTheme.colors.darkOnsetBlue, width: 2.0, strokeAlign: BorderSide.strokeAlignInside),
+                                  right: BorderSide(color: AppTheme.colors.darkOnsetBlue, width: 2.0, strokeAlign: BorderSide.strokeAlignInside),
+                                  bottom: BorderSide(color: AppTheme.colors.darkOnsetBlue, width: 5.0, strokeAlign: BorderSide.strokeAlignInside)),
                               child: Padding(
                                 padding: const EdgeInsets.all(16.0),
                                 child: Column(

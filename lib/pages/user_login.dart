@@ -225,7 +225,7 @@ class _LoginState extends State<LoginPage>{
                                       Navigator.of(context).pushNamedAndRemoveUntil('/home', (route) => false);
                                     }
                                   });
-                                },hoverColor: AppTheme.colors.lightOnsetBlue,
+                                },hoverColor: AppTheme.colors.darkOnsetBlue,
                                   style: ButtonStyle(
                                     elevation: const MaterialStatePropertyAll<double?>(5.0),
                                     iconColor: MaterialStatePropertyAll<Color?>(AppTheme.colors.onsetBlue),

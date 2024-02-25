@@ -66,7 +66,10 @@ class _MainPageState extends State<MainPage>{
     return Scaffold(
       appBar: PreferredSize(preferredSize: const Size.fromHeight(100),
         child: Container(
-          color: AppTheme.colors.friendlyBlack,
+          decoration: BoxDecoration(
+            color: AppTheme.colors.onsetBlue,
+            border: Border(bottom: BorderSide(color: AppTheme.colors.darkOnsetBlue, strokeAlign: BorderSide.strokeAlignInside, width: 2.0))
+          ),
           child:Padding(padding: const EdgeInsets.only(left: 25.0,right: 25.0,top: 30.0,bottom: 20.0),
                 child:Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -283,23 +286,29 @@ class _HomeState extends State<Home>{
                   ],
                 )
             )),
-            const SizedBox(height: 10,),
+            const SizedBox(height: 20,),
             Padding(padding: const EdgeInsets.all(16.0),
               child: FadeInAnimation(delay: 1.25,child: Text(
                 'My Tasks',
                 style: TextStyle(
                   fontFamily: Globals.sysFont,
                   color: AppTheme.colors.friendlyBlack,
+                  fontWeight: FontWeight.w700,
                   fontSize: 24,
                 ),
               ),),
             ),
             Expanded(child: Padding(padding: const EdgeInsets.all(16.0),
               child: FadeInAnimation(delay: 1.5,child: CustomBox(
-                color: AppTheme.colors.friendlyBlack,
+                color: AppTheme.colors.friendlyWhite,
                 shadow: Colors.transparent,
+                border: Border(
+                    top: BorderSide(color: AppTheme.colors.blissCream, width: 2.0, strokeAlign: BorderSide.strokeAlignInside),
+                    left: BorderSide(color: AppTheme.colors.blissCream, width: 2.0, strokeAlign: BorderSide.strokeAlignInside),
+                    right: BorderSide(color: AppTheme.colors.blissCream, width: 2.0, strokeAlign: BorderSide.strokeAlignInside),
+                    bottom: BorderSide(color: AppTheme.colors.blissCream, width: 5.0, strokeAlign: BorderSide.strokeAlignInside)),
                 child: Center(
-                    child: Text((pendingTasks > 0) ? '$pendingTasks' : 'We\'re done for today!', style: TextStyle(color: AppTheme.colors.friendlyWhite),),),
+                    child: Text((pendingTasks > 0) ? '$pendingTasks' : 'We\'re done for today!', style: TextStyle(color: AppTheme.colors.blissCream, fontWeight: FontWeight.w700),),),
               ),)
             )
             ),

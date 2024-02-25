@@ -6,12 +6,14 @@ class CustomBox extends StatelessWidget{
   final double? width;
   final double? height;
   final Color shadow;
+  final BoxBorder? border;
 
   const CustomBox({
     super.key,
     required this.child,
     required this.color,
     required this.shadow,
+    this.border,
     this.height,
     this.width,
 });
@@ -26,6 +28,7 @@ class CustomBox extends StatelessWidget{
           width: width,
           height: height,
           decoration: BoxDecoration(
+            border: border,
             color: color,
             borderRadius: BorderRadius.circular(15.0),
             boxShadow: [

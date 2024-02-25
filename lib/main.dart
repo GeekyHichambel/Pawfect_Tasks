@@ -1,3 +1,4 @@
+import 'package:PawfectTasks/pages/settings/TermsConditions.dart';
 import 'package:PawfectTasks/pages/settings/aboutUs.dart';
 import 'package:PawfectTasks/pages/settings/cFeedback.dart';
 import 'package:PawfectTasks/pages/settings/killM.dart';
@@ -28,6 +29,7 @@ Future<void> main() async {
         '/Usignup' : (context) => const SignUpPage(),
         '/Settings' : (context) => const ProfilePane(),
         '/S>about' : (context) => const aboutUs(),
+        '/S>terms' : (context) => const TermsConditions(),
         '/S>feed' : (context) => const cFeed(),
         '/S>kill' : (context) => const killM(),
         '/S>notif' : (context) => const notif(),
