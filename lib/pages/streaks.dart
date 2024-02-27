@@ -73,7 +73,7 @@ class _StreakState extends State<Streaks>{
         setState(() {
           Uleague = user!.child('league').value.toString();
         });
-        await updateLeaderboard();
+        //await updateLeaderboard();
       }
       });
     DataBase.streakCollection?.child(Globals.user).child('xp').onValue.listen((event) async{
@@ -82,7 +82,7 @@ class _StreakState extends State<Streaks>{
         setState(() {
           UXP = user!.child('xp').value as int;
         });
-        await updateLeaderboard();
+        //await updateLeaderboard();
       }
     });
     DataBase.streakCollection?.child(Globals.user).child('streak').onValue.listen((event) async{
@@ -91,7 +91,7 @@ class _StreakState extends State<Streaks>{
         setState(() {
           UStreak = user!.child('streak').value as int;
         });
-        await updateLeaderboard();
+        //await updateLeaderboard();
       }
     });
   }
