@@ -12,6 +12,7 @@ const USER_COLLECTION = 'users';
 const ITEM_COLLECTION = 'items';
 const STREAK_COLLECTION = 'streaks';
 const PETS_COLLECTION = 'pets';
+const LEADERBOARD_COLLECTION = 'leaderboard';
 
 class DataBase{
   static FirebaseDatabase? firebaseDatabase;
@@ -19,6 +20,7 @@ class DataBase{
   static DatabaseReference? itemCollection;
   static DatabaseReference? streakCollection;
   static DatabaseReference? petsCollection;
+  static DatabaseReference? leaderboardCollection;
   static Reference? marketStorage;
   static FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
   static AndroidNotificationChannel androidChannel = const AndroidNotificationChannel(
@@ -119,6 +121,7 @@ class DataBase{
     itemCollection = firebaseDatabase?.ref().child(ITEM_COLLECTION);
     streakCollection = firebaseDatabase?.ref().child(STREAK_COLLECTION);
     petsCollection = firebaseDatabase?.ref().child(PETS_COLLECTION);
+    leaderboardCollection = firebaseDatabase?.ref().child(LEADERBOARD_COLLECTION);
     marketStorage = FirebaseStorage.instance.ref().child('pics');
     tz.initializeTimeZones();
     if (kDebugMode) {

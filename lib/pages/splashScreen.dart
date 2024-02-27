@@ -83,7 +83,7 @@ class _SplashScreenState  extends State<SplashScreen> with SingleTickerProviderS
                 const Image(image: AssetImage('assets/fect tasks.png')),
                 LinearProgressIndicator(color: AppTheme.colors.onsetBlue, borderRadius: BorderRadius.circular(10), backgroundColor: AppTheme.colors.friendlyBlack,),
                 const SizedBox(height: 20,),
-                Center(child: Text('Onboarding now, please hang on tightly', style: TextStyle(color: Colors.grey,fontSize: 14,fontFamily: Globals.sysFont),textAlign: TextAlign.center,             ),)
+                Center(child: Text('Onboarding now, please hang on tightly', style: TextStyle(color: Colors.grey,fontSize: 14,fontFamily: Globals.sysFont),textAlign: TextAlign.center,),)
               ],
             ),
           )

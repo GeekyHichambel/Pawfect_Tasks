@@ -38,6 +38,34 @@ class _StreakState extends State<Streaks>{
     return leagues[index];
   }
 
+  Future<void> updateLeaderboard() async{
+    final user = await DataBase.streakCollection?.child(Globals.user).get();
+    final userLeague = user!.child('league').value.toString();
+    final leaderboard = await DataBase.leaderboardCollection?.child(userLeague).get();
+    if (leaderboard!.children.length < 25){
+      if (leaderboard.hasChild(Globals.user)){
+        final userXP = user.child('xp').value as int;
+        final userStreak = user.child('streak').value as int;
+        await leaderboard.ref.child(Globals.user).set({
+          'xp' : userXP,
+          'streak' : userStreak,
+        });
+      }else{
+        final lastUser = leaderboard.children.last;
+        final userXP = user.child('xp').value as int;
+        final userStreak = user.child('streak').value as int;
+        if (userXP >= (lastUser.child('xp').value as int)){
+          await lastUser.ref.remove();
+          await leaderboard.ref.child(Globals.user).set({
+            'xp' : userXP,
+            'streak' : userStreak,
+          });
+          //TODO: complete this method leaderboard updation
+        }
+      }
+    }
+  }
+
   void setUpListener(){
     DataBase.streakCollection?.child(Globals.user).child('league').onValue.listen((event) async{
       if (event.snapshot.value != null) {
@@ -45,6 +73,7 @@ class _StreakState extends State<Streaks>{
         setState(() {
           Uleague = user!.child('league').value.toString();
         });
+        await updateLeaderboard();
       }
       });
     DataBase.streakCollection?.child(Globals.user).child('xp').onValue.listen((event) async{
@@ -53,6 +82,7 @@ class _StreakState extends State<Streaks>{
         setState(() {
           UXP = user!.child('xp').value as int;
         });
+        await updateLeaderboard();
       }
     });
     DataBase.streakCollection?.child(Globals.user).child('streak').onValue.listen((event) async{
@@ -61,6 +91,7 @@ class _StreakState extends State<Streaks>{
         setState(() {
           UStreak = user!.child('streak').value as int;
         });
+        await updateLeaderboard();
       }
     });
   }
