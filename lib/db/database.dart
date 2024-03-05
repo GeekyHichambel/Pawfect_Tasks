@@ -95,7 +95,7 @@ class DataBase{
       provisional: false,
       sound: true,
     );
-    final FCMtoken = await firebaseMessaging.getToken();
+    final FCMtoken = await firebaseMessaging.getToken(vapidKey: 'BNNtW1LKddzMglciVp8KHQwKTRRKLtwQDMxfUvn01ki4YEzrfzHsGHWbthx-PAWCimqH33r6u6skVVhTNk82grc');
     if (kDebugMode){
       print('Token: $FCMtoken');
     }
@@ -104,7 +104,16 @@ class DataBase{
   }
 
   static connect() async{
-    Platform.isAndroid? await Firebase.initializeApp(
+    kIsWeb? await Firebase.initializeApp(
+        options: const FirebaseOptions(
+          apiKey: "AIzaSyC9_jN7Ft-xA6IPPRrzwxyWJbhNRr8k_Kg",
+          databaseURL: "https://pawfecttasks-default-rtdb.asia-southeast1.firebasedatabase.app",
+          projectId: "pawfecttasks",
+          storageBucket: "pawfecttasks.appspot.com",
+          messagingSenderId: "60544625479",
+          appId: "1:60544625479:web:0f041038fa97004463ba62",
+        )
+    ) : Platform.isAndroid? await Firebase.initializeApp(
         options: const FirebaseOptions(
             apiKey: 'AIzaSyABctfAIz0j9N-7a7bIP9KCG38JKBDYvGI',
             appId: '1:60544625479:android:adf1d55fe912ff8263ba62',
@@ -115,8 +124,10 @@ class DataBase{
         )
     ) : await Firebase.initializeApp();
     firebaseDatabase = FirebaseDatabase.instance;
-    firebaseDatabase?.setPersistenceEnabled(true);
-    firebaseDatabase?.setPersistenceCacheSizeBytes(10000000);
+    if (!kIsWeb) {
+      firebaseDatabase?.setPersistenceEnabled(true);
+      firebaseDatabase?.setPersistenceCacheSizeBytes(10000000);
+    }
     userCollection = firebaseDatabase?.ref().child(USER_COLLECTION);
     itemCollection = firebaseDatabase?.ref().child(ITEM_COLLECTION);
     streakCollection = firebaseDatabase?.ref().child(STREAK_COLLECTION);

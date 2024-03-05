@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'package:PawfectTasks/Components/CustomTextField.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:PawfectTasks/Components/AppTheme.dart';
 import 'package:PawfectTasks/Components/CustomBox.dart';
@@ -7,6 +9,8 @@ import 'package:PawfectTasks/db/database.dart';
 import 'package:PawfectTasks/pages/ProfilePane.dart';
 import 'package:PawfectTasks/pages/mypets.dart';
 import 'package:PawfectTasks/Components/CustomBottomNavigationBarItem.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import '../Components/Animations.dart';
 import 'marketplace.dart';
 
@@ -169,6 +173,12 @@ class _HomeState extends State<Home>{
   int pendingTasks = 0;
   List<String> Tasks = [];
   bool isMounted = false;
+  bool isTfocus = false;
+  bool isDfocus = false;
+  late TextEditingController Tcontroller = TextEditingController();
+  late TextEditingController Dcontroller = TextEditingController();
+  final FocusNode Tnode = FocusNode();
+  final FocusNode Dnode = FocusNode();
 
   @override
     void initState(){
@@ -184,12 +194,119 @@ class _HomeState extends State<Home>{
             timer.cancel();
           }
         });
+      Tnode.addListener(() {
+        if (Tnode.hasFocus){
+          setState(() {
+            isTfocus = true;
+          });
+        }else{
+          isTfocus = false;
+        }
+      });
+      Dnode.addListener(() {
+        if (Dnode.hasFocus){
+          setState(() {
+            isDfocus = true;
+          });
+        }else{
+          isDfocus = false;
+        }
+      });
     }
 
   @override
     void dispose(){
       isMounted = mounted;
       super.dispose();
+  }
+
+  Future<void> addTasks(BuildContext context) async{
+    precacheImage(const AssetImage('assets/cardBack.png'), context);
+    await showDialog(context: context, builder: (context){
+      return StatefulBuilder(
+          builder: (BuildContext context, StateSetter setState){
+            return Container(
+                decoration: BoxDecoration(
+                  color: AppTheme.colors.friendlyWhite,
+                  image: const DecorationImage(image: AssetImage('assets/cardBack.png'), fit: BoxFit.cover, filterQuality: FilterQuality.medium, opacity: 0.5)
+                ),
+                height: 300,
+                child: Padding( padding: const EdgeInsets.all(16.0), child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                  Positioned(
+                      bottom: 0,
+                      child: ElevatedButton(
+                    style: ButtonStyle(backgroundColor: MaterialStatePropertyAll<Color>(AppTheme.colors.friendlyBlack)),
+                    onPressed: () {
+                      Tcontroller.clear();
+                      Dcontroller.clear();
+                      Navigator.of(context).pop();
+                    }, child: Icon(CupertinoIcons.chevron_up, color: AppTheme.colors.friendlyWhite,),
+                  )),
+                  Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text('Create A New Task', style: TextStyle(color: AppTheme.colors.friendlyBlack, fontSize: 24, fontWeight: FontWeight.w700, fontFamily: Globals.sysFont),),
+                    const Spacer(),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('Task Name', style: TextStyle(color: AppTheme.colors.friendlyBlack, fontFamily: Globals.sysFont, fontSize: 18, fontWeight: FontWeight.w700),),
+                        CustomTextField(
+                            labelText: '',
+                            focusNode: Tnode,
+                            controller: Tcontroller,
+                            labelColor: AppTheme.colors.onsetBlue,
+                            cursorColor: Colors.grey,
+                            bgColor: AppTheme.colors.friendlyWhite,
+                            textColor: AppTheme.colors.onsetBlue,
+                            borderColor: AppTheme.colors.onsetBlue,
+                            fontSize: 16,
+                            obscureText: false),
+                        const SizedBox(height: 20,),
+                        Text('Description', style: TextStyle(color: AppTheme.colors.friendlyBlack, fontFamily: Globals.sysFont, fontSize: 18, fontWeight: FontWeight.w700),),
+                        CustomTextField(
+                            focusNode: Dnode,
+                            controller: Dcontroller,
+                            maxLines: 5,
+                            labelText: '',
+                            labelColor: AppTheme.colors.onsetBlue,
+                            cursorColor: Colors.grey,
+                            bgColor: AppTheme.colors.friendlyWhite,
+                            textColor: AppTheme.colors.onsetBlue,
+                            borderColor: AppTheme.colors.onsetBlue,
+                            fontSize: 16,
+                            obscureText: false),
+                      ],
+                    ),
+                    const Spacer(flex: 1,),
+                    ElevatedButton(onPressed: () {
+
+                    },
+                    style: ButtonStyle(
+                      foregroundColor: MaterialStatePropertyAll<Color>(AppTheme.colors.friendlyWhite),
+                      backgroundColor: MaterialStatePropertyAll<Color>(AppTheme.colors.onsetBlue),
+                      side: MaterialStatePropertyAll<BorderSide>(BorderSide(color: AppTheme.colors.darkOnsetBlue, style: BorderStyle.solid))
+                    ),
+                    child: const Text('Next'),),
+                    const Spacer(flex: 1,)
+                  ],
+                ),
+                  ],
+                ),)
+            ).animate(
+              effects: [
+                SlideEffect(
+                  duration: 250.ms,
+                  curve: Curves.linear,
+                  begin: Offset.fromDirection(4.7),
+                )
+              ]
+            );
+          }
+      );
+    });
   }
 
   void _getTasks(){
@@ -232,7 +349,7 @@ class _HomeState extends State<Home>{
     return Scaffold(
       floatingActionButton: InkWell(
         onTap: () {
-
+          addTasks(context);
         },overlayColor: const MaterialStatePropertyAll<Color?>(Colors.transparent),
         splashColor: Colors.transparent,
         child: Material(

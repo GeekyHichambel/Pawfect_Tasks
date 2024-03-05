@@ -74,7 +74,7 @@ class _ProfilePaneState extends State<ProfilePane>{
         tokens.addAll(User
             ?.child('fcmTokens')
             .value as List);
-        tokens.remove(await DataBase.firebaseMessaging.getToken());
+        tokens.remove(await DataBase.firebaseMessaging.getToken(vapidKey: 'BNNtW1LKddzMglciVp8KHQwKTRRKLtwQDMxfUvn01ki4YEzrfzHsGHWbthx-PAWCimqH33r6u6skVVhTNk82grc'));
       }
       await DataBase.userCollection?.child(Globals.user).update({
         'fcmTokens' : tokens,
@@ -105,39 +105,39 @@ class _ProfilePaneState extends State<ProfilePane>{
             children: [
               Padding(padding: const EdgeInsets.symmetric(vertical: 10.0,horizontal: 0.0),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    IconButton(
-                        onPressed: (){
-                          Navigator.pop(context);
-                        }, icon: Icon(Icons.arrow_back_ios_new_rounded, weight: 30.0,
-                      size: 30.0,
-                      color: AppTheme.colors.blissCream,)),
-                    !Globals.LoggedIN?ElevatedButton(onPressed: (){
-                      Navigator.of(context).pushNamed('/Ulogin');
-                    }, style: ButtonStyle(
-                      backgroundColor: MaterialStatePropertyAll<Color>(AppTheme.colors.onsetBlue),
-                    ),
-                        child: Text(
-                      'Log In',
-                      style: TextStyle(
-                        color: AppTheme.colors.friendlyWhite
-                        ,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      IconButton(
+                          onPressed: (){
+                            Navigator.pop(context);
+                          }, icon: Icon(Icons.arrow_back_ios_new_rounded, weight: 30.0,
+                        size: 30.0,
+                        color: AppTheme.colors.blissCream,)),
+                      !Globals.LoggedIN?ElevatedButton(onPressed: (){
+                        Navigator.of(context).pushNamed('/Ulogin');
+                      }, style: ButtonStyle(
+                        backgroundColor: MaterialStatePropertyAll<Color>(AppTheme.colors.onsetBlue),
                       ),
-                    )): ElevatedButton(onPressed: (){
+                          child: Text(
+                            'Log In',
+                            style: TextStyle(
+                              color: AppTheme.colors.friendlyWhite
+                              ,
+                            ),
+                          )): ElevatedButton(onPressed: (){
                         setState(() {
                           openDialog();
                         });
-                    }, style: ButtonStyle(
-                      shape: const MaterialStatePropertyAll<OutlinedBorder>(CircleBorder(side: BorderSide(color: Colors.red))),
-                      backgroundColor: MaterialStatePropertyAll<Color>(AppTheme.colors.friendlyWhite),
-                    ),
-                        child: const Icon( Icons.power_settings_new_rounded,
-                          color: Colors.red,
-                        )),
-                  ],
+                      }, style: ButtonStyle(
+                        shape: const MaterialStatePropertyAll<OutlinedBorder>(CircleBorder(side: BorderSide(color: Colors.red))),
+                        backgroundColor: MaterialStatePropertyAll<Color>(AppTheme.colors.friendlyWhite),
+                      ),
+                          child: const Icon( Icons.power_settings_new_rounded,
+                            color: Colors.red,
+                          )),
+                    ],
+                  ),
                 ),
-              ),
               Expanded(child:
               SingleChildScrollView(
                 physics: const AlwaysScrollableScrollPhysics(),

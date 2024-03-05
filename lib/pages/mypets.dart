@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:math';
+import 'package:PawfectTasks/Components/NotLoggedIn.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -422,10 +423,8 @@ class _MyPetState extends State<MyPet> with SingleTickerProviderStateMixin{
                 ],
               ),
           ] : [
-            Image.asset('assets/loginFirst.png', height: 200, width: 200, fit: BoxFit.fill,),
-            const SizedBox(height: 20,),
-            Center(child: Text('Kindly login first to access this section', style: TextStyle(fontWeight: FontWeight.bold,color: AppTheme.colors.friendlyBlack, fontFamily: Globals.sysFont, fontSize: 14)),),
-          ],
+            const NotLoggedInWidget()
+          ]
         )
       )
     );

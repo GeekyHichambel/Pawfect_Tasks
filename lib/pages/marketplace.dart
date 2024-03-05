@@ -1,4 +1,3 @@
-import 'dart:ui';
 import 'package:PawfectTasks/Components/AppTheme.dart';
 import 'package:PawfectTasks/GLOBALS.dart';
 import 'package:PawfectTasks/db/database.dart';
@@ -8,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import '../Components/Animations.dart';
 import '../Components/CustomBox.dart';
+import '../Components/NotLoggedIn.dart';
 
 class ImageInfo {
   final String name;
@@ -277,9 +277,7 @@ Future<void> openDialog(BuildContext context, name, price, foodValue) async{
                 ))
             ))
       ] : [
-            Image.asset('assets/loginFirst.png', height: 200, width: 200, fit: BoxFit.fill,),
-            const SizedBox(height: 20,),
-            Center(child: Text('Kindly login first to access this section', style: TextStyle(fontWeight: FontWeight.bold,color: AppTheme.colors.friendlyBlack, fontFamily: Globals.sysFont, fontSize: 14)),),
+            const NotLoggedInWidget()
           ],
         ),
       ),

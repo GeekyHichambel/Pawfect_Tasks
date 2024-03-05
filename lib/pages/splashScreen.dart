@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:PawfectTasks/Components/AppTheme.dart';
 import 'package:lottie/lottie.dart';
 import 'package:video_player/video_player.dart';
-
 import '../GLOBALS.dart';
 import '../db/database.dart';
 

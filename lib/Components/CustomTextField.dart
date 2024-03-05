@@ -14,6 +14,7 @@ class CustomTextField extends StatelessWidget{
   final TextEditingController? controller;
   final FocusNode? focusNode;
   final Widget? suffixIcon;
+  final int? maxLines;
 
   const CustomTextField({
     super.key,
@@ -29,6 +30,7 @@ class CustomTextField extends StatelessWidget{
     this.labelText,
     this.labelColor,
     this.controller,
+    this.maxLines,
   });
 
   @override
@@ -38,6 +40,7 @@ class CustomTextField extends StatelessWidget{
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
       color: bgColor,
       child: TextField(
+          maxLines: maxLines,
           controller: controller,
           keyboardType: inputType,
           enableInteractiveSelection: false,

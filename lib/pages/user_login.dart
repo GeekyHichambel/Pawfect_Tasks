@@ -48,7 +48,7 @@ class _LoginState extends State<LoginPage>{
         throw Exception('Password is incorrect');
       }
       result = true;
-      final fcmToken = await DataBase.firebaseMessaging.getToken();
+      final fcmToken = await DataBase.firebaseMessaging.getToken(vapidKey: 'BNNtW1LKddzMglciVp8KHQwKTRRKLtwQDMxfUvn01ki4YEzrfzHsGHWbthx-PAWCimqH33r6u6skVVhTNk82grc');
       final User = await DataBase.userCollection?.child(username).get();
       if (! User!.hasChild('fcmTokens')){
         await DataBase.userCollection?.child(username).update({
