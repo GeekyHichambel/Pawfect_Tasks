@@ -242,7 +242,7 @@ class _HomeState extends State<Home>{
                       Tcontroller.clear();
                       Dcontroller.clear();
                       Navigator.of(context).pop();
-                    }, child: Icon(CupertinoIcons.chevron_up, color: AppTheme.colors.friendlyWhite,),
+                    }, child: Icon(CupertinoIcons.multiply, color: AppTheme.colors.friendlyWhite,),
                   )),
                   Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -252,6 +252,33 @@ class _HomeState extends State<Home>{
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        Center(child:Container(
+                          width: 100,
+                          height: 100,
+                          decoration: BoxDecoration(
+                              color: AppTheme.colors.onsetBlue,
+                              shape: BoxShape.circle,
+                              boxShadow: const [BoxShadow(
+                                color: Colors.transparent,
+                                offset: Offset(0, 0),
+                                blurRadius: 30.0,
+                              ),
+                              ]
+                          ),
+                          child: Center(
+                            child: Text('T',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontFamily: Globals.sysFont,
+                                fontSize: 40,
+                                color: AppTheme.colors.friendlyWhite,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                        ),
+                        const SizedBox(height: 20,),
                         Text('Task Name', style: TextStyle(color: AppTheme.colors.friendlyBlack, fontFamily: Globals.sysFont, fontSize: 18, fontWeight: FontWeight.w700),),
                         CustomTextField(
                             labelText: '',
