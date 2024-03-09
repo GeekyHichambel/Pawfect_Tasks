@@ -10,7 +10,7 @@ import 'package:PawfectTasks/Components/AppTheme.dart';
 import 'package:PawfectTasks/Components/CustomBox.dart';
 import 'package:PawfectTasks/GLOBALS.dart';
 import 'package:PawfectTasks/db/database.dart';
-
+import 'package:timezone/timezone.dart';
 import '../Components/CustomTextField.dart';
 
 class MyPet extends StatefulWidget{
@@ -91,6 +91,7 @@ class _MyPetState extends State<MyPet> with SingleTickerProviderStateMixin{
   Future<void> nameChange() async{
     try {
       String nickN = NameC.text;
+      if(kDebugMode) print(nickN);
       if (nickN.isEmpty) {
         GlobalVar.globalVar.showToast('NickName can\'t be empty');
         throw Exception('NickName can\'t be empty');
@@ -110,6 +111,108 @@ class _MyPetState extends State<MyPet> with SingleTickerProviderStateMixin{
       }
     }
   }
+
+  Future<void> feedThePet(BuildContext context) async{
+    try{
+      final user = await DataBase.itemCollection?.child(Globals.user).get();
+      double maximum = double.parse(user!.child('petFood').value.toString())*0.01;
+      int labelValue = 0;
+      if (maximum > 1.0){
+        maximum = 1.0;
+      }
+      double value = 0.0;
+      if(kDebugMode) print(maximum);
+
+      Future<void> feeeed(itemRef, int Tofeed) async{
+        final user = await DataBase.petsCollection?.child(Globals.user).get();
+        final initialFood = itemRef?.child('petFood').value as int;
+        final int hunger = user?.child('petStatus/labra/starvation').value as int;
+        int ToSpend = Tofeed;
+        if (Tofeed > hunger){
+          Tofeed = hunger;
+        }
+        final int newHunger = hunger - Tofeed;
+        final int newFood = initialFood - ToSpend;
+        await itemRef?.ref.update({
+          'petFood' : newFood,
+        });
+        await user?.child('petStatus/labra').ref.update({
+          'starvation' : newHunger,
+          'lastFed' : TZDateTime.now(getLocation('Asia/Kolkata')).toString(),
+        });
+      }
+      await showDialog(context: context, builder: (context) {
+        return StatefulBuilder(builder: (BuildContext context, StateSetter setState){
+          return SizedBox(height: 300,
+            child: AlertDialog(
+              scrollable: true,
+              alignment: Alignment.center,
+              contentPadding: const EdgeInsets.all(20),
+              backgroundColor: AppTheme.colors.friendlyBlack,
+              shadowColor: Colors.transparent,
+              shape: const RoundedRectangleBorder(side: BorderSide.none, borderRadius: BorderRadius.all(Radius.circular(16))),
+              content: Column(
+                children: [
+                  Text('How much to feed?', style: TextStyle(fontFamily: Globals.sysFont, color: AppTheme.colors.friendlyWhite),),
+                  const SizedBox(height: 20,),
+                  Slider(value: value,
+                      max: maximum,
+                      inactiveColor: AppTheme.colors.friendlyWhite,
+                      activeColor: AppTheme.colors.onsetBlue,
+                      thumbColor: AppTheme.colors.onsetBlue,
+                      onChanged: (newValue){
+                        setState((){
+                          value = double.parse(newValue.toStringAsFixed(2));
+                          labelValue = (value*100).round();
+                          if(kDebugMode) print(value);
+                        });
+                  }),
+                  Padding(padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Text('$labelValue', style: TextStyle(fontFamily: Globals.sysFont, color: AppTheme.colors.friendlyWhite, fontSize: 16),),
+                      const SizedBox(width: 2,),
+                      Image.asset('assets/foodIcon.png', width: 18, height: 18,),
+                    ],
+                  )),
+                  const SizedBox(height: 20,),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      loading? CircularProgressIndicator(color: AppTheme.colors.onsetBlue,) :
+                      ElevatedButton(onPressed: labelValue!=0? (){
+                        setState(() {
+                          loading = true;
+                        });
+                        feeeed(user, labelValue).then((_){
+                          setState(() {
+                            loading = false;
+                          });
+                          Navigator.of(context).pop();
+                        });
+                      } : (){
+
+                      }, style: ButtonStyle(backgroundColor: labelValue!=0? MaterialStatePropertyAll<Color>(AppTheme.colors.friendlyWhite) : const MaterialStatePropertyAll<Color>(Colors.white60)),
+                          child: Text('Feed', style: TextStyle(color: labelValue!=0? Colors.green : Colors.green[600]),)),
+                      ElevatedButton(onPressed: (){
+                        Navigator.of(context).pop();
+                      }, style: ButtonStyle(backgroundColor: MaterialStatePropertyAll<Color>(AppTheme.colors.friendlyWhite)),
+                          child: const Text('Cancel', style: TextStyle(color: Colors.red),))
+                    ],
+                  )
+                ],
+              ),
+            ),
+          );
+        });
+      });
+  }catch (e){
+      if (kDebugMode){
+        print('Error: $e');
+  }
+  }
+}
 
   Future<void> openDialog(BuildContext context) async{
     await showDialog(
@@ -247,7 +350,7 @@ class _MyPetState extends State<MyPet> with SingleTickerProviderStateMixin{
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 ElevatedButton(onPressed: (){
-
+                  feedThePet(context);
                 }, style: ButtonStyle(
                     fixedSize: const MaterialStatePropertyAll(Size(65,65)),
                     backgroundColor: MaterialStatePropertyAll(AppTheme.colors.onsetBlue),
@@ -360,11 +463,11 @@ class _MyPetState extends State<MyPet> with SingleTickerProviderStateMixin{
                                     Row(
                                       mainAxisAlignment: MainAxisAlignment.start,
                                       children: [
-                                        Text(cPetName, style: TextStyle(color: AppTheme.colors.friendlyWhite, fontFamily: Globals.sysFont, fontSize: 20),),
+                                        Text(cPetName.length>8? '${cPetName.substring(0,5)}...': cPetName, style: TextStyle(color: AppTheme.colors.friendlyWhite, fontFamily: Globals.sysFont, fontSize: 20),),
                                         const SizedBox(width: 10,),
                                         IconButton(onPressed: (){
                                           openDialog(context);
-                                        }, icon: const Icon(Icons.edit_rounded), color: AppTheme.colors.blissCream)
+                                        }, icon: const Icon(Icons.edit_rounded), color: AppTheme.colors.friendlyWhite)
                                       ],
                                     ),
                                     const SizedBox(height: 20,),

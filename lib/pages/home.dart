@@ -220,7 +220,7 @@ class _HomeState extends State<Home>{
   }
 
   Future<void> addTasks(BuildContext context) async{
-    precacheImage(const AssetImage('assets/cardBack.png'), context);
+    await precacheImage(const AssetImage('assets/cardBack.png'), context);
     await showDialog(context: context, builder: (context){
       return StatefulBuilder(
           builder: (BuildContext context, StateSetter setState){
@@ -251,31 +251,48 @@ class _HomeState extends State<Home>{
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Center(child:Container(
-                          width: 100,
-                          height: 100,
-                          decoration: BoxDecoration(
-                              color: AppTheme.colors.onsetBlue,
-                              shape: BoxShape.circle,
-                              boxShadow: const [BoxShadow(
-                                color: Colors.transparent,
-                                offset: Offset(0, 0),
-                                blurRadius: 30.0,
+                        Center(
+                          child:Stack(
+                            children: [
+                              Container(
+                                margin: const EdgeInsets.all(25),
+                                width: 100,
+                                height: 100,
+                                decoration: BoxDecoration(
+                                    color: AppTheme.colors.onsetBlue,
+                                    shape: BoxShape.circle,
+                                    boxShadow: const [BoxShadow(
+                                      color: Colors.transparent,
+                                      offset: Offset(0, 0),
+                                      blurRadius: 30.0,
+                                    ),
+                                    ]
+                                ),
+                                child: Center(
+                                  child: Text('T',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontFamily: Globals.sysFont,
+                                      fontSize: 40,
+                                      color: AppTheme.colors.friendlyWhite,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
                               ),
-                              ]
+                              Positioned(
+                                bottom: 15,
+                                  right: 15,
+                                  child: ElevatedButton(
+                                onPressed: () {  },
+                                    style: ButtonStyle(
+                                        shape: const MaterialStatePropertyAll<OutlinedBorder>(CircleBorder(side: BorderSide())),
+                                        backgroundColor: MaterialStatePropertyAll<Color>(AppTheme.colors.friendlyBlack),
+                                        padding: const MaterialStatePropertyAll<EdgeInsetsGeometry>(EdgeInsets.zero),
+                                    ),
+                              child: Icon(CupertinoIcons.pencil, color: AppTheme.colors.friendlyWhite,size: 16,),))
+                            ],
                           ),
-                          child: Center(
-                            child: Text('T',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontFamily: Globals.sysFont,
-                                fontSize: 40,
-                                color: AppTheme.colors.friendlyWhite,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ),
                         ),
                         const SizedBox(height: 20,),
                         Text('Task Name', style: TextStyle(color: AppTheme.colors.friendlyBlack, fontFamily: Globals.sysFont, fontSize: 18, fontWeight: FontWeight.w700),),
