@@ -2,6 +2,7 @@ import 'package:PawfectTasks/Components/Animations.dart';
 import 'package:PawfectTasks/Components/CustomBox.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 import '../Components/NotLoggedIn.dart';
 import 'package:PawfectTasks/Components/CustomAppBar.dart';
 import 'package:PawfectTasks/GLOBALS.dart';
@@ -19,7 +20,8 @@ class UserI{
   final String name;
   final int xp;
   final int streak;
-  UserI(this.name, this.xp, this.streak);
+  final String league;
+  UserI(this.name, this.xp, this.streak, this.league);
 }
 
 class _StreakState extends State<Streaks>{
@@ -29,6 +31,191 @@ class _StreakState extends State<Streaks>{
   int UStreak = 0;
   List<String> leagues = ['Rookie', 'Junior', 'Intermediate', 'Senior', 'Elite', 'Premier'];
 
+  Future<void> openProfile(BuildContext context, UserI user, int friendCount) async{
+    try{
+      await showDialog(context: context, builder: (context){
+        return StatefulBuilder(builder: (BuildContext context,StateSetter setState){
+          return SizedBox(height: 300,
+            child: AlertDialog(
+              elevation: 0.0,
+              scrollable: true,
+              alignment: Alignment.center,
+              backgroundColor: AppTheme.colors.friendlyBlack,
+              shadowColor: Colors.transparent,
+              shape: const RoundedRectangleBorder(side: BorderSide.none, borderRadius: BorderRadius.all(Radius.circular(16))),
+              content: SingleChildScrollView(
+                physics: const NeverScrollableScrollPhysics(),
+                child: Column(
+                children: [
+                  const CustomAppBar(),
+                  Container(
+                    width: 80,
+                    height: 80,
+                    decoration: BoxDecoration(
+                        color: AppTheme.colors.onsetBlue,
+                        shape: BoxShape.circle,
+                        boxShadow: const [BoxShadow(
+                          color: Colors.transparent,
+                          offset: Offset(0, 0),
+                          blurRadius: 30.0,
+                        ),
+                        ]
+                    ),
+                    child: Center(
+                      child: Text(user.name[0],
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontFamily: Globals.sysFont,
+                          fontSize: 40,
+                          color: AppTheme.colors.friendlyWhite,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 20,),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                      child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child:Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                      children:[
+                        Text(user.name, style: TextStyle(fontFamily: Globals.sysFont, color: AppTheme.colors.friendlyWhite,fontWeight: FontWeight.w700),),
+                        const SizedBox(height: 5,),
+                        Text('$friendCount Friends', style: TextStyle(fontFamily: Globals.sysFont, color: AppTheme.colors.onsetBlue),),
+                        const SizedBox(height: 5,),
+                        user.name == Globals.user? const SizedBox.shrink() : ElevatedButton(onPressed: (){
+                                                        
+                        },style:const ButtonStyle(
+                          padding: MaterialStatePropertyAll<EdgeInsets>(EdgeInsets.zero),
+                        ),
+                          child: CustomBox(
+                            height: 50,
+                            width: 100,
+                            border: Border(
+                                top: BorderSide(color: AppTheme.colors.darkOnsetBlue, width: 2.0, strokeAlign: BorderSide.strokeAlignInside),
+                                left: BorderSide(color: AppTheme.colors.darkOnsetBlue, width: 2.0, strokeAlign: BorderSide.strokeAlignInside),
+                                right: BorderSide(color: AppTheme.colors.darkOnsetBlue, width: 2.0, strokeAlign: BorderSide.strokeAlignInside),
+                                bottom: BorderSide(color: AppTheme.colors.darkOnsetBlue, width: 5.0, strokeAlign: BorderSide.strokeAlignInside)),
+                            shadow: Colors.transparent,
+                            color: AppTheme.colors.onsetBlue,
+                            child: Padding(
+                              padding: const EdgeInsets.all(5.0),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                              Icon(CupertinoIcons.person_add_solid, color: AppTheme.colors.friendlyWhite, size: 10,),
+                              const SizedBox(width: 10.0,),
+                              Text('Add Friend', style: TextStyle(fontFamily: Globals.sysFont, color: AppTheme.colors.friendlyWhite, fontSize: 9, fontWeight: FontWeight.w700),),
+                            ],),),
+                          ),
+                        ),
+                      ]),),),
+                  const SizedBox(height: 20,),
+                  Text('Stats', style: TextStyle(fontFamily: Globals.sysFont, color: AppTheme.colors.friendlyWhite, fontWeight: FontWeight.w700),),
+                  const SizedBox(height: 5,),
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: SizedBox(
+                    height: 250,
+                    child: GridView(
+                      physics: const NeverScrollableScrollPhysics(),
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2,crossAxisSpacing: 10.0, mainAxisSpacing: 10.0),
+                      children: [
+                        CustomBox(
+                          elevation: 24.0,
+                          border: Border(
+                              top: BorderSide(color: AppTheme.colors.blissCream, width: 1.0, strokeAlign: BorderSide.strokeAlignInside),
+                              left: BorderSide(color: AppTheme.colors.blissCream, width: 1.0, strokeAlign: BorderSide.strokeAlignInside),
+                              right: BorderSide(color: AppTheme.colors.blissCream, width: 1.0, strokeAlign: BorderSide.strokeAlignInside),
+                              bottom: BorderSide(color: AppTheme.colors.blissCream, width: 1.0, strokeAlign: BorderSide.strokeAlignInside)),
+                          shadow: Colors.transparent,
+                          color: AppTheme.colors.friendlyBlack,
+                          child: Padding(
+                            padding: const EdgeInsets.all(5.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Expanded(child: Image.asset('assets/streak_icon.png',),),
+                                const SizedBox(width: 5.0,),
+                                Expanded(flex: 2,child:Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text('${user.streak}', style: TextStyle(fontFamily: Globals.sysFont, color: AppTheme.colors.pukeOrange,fontWeight: FontWeight.w700, fontSize: 8),),
+                                    Text('Day Streak', style: TextStyle(fontFamily: Globals.sysFont, color: AppTheme.colors.blissCream, fontSize: 8),),
+                                  ],
+                                )),
+                              ],),),
+                        ),
+                        CustomBox(
+                          elevation: 24.0,
+                          border: Border(
+                              top: BorderSide(color: AppTheme.colors.blissCream, width: 1.0, strokeAlign: BorderSide.strokeAlignInside),
+                              left: BorderSide(color: AppTheme.colors.blissCream, width: 1.0, strokeAlign: BorderSide.strokeAlignInside),
+                              right: BorderSide(color: AppTheme.colors.blissCream, width: 1.0, strokeAlign: BorderSide.strokeAlignInside),
+                              bottom: BorderSide(color: AppTheme.colors.blissCream, width: 1.0, strokeAlign: BorderSide.strokeAlignInside)),
+                          shadow: Colors.transparent,
+                          color: AppTheme.colors.friendlyBlack,
+                          child: Padding(
+                            padding: const EdgeInsets.all(5.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Expanded(child: Image.asset('assets/xp_icon.png',),),
+                                const SizedBox(width: 5.0,),
+                                Expanded(flex: 2,child:Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text('${user.xp}', style: TextStyle(fontFamily: Globals.sysFont, color: AppTheme.colors.pukeOrange,fontWeight: FontWeight.w700, fontSize: 8),),
+                                    Text('Total XP', style: TextStyle(fontFamily: Globals.sysFont, color: AppTheme.colors.blissCream, fontSize: 8),),
+                                  ],
+                                )),
+                              ],),),
+                        ),
+                        CustomBox(
+                          elevation: 24.0,
+                          border: Border(
+                              top: BorderSide(color: AppTheme.colors.blissCream, width: 1.0, strokeAlign: BorderSide.strokeAlignInside),
+                              left: BorderSide(color: AppTheme.colors.blissCream, width: 1.0, strokeAlign: BorderSide.strokeAlignInside),
+                              right: BorderSide(color: AppTheme.colors.blissCream, width: 1.0, strokeAlign: BorderSide.strokeAlignInside),
+                              bottom: BorderSide(color: AppTheme.colors.blissCream, width: 1.0, strokeAlign: BorderSide.strokeAlignInside)),
+                          shadow: Colors.transparent,
+                          color: AppTheme.colors.friendlyBlack,
+                          child: Padding(
+                            padding: const EdgeInsets.all(5.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Expanded(child: Image.asset('assets/leagues/${user.league}.png',),),
+                                const SizedBox(width: 5.0,),
+                                Expanded(flex: 2, child:Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(user.league, style: TextStyle(fontFamily: Globals.sysFont, color: AppTheme.colors.pukeOrange,fontWeight: FontWeight.w700, fontSize: 8),),
+                                    Text('Current League', style: TextStyle(fontFamily: Globals.sysFont, color: AppTheme.colors.blissCream, fontSize: 8),),
+                                  ],
+                                )),
+                              ],),),
+                        ),
+                      ],
+                    ),
+                  ),
+                  ),
+                ],
+              ),
+            ),
+            ),
+          );
+        });
+      });
+    } catch (e){
+      if(kDebugMode) print('Error: $e');
+    }
+  }
 
   Future<void> getData() async{
     final user = await DataBase.streakCollection?.child(Globals.user).get();
@@ -60,7 +247,7 @@ class _StreakState extends State<Streaks>{
          String name = element.key.toString();
          int xp = element.child('xp').value as int;
          int streak = element.child('streak').value as int;
-         leaderboard.add(UserI(name, xp, streak));
+         leaderboard.add(UserI(name, xp, streak, league!));
        }
      }
      return leaderboard;
@@ -255,20 +442,26 @@ class _StreakState extends State<Streaks>{
                             itemBuilder: (context, index){
                               UserI user = snapshot.data![index];
                               return Padding(padding: const EdgeInsets.only(bottom: 5.0),
-                                  child: ListTile(
+                                  child: GestureDetector(
+                                    onTap: () async{
+                                      final ref = await DataBase.userCollection?.child(user.name).get();
+                                      final int friendCount = ref?.child('friendCount').value as int;
+                                      openProfile(context, user, friendCount);
+                                    },
+                                    child: ListTile(
                                   tileColor: AppTheme.colors.friendlyBlack,
-                                  shape: RoundedRectangleBorder(side: BorderSide(color: AppTheme.colors.blissCream),borderRadius: const BorderRadius.all(Radius.circular(16.0))),
+                                  shape: RoundedRectangleBorder(side: user.name == Globals.user? BorderSide(color: AppTheme.colors.onsetBlue, width: 2.5) : BorderSide(color: AppTheme.colors.blissCream),borderRadius: const BorderRadius.all(Radius.circular(16.0))),
                                   leading: Text('${index+1}', style: TextStyle(color: AppTheme.colors.onsetBlue, fontFamily: Globals.sysFont, fontSize: 18),),
                                   title: Row(
                                       children: [
-                                        Text(user.name, style: TextStyle(color: AppTheme.colors.friendlyWhite, fontWeight: FontWeight.w700,fontFamily: Globals.sysFont, fontSize: 18)),
+                                        Text(user.name.length > 8? '${user.name.substring(0,5)}...': user.name, style: TextStyle(color: AppTheme.colors.friendlyWhite, fontWeight: FontWeight.w700,fontFamily: Globals.sysFont, fontSize: 18)),
                                         const SizedBox(width: 16.0,),
                                         Text('${user.streak}', style: TextStyle(color: AppTheme.colors.pukeOrange, fontFamily: Globals.sysFont, fontSize: 18),),
                                         const SizedBox(width: 2.0,),
                                         Image.asset('assets/streak_icon.png', width: 18.0, height: 18.0,),
                                       ]),
                                   trailing: Text('${user.xp} XP', style: TextStyle(color: AppTheme.colors.friendlyWhite, fontFamily: Globals.sysFont, fontSize: 18),),
-                                  ),);
+                                  ),));
                             }
                         )
                       );

@@ -7,6 +7,7 @@ class CustomBox extends StatelessWidget{
   final double? height;
   final Color shadow;
   final BoxBorder? border;
+  final double elevation;
 
   const CustomBox({
     super.key,
@@ -16,12 +17,13 @@ class CustomBox extends StatelessWidget{
     this.border,
     this.height,
     this.width,
+    this.elevation = 5.0,
 });
 
   @override
   Widget build(BuildContext context) {
       return Material(
-        elevation: 5.0,
+        elevation: elevation,
         shadowColor: Colors.transparent,
         borderRadius: BorderRadius.circular(15.0),
         child: Container(

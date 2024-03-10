@@ -76,11 +76,13 @@ class _SignUpState extends State<SignUpPage>{
       final List<String> decoitems = [];
       const int streak = 0;
       const int pawCoin = 50;
+      const int friendCount = 0;
       const int xp = 0;
       const int petFood = 0;
       final String hashed = BCrypt.hashpw(userPassword, BCrypt.gensalt());
       final Map<String, dynamic> userDoc = {
         'userpass' : hashed,
+        'friendCount' : friendCount,
       };
       final Map<String, dynamic> petsDoc = {
         'pets' : pets,

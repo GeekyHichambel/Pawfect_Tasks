@@ -230,7 +230,7 @@ class _HomeState extends State<Home>{
                   image: const DecorationImage(image: AssetImage('assets/cardBack.png'), fit: BoxFit.cover, filterQuality: FilterQuality.medium, opacity: 0.5)
                 ),
                 height: 300,
-                child: Padding( padding: const EdgeInsets.all(16.0), child: Stack(
+                child: Padding( padding: const EdgeInsets.all(16.0), child:Stack(
                   alignment: Alignment.center,
                   children: [
                   Positioned(
@@ -345,8 +345,7 @@ class _HomeState extends State<Home>{
                   curve: Curves.linear,
                   begin: Offset.fromDirection(4.7),
                 )
-              ]
-            );
+              ]);
           }
       );
     });

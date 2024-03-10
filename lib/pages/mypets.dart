@@ -20,7 +20,7 @@ class MyPet extends StatefulWidget{
 }
 
 class _MyPetState extends State<MyPet> with SingleTickerProviderStateMixin{
-  final ImageProvider imageProvider = const CachedNetworkImageProvider('https://media.discordapp.net/attachments/767980613960990727/1211227145251196969/idle_dog.gif?ex=65ed6e2e&is=65daf92e&hm=d811b6949d85bc3cd9bfae8b5107eea40f67a043f8a34788c058435f96f3b682&=&width=550&height=550');
+  final ImageProvider imageProvider = const CachedNetworkImageProvider('https://media.discordapp.net/attachments/1159106537881600043/1216283353603506176/DogIdle.gif?ex=65ffd324&is=65ed5e24&hm=1f76935e7ead1b7180b8f4fbb194cce4a9a1153c6d67e27cabded6f072e820eb&=&width=681&height=681');
   late String cPetName = 'Labra';
   late int cPetHp = 100;
   late int cPetHunger = 0;
@@ -140,6 +140,7 @@ class _MyPetState extends State<MyPet> with SingleTickerProviderStateMixin{
           'starvation' : newHunger,
           'lastFed' : TZDateTime.now(getLocation('Asia/Kolkata')).toString(),
         });
+        getPetDetails();
       }
       await showDialog(context: context, builder: (context) {
         return StatefulBuilder(builder: (BuildContext context, StateSetter setState){
@@ -334,14 +335,12 @@ class _MyPetState extends State<MyPet> with SingleTickerProviderStateMixin{
                         right: BorderSide(color: AppTheme.colors.blissCream, width: 2.0, strokeAlign: BorderSide.strokeAlignInside),
                         bottom: BorderSide(color: AppTheme.colors.blissCream, width: 5.0, strokeAlign: BorderSide.strokeAlignInside)),
                     shadow: Colors.transparent,
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Center(
-                        child: Image(
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(12.0),
+                      child: Image(
                           image: imageProvider,
-                        )
                       ),
-                    )
+                    ),
                 ),
             ) ,
             ),
