@@ -10,6 +10,7 @@ import 'package:PawfectTasks/Components/AppTheme.dart';
 import 'package:PawfectTasks/Components/CustomBox.dart';
 import 'package:PawfectTasks/GLOBALS.dart';
 import 'package:PawfectTasks/db/database.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:timezone/timezone.dart';
 import '../Components/CustomTextField.dart';
 
@@ -146,6 +147,7 @@ class _MyPetState extends State<MyPet> with SingleTickerProviderStateMixin{
         return StatefulBuilder(builder: (BuildContext context, StateSetter setState){
           return SizedBox(height: 300,
             child: AlertDialog(
+              elevation: 0,
               scrollable: true,
               alignment: Alignment.center,
               contentPadding: const EdgeInsets.all(20),
@@ -181,7 +183,7 @@ class _MyPetState extends State<MyPet> with SingleTickerProviderStateMixin{
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      loading? CircularProgressIndicator(color: AppTheme.colors.onsetBlue,) :
+                      loading? SpinKitThreeBounce(color: AppTheme.colors.onsetBlue,) :
                       ElevatedButton(onPressed: labelValue!=0? (){
                         setState(() {
                           loading = true;
@@ -204,8 +206,11 @@ class _MyPetState extends State<MyPet> with SingleTickerProviderStateMixin{
                   )
                 ],
               ),
-            ),
-          );
+            )
+          ).animate(effects: [
+            FadeEffect(duration: 200.ms, curve: Curves.fastLinearToSlowEaseIn),
+            ScaleEffect(duration: 200.ms, curve: Curves.easeIn)
+          ]);
         });
       });
   }catch (e){
@@ -222,6 +227,7 @@ class _MyPetState extends State<MyPet> with SingleTickerProviderStateMixin{
         builder: (BuildContext context, StateSetter setState){
           return SizedBox(height: 300,
             child: AlertDialog(
+              elevation: 0,
               scrollable: true,
               alignment: Alignment.center,
               contentPadding: const EdgeInsets.all(20.0),
@@ -246,7 +252,7 @@ class _MyPetState extends State<MyPet> with SingleTickerProviderStateMixin{
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      loading? CircularProgressIndicator(color: AppTheme.colors.onsetBlue,) :
+                      loading? SpinKitThreeBounce(color: AppTheme.colors.onsetBlue,) :
                       ElevatedButton(onPressed: (){
                         setState(() {
                           loading = true;

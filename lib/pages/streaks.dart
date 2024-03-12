@@ -3,6 +3,8 @@ import 'package:PawfectTasks/Components/CustomBox.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import '../Components/NotLoggedIn.dart';
 import 'package:PawfectTasks/Components/CustomAppBar.dart';
 import 'package:PawfectTasks/GLOBALS.dart';
@@ -29,10 +31,50 @@ class _StreakState extends State<Streaks>{
   String Uleague = 'Rookie';
   int UXP = 0;
   int UStreak = 0;
+  int Selected = 1;
   List<String> leagues = ['Rookie', 'Junior', 'Intermediate', 'Senior', 'Elite', 'Premier'];
 
+  Future<void> addFriend(String Fname) async{
+    final Fuser = await DataBase.userCollection?.child(Fname).get();
+    if (Fuser!.hasChild('pending_list')){
+      List PendingList = Fuser.child('pending_list').value as List;
+      if (PendingList.contains(Globals.user)){
+        GlobalVar.globalVar.showToast('A request has already been sent.');
+        return;
+      }
+      PendingList.add(Globals.user);
+      await Fuser.ref.update({
+        'pending_list' : PendingList,
+      });
+    }else{
+      await Fuser.ref.update({
+        'pending_list' : [Globals.user],
+      });
+    }
+  }
+
   Future<void> openProfile(BuildContext context, UserI user, int friendCount) async{
+    bool loading = false;
+    bool friended = false;
+
+    Future<void> isFriend() async{
+      final userRef = await DataBase.userCollection?.child(Globals.user).get();
+      if (userRef!.hasChild('friend_list')) {
+        List FriendList = userRef.child('friend_list').value as List;
+        if (FriendList.contains(user.name)){
+          setState(() {
+            friended = true;
+          });
+          return;
+        }
+      }
+      setState(() {
+        friended = false;
+      });
+    }
+
     try{
+      await isFriend();
       await showDialog(context: context, builder: (context){
         return StatefulBuilder(builder: (BuildContext context,StateSetter setState){
           return SizedBox(height: 300,
@@ -85,8 +127,15 @@ class _StreakState extends State<Streaks>{
                         const SizedBox(height: 5,),
                         Text('$friendCount Friends', style: TextStyle(fontFamily: Globals.sysFont, color: AppTheme.colors.onsetBlue),),
                         const SizedBox(height: 5,),
-                        user.name == Globals.user? const SizedBox.shrink() : ElevatedButton(onPressed: (){
-                                                        
+                        user.name == Globals.user || friended ? const SizedBox.shrink() : loading==true? SpinKitThreeBounce(color: AppTheme.colors.onsetBlue,) : ElevatedButton(onPressed: (){
+                          setState((){
+                            loading = true;
+                          });
+                          addFriend(user.name).then((_){
+                            setState((){
+                              loading = false;
+                            });
+                          });
                         },style:const ButtonStyle(
                           padding: MaterialStatePropertyAll<EdgeInsets>(EdgeInsets.zero),
                         ),
@@ -209,7 +258,10 @@ class _StreakState extends State<Streaks>{
               ),
             ),
             ),
-          );
+          ).animate(effects: [
+            FadeEffect(duration: 200.ms, curve: Curves.fastLinearToSlowEaseIn),
+            ScaleEffect(duration: 200.ms, curve: Curves.easeIn)
+          ]);
         });
       });
     } catch (e){
@@ -239,16 +291,30 @@ class _StreakState extends State<Streaks>{
   Future<List<UserI>> updateLeaderboard() async{
    try{
      List<UserI> leaderboard = [];
-     final user = await DataBase.streakCollection?.child(Globals.user).get();
-     final league = user?.child('league').value.toString();
-     final leaderboard_ref = await DataBase.leaderboardCollection?.child(league!).limitToFirst(25).get();
-     if (leaderboard_ref != null && leaderboard_ref.exists){
-       for (var element in leaderboard_ref.children) {
-         String name = element.key.toString();
-         int xp = element.child('xp').value as int;
-         int streak = element.child('streak').value as int;
-         leaderboard.add(UserI(name, xp, streak, league!));
+     if (Selected == 1) {
+       final user = await DataBase.streakCollection?.child(Globals.user).get();
+       final league = user
+           ?.child('league')
+           .value
+           .toString();
+       final leaderboard_ref = await DataBase.leaderboardCollection?.child(
+           league!).limitToFirst(25).get();
+       if (leaderboard_ref != null && leaderboard_ref.exists) {
+         for (var element in leaderboard_ref.children) {
+           String name = element.key.toString();
+           int xp = element
+               .child('xp')
+               .value as int;
+           int streak = element
+               .child('streak')
+               .value as int;
+           leaderboard.add(UserI(name, xp, streak, league!));
+         }
        }
+     } else if (Selected == 2){
+       final user = await DataBase.userCollection?.child(Globals.user).get();
+       final friend_list = user?.child('friend_list').value as List;
+       if (friend_list.isEmpty) throw Exception('No friends to display');
      }
      return leaderboard;
    } catch(e){
@@ -414,24 +480,48 @@ class _StreakState extends State<Streaks>{
               ),
             ),
             const SizedBox(height: 30,),
+            Align(alignment: Alignment.centerRight,
+                child: Padding(padding: const EdgeInsets.only(right: 16.0), child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ClipRRect(borderRadius: BorderRadius.circular(16.0), child: ElevatedButton(
+                      style: ButtonStyle(backgroundColor: MaterialStatePropertyAll<Color>(Selected == 1? AppTheme.colors.onsetBlue : AppTheme.colors.friendlyWhite),),
+                      onPressed: (){
+                        setState((){
+                          Selected = 1;
+                        });
+                      },
+                      child: Icon(CupertinoIcons.globe, color: Selected == 1? AppTheme.colors.friendlyWhite : AppTheme.colors.onsetBlue, size: 16,)),),
+                  const SizedBox(width: 5.0,),
+                  ClipRRect(borderRadius: BorderRadius.circular(16.0), child: ElevatedButton(
+                      style: ButtonStyle(backgroundColor: MaterialStatePropertyAll<Color>(Selected == 2? AppTheme.colors.onsetBlue : AppTheme.colors.friendlyWhite)),
+                      onPressed: (){
+                        setState((){
+                          Selected = 2;
+                        });
+                      },
+                      child: Icon(CupertinoIcons.person_2_fill, color: Selected == 2? AppTheme.colors.friendlyWhite : AppTheme.colors.onsetBlue, size: 16,)),),
+                ],
+              ),),
+            ),
             Expanded(child: FutureBuilder<List<UserI>>(
                   future: updateLeaderboard(),
                   builder: (context, snapshot){
                     if (snapshot.connectionState == ConnectionState.waiting || snapshot.hasError){
                       return Center(
-                          child: CircularProgressIndicator(color: AppTheme.colors.onsetBlue,)
+                          child: SpinKitThreeBounce(color: AppTheme.colors.onsetBlue,)
                       );
                     }
                     else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                      return Column(
-                          children: [
-                            Text(
-                                'Leaderboard is Empty',
+                      return Center(child: Text(
+                                Selected == 1? 'Leaderboard is Empty' : 'No Friends to Display',
                                 style: TextStyle(
                                   color: AppTheme.colors.friendlyBlack,
+                                  fontFamily: Globals.sysFont,
+                                  fontSize: 18,
                                 )
                             ),
-                          ]
                       );
                     } else{
                       return Padding(

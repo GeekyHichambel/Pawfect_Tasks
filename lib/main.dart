@@ -1,3 +1,4 @@
+import 'package:PawfectTasks/pages/FriendsPage.dart';
 import 'package:PawfectTasks/pages/settings/TermsConditions.dart';
 import 'package:PawfectTasks/pages/settings/aboutUs.dart';
 import 'package:PawfectTasks/pages/settings/cFeedback.dart';
@@ -28,6 +29,7 @@ Future<void> main() async {
         '/Ulogin': (context) => const LoginPage(),
         '/Usignup' : (context) => const SignUpPage(),
         '/Settings' : (context) => const ProfilePane(),
+        '/Friends' : (context) => const FriendPage(),
         '/S>about' : (context) => const aboutUs(),
         '/S>terms' : (context) => const TermsConditions(),
         '/S>feed' : (context) => const cFeed(),

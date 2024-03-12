@@ -5,6 +5,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import '../Components/Animations.dart';
 import '../Components/CustomBox.dart';
 import '../Components/NotLoggedIn.dart';
@@ -103,6 +104,7 @@ Future<void> openDialog(BuildContext context, name, price, foodValue) async{
           builder: (BuildContext context, StateSetter setState){
             return SizedBox(height: 300,
               child: AlertDialog(
+                elevation: 0,
                 scrollable: true,
                 alignment: Alignment.center,
                 contentPadding: const EdgeInsets.all(20.0),
@@ -135,7 +137,7 @@ Future<void> openDialog(BuildContext context, name, price, foodValue) async{
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        loading? CircularProgressIndicator(color: AppTheme.colors.onsetBlue,) :  ElevatedButton(onPressed: (){
+                        loading? SpinKitThreeBounce(color: AppTheme.colors.onsetBlue,) :  ElevatedButton(onPressed: (){
                           setState(() {
                             loading = true;
                           });
@@ -233,7 +235,7 @@ Future<void> openDialog(BuildContext context, name, price, foodValue) async{
                     builder: (context, snapshot){
                       if (snapshot.connectionState == ConnectionState.waiting || snapshot.hasError){
                         return Center(
-                          child: CircularProgressIndicator(color: AppTheme.colors.onsetBlue,)
+                          child: SpinKitThreeBounce(color: AppTheme.colors.onsetBlue,)
                         );
                       } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                         return Center(

@@ -7,6 +7,7 @@ import 'package:PawfectTasks/Components/AppTheme.dart';
 import 'package:PawfectTasks/Components/CustomTextField.dart';
 import 'package:PawfectTasks/GLOBALS.dart';
 import 'package:PawfectTasks/db/database.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class LoginPage extends StatefulWidget{
   const LoginPage({Key? key}) : super(key: key);
@@ -177,7 +178,9 @@ class _LoginState extends State<LoginPage>{
                                 },
                                   color: AppTheme.colors.friendlyWhite,
                                 ),
-                                fontSize: 16.0, obscureText: showP,),
+                                fontSize: 16.0, obscureText: showP,
+                              maxLines: 1,
+                            ),
                             const SizedBox(height: 8,),
                             Padding(padding: const EdgeInsetsDirectional.only(start: 8),
                               child: GestureDetector(
@@ -212,7 +215,7 @@ class _LoginState extends State<LoginPage>{
                             Row(
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [
-                                isLoading? CircularProgressIndicator(color: AppTheme.colors.onsetBlue,) :
+                                isLoading? SpinKitThreeBounce(color: AppTheme.colors.onsetBlue,) :
                                 IconButton(onPressed: (){
                                   setState(() {
                                     isLoading = true;

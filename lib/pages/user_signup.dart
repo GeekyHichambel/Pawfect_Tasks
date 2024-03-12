@@ -5,6 +5,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:PawfectTasks/Components/Animations.dart';
 import 'package:PawfectTasks/db/database.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:timezone/timezone.dart';
 import '../Components/AppTheme.dart';
 import '../Components/CustomTextField.dart';
@@ -207,6 +208,7 @@ class _SignUpState extends State<SignUpPage>{
                               cursorColor: Colors.grey,
                               textColor: AppTheme.colors.onsetBlue,
                               borderColor: AppTheme.colors.onsetBlue, obscureText: false,
+                              maxLines: 1,
                             ),
                             const SizedBox(height: 20.0,),
                             CustomTextField(
@@ -228,6 +230,7 @@ class _SignUpState extends State<SignUpPage>{
                                 },
                                   color: AppTheme.colors.friendlyWhite,
                                 ),
+                              maxLines: 1,
                             ),
                             const SizedBox(height: 20,),
                             CustomTextField(
@@ -249,6 +252,7 @@ class _SignUpState extends State<SignUpPage>{
                               },
                                 color: AppTheme.colors.onsetBlue,
                               ),
+                              maxLines: 1,
                             ),
                             const SizedBox(height: 20,),
                             Center(
@@ -270,7 +274,7 @@ class _SignUpState extends State<SignUpPage>{
                             Row(
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [
-                                isLoading? CircularProgressIndicator(color: AppTheme.colors.onsetBlue,) :
+                                isLoading? SpinKitThreeBounce(color: AppTheme.colors.onsetBlue,) :
                                 IconButton(onPressed: (){
                                   setState(() {
                                     isLoading = true;

@@ -7,6 +7,7 @@ import 'package:PawfectTasks/Components/AppTheme.dart';
 import 'package:PawfectTasks/Components/CustomBox.dart';
 import 'package:PawfectTasks/GLOBALS.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class ProfilePane extends StatefulWidget{
   const ProfilePane({Key? key}) : super(key: key);
@@ -23,7 +24,7 @@ class _ProfilePaneState extends State<ProfilePane>{
       context: context, builder: (context) => Center(
     child: SizedBox(height: 200,
       child: AlertDialog(
-        elevation: 5,
+        elevation: 0,
         alignment: Alignment.center,
         contentPadding: const EdgeInsets.all(20.0),
         backgroundColor: AppTheme.colors.friendlyBlack,
@@ -36,7 +37,7 @@ class _ProfilePaneState extends State<ProfilePane>{
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                loading? CircularProgressIndicator(color: AppTheme.colors.onsetBlue,) :
+                loading? SpinKitThreeBounce(color: AppTheme.colors.onsetBlue,) :
                 ElevatedButton(onPressed: (){
                   setState(() {
                     loading = true;

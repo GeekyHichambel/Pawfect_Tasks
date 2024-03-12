@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:PawfectTasks/Components/CustomTextField.dart';
+import 'package:PawfectTasks/pages/FriendsPage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:PawfectTasks/Components/AppTheme.dart';
@@ -21,7 +22,7 @@ class MainPage extends StatefulWidget{
 }
 
 class _MainPageState extends State<MainPage>{
-  static const Pages = [Home(), MyPet(), MarketPlace()];
+  static const Pages = [Home(), FriendPage(), MyPet(), MarketPlace()];
   var pageC = PageController();
   int selectedIndex = 0;
   int StreakDays = 0;
@@ -144,6 +145,7 @@ class _MainPageState extends State<MainPage>{
         useLegacyColorScheme: false,
         items: <BottomNavigationBarItem>[
           customNavigationBarItem(Icons.home, ''),
+          customNavigationBarItem(CupertinoIcons.person_2_alt, ''),
           customNavigationBarItem(Icons.pets_rounded, ''),
           customNavigationBarItem(Icons.shopping_cart_rounded, '')
         ],
