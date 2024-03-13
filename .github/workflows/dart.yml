@@ -31,8 +31,8 @@ jobs:
 
       - name: Install dependencies
         run: flutter pub get
-        working-directory: hit_me_up/lib
+        working-directory: D:\coderboii\hit_me_up
 
       - name: Run tests
         run: flutter test
-        working-directory: hit_me_up/lib
+        working-directory: D:\coderboii\hit_me_up
