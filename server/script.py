@@ -43,6 +43,7 @@ def update_task():
 
                 last_fed = pet_stats.get('lastFed')
                 hunger = pet_stats.get('starvation')
+                last_hunger = pet_stats.get('lastHunger')
                 nickname = pet_stats.get('nickname')
 
                 date_format = "%Y-%m-%d %H:%M:%S.%f%z"
@@ -100,6 +101,7 @@ def update_task():
                 time_diff = current_time - last_fed_time
 
                 new_hunger = int(time_diff.total_seconds() // 3600) * 10
+                new_hunger += last_hunger
                 new_hunger = min(max(new_hunger, 0), 100)
 
                 print(f'''(*) Previous hunger: {hunger}

@@ -25,6 +25,8 @@ class Globals {
       TZDateTime lastFed = TZDateTime.parse(getLocation('Asia/Kolkata'),data!.child('petStatus/labra/lastFed').value.toString());
       Duration timeDifference = TZDateTime.now(getLocation('Asia/Kolkata')).difference(lastFed);
       int newHunger = (timeDifference.inHours / 1).floor() * 10;
+      int lastHunger = data.child('petStatus/labra/lastHunger').value as int;
+      newHunger += lastHunger;
       newHunger = newHunger.clamp(0, 100);
       if (initialHunger == newHunger) return;
       if (kDebugMode) {

@@ -1,9 +1,7 @@
 import 'package:PawfectTasks/Components/Animations.dart';
-import 'package:PawfectTasks/Components/CustomBox.dart';
+import 'package:PawfectTasks/Components/profile.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import '../Components/NotLoggedIn.dart';
 import 'package:PawfectTasks/Components/CustomAppBar.dart';
@@ -33,241 +31,6 @@ class _StreakState extends State<Streaks>{
   int UStreak = 0;
   int Selected = 1;
   List<String> leagues = ['Rookie', 'Junior', 'Intermediate', 'Senior', 'Elite', 'Premier'];
-
-  Future<void> addFriend(String Fname) async{
-    final Fuser = await DataBase.userCollection?.child(Fname).get();
-    if (Fuser!.hasChild('pending_list')){
-      List PendingList = Fuser.child('pending_list').value as List;
-      if (PendingList.contains(Globals.user)){
-        GlobalVar.globalVar.showToast('A request has already been sent.');
-        return;
-      }
-      PendingList.add(Globals.user);
-      await Fuser.ref.update({
-        'pending_list' : PendingList,
-      });
-    }else{
-      await Fuser.ref.update({
-        'pending_list' : [Globals.user],
-      });
-    }
-  }
-
-  Future<void> openProfile(BuildContext context, UserI user, int friendCount) async{
-    bool loading = false;
-    bool friended = false;
-
-    Future<void> isFriend() async{
-      final userRef = await DataBase.userCollection?.child(Globals.user).get();
-      if (userRef!.hasChild('friend_list')) {
-        List FriendList = userRef.child('friend_list').value as List;
-        if (FriendList.contains(user.name)){
-          setState(() {
-            friended = true;
-          });
-          return;
-        }
-      }
-      setState(() {
-        friended = false;
-      });
-    }
-
-    try{
-      await isFriend();
-      await showDialog(context: context, builder: (context){
-        return StatefulBuilder(builder: (BuildContext context,StateSetter setState){
-          return SizedBox(height: 300,
-            child: AlertDialog(
-              elevation: 0.0,
-              scrollable: true,
-              alignment: Alignment.center,
-              backgroundColor: AppTheme.colors.friendlyBlack,
-              shadowColor: Colors.transparent,
-              shape: const RoundedRectangleBorder(side: BorderSide.none, borderRadius: BorderRadius.all(Radius.circular(16))),
-              content: SingleChildScrollView(
-                physics: const NeverScrollableScrollPhysics(),
-                child: Column(
-                children: [
-                  const CustomAppBar(),
-                  Container(
-                    width: 80,
-                    height: 80,
-                    decoration: BoxDecoration(
-                        color: AppTheme.colors.onsetBlue,
-                        shape: BoxShape.circle,
-                        boxShadow: const [BoxShadow(
-                          color: Colors.transparent,
-                          offset: Offset(0, 0),
-                          blurRadius: 30.0,
-                        ),
-                        ]
-                    ),
-                    child: Center(
-                      child: Text(user.name[0],
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontFamily: Globals.sysFont,
-                          fontSize: 40,
-                          color: AppTheme.colors.friendlyWhite,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 20,),
-                  Align(
-                    alignment: Alignment.centerLeft,
-                      child: Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child:Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                      children:[
-                        Text(user.name, style: TextStyle(fontFamily: Globals.sysFont, color: AppTheme.colors.friendlyWhite,fontWeight: FontWeight.w700),),
-                        const SizedBox(height: 5,),
-                        Text('$friendCount Friends', style: TextStyle(fontFamily: Globals.sysFont, color: AppTheme.colors.onsetBlue),),
-                        const SizedBox(height: 5,),
-                        user.name == Globals.user || friended ? const SizedBox.shrink() : loading==true? SpinKitThreeBounce(color: AppTheme.colors.onsetBlue,) : ElevatedButton(onPressed: (){
-                          setState((){
-                            loading = true;
-                          });
-                          addFriend(user.name).then((_){
-                            setState((){
-                              loading = false;
-                            });
-                          });
-                        },style:const ButtonStyle(
-                          padding: MaterialStatePropertyAll<EdgeInsets>(EdgeInsets.zero),
-                        ),
-                          child: CustomBox(
-                            height: 50,
-                            width: 100,
-                            border: Border(
-                                top: BorderSide(color: AppTheme.colors.darkOnsetBlue, width: 2.0, strokeAlign: BorderSide.strokeAlignInside),
-                                left: BorderSide(color: AppTheme.colors.darkOnsetBlue, width: 2.0, strokeAlign: BorderSide.strokeAlignInside),
-                                right: BorderSide(color: AppTheme.colors.darkOnsetBlue, width: 2.0, strokeAlign: BorderSide.strokeAlignInside),
-                                bottom: BorderSide(color: AppTheme.colors.darkOnsetBlue, width: 5.0, strokeAlign: BorderSide.strokeAlignInside)),
-                            shadow: Colors.transparent,
-                            color: AppTheme.colors.onsetBlue,
-                            child: Padding(
-                              padding: const EdgeInsets.all(5.0),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                              Icon(CupertinoIcons.person_add_solid, color: AppTheme.colors.friendlyWhite, size: 10,),
-                              const SizedBox(width: 10.0,),
-                              Text('Add Friend', style: TextStyle(fontFamily: Globals.sysFont, color: AppTheme.colors.friendlyWhite, fontSize: 9, fontWeight: FontWeight.w700),),
-                            ],),),
-                          ),
-                        ),
-                      ]),),),
-                  const SizedBox(height: 20,),
-                  Text('Stats', style: TextStyle(fontFamily: Globals.sysFont, color: AppTheme.colors.friendlyWhite, fontWeight: FontWeight.w700),),
-                  const SizedBox(height: 5,),
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: SizedBox(
-                    height: 250,
-                    child: GridView(
-                      physics: const NeverScrollableScrollPhysics(),
-                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2,crossAxisSpacing: 10.0, mainAxisSpacing: 10.0),
-                      children: [
-                        CustomBox(
-                          elevation: 24.0,
-                          border: Border(
-                              top: BorderSide(color: AppTheme.colors.blissCream, width: 1.0, strokeAlign: BorderSide.strokeAlignInside),
-                              left: BorderSide(color: AppTheme.colors.blissCream, width: 1.0, strokeAlign: BorderSide.strokeAlignInside),
-                              right: BorderSide(color: AppTheme.colors.blissCream, width: 1.0, strokeAlign: BorderSide.strokeAlignInside),
-                              bottom: BorderSide(color: AppTheme.colors.blissCream, width: 1.0, strokeAlign: BorderSide.strokeAlignInside)),
-                          shadow: Colors.transparent,
-                          color: AppTheme.colors.friendlyBlack,
-                          child: Padding(
-                            padding: const EdgeInsets.all(5.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Expanded(child: Image.asset('assets/streak_icon.png',),),
-                                const SizedBox(width: 5.0,),
-                                Expanded(flex: 2,child:Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text('${user.streak}', style: TextStyle(fontFamily: Globals.sysFont, color: AppTheme.colors.pukeOrange,fontWeight: FontWeight.w700, fontSize: 8),),
-                                    Text('Day Streak', style: TextStyle(fontFamily: Globals.sysFont, color: AppTheme.colors.blissCream, fontSize: 8),),
-                                  ],
-                                )),
-                              ],),),
-                        ),
-                        CustomBox(
-                          elevation: 24.0,
-                          border: Border(
-                              top: BorderSide(color: AppTheme.colors.blissCream, width: 1.0, strokeAlign: BorderSide.strokeAlignInside),
-                              left: BorderSide(color: AppTheme.colors.blissCream, width: 1.0, strokeAlign: BorderSide.strokeAlignInside),
-                              right: BorderSide(color: AppTheme.colors.blissCream, width: 1.0, strokeAlign: BorderSide.strokeAlignInside),
-                              bottom: BorderSide(color: AppTheme.colors.blissCream, width: 1.0, strokeAlign: BorderSide.strokeAlignInside)),
-                          shadow: Colors.transparent,
-                          color: AppTheme.colors.friendlyBlack,
-                          child: Padding(
-                            padding: const EdgeInsets.all(5.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Expanded(child: Image.asset('assets/xp_icon.png',),),
-                                const SizedBox(width: 5.0,),
-                                Expanded(flex: 2,child:Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text('${user.xp}', style: TextStyle(fontFamily: Globals.sysFont, color: AppTheme.colors.pukeOrange,fontWeight: FontWeight.w700, fontSize: 8),),
-                                    Text('Total XP', style: TextStyle(fontFamily: Globals.sysFont, color: AppTheme.colors.blissCream, fontSize: 8),),
-                                  ],
-                                )),
-                              ],),),
-                        ),
-                        CustomBox(
-                          elevation: 24.0,
-                          border: Border(
-                              top: BorderSide(color: AppTheme.colors.blissCream, width: 1.0, strokeAlign: BorderSide.strokeAlignInside),
-                              left: BorderSide(color: AppTheme.colors.blissCream, width: 1.0, strokeAlign: BorderSide.strokeAlignInside),
-                              right: BorderSide(color: AppTheme.colors.blissCream, width: 1.0, strokeAlign: BorderSide.strokeAlignInside),
-                              bottom: BorderSide(color: AppTheme.colors.blissCream, width: 1.0, strokeAlign: BorderSide.strokeAlignInside)),
-                          shadow: Colors.transparent,
-                          color: AppTheme.colors.friendlyBlack,
-                          child: Padding(
-                            padding: const EdgeInsets.all(5.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Expanded(child: Image.asset('assets/leagues/${user.league}.png',),),
-                                const SizedBox(width: 5.0,),
-                                Expanded(flex: 2, child:Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(user.league, style: TextStyle(fontFamily: Globals.sysFont, color: AppTheme.colors.pukeOrange,fontWeight: FontWeight.w700, fontSize: 8),),
-                                    Text('Current League', style: TextStyle(fontFamily: Globals.sysFont, color: AppTheme.colors.blissCream, fontSize: 8),),
-                                  ],
-                                )),
-                              ],),),
-                        ),
-                      ],
-                    ),
-                  ),
-                  ),
-                ],
-              ),
-            ),
-            ),
-          ).animate(effects: [
-            FadeEffect(duration: 200.ms, curve: Curves.fastLinearToSlowEaseIn),
-            ScaleEffect(duration: 200.ms, curve: Curves.easeIn)
-          ]);
-        });
-      });
-    } catch (e){
-      if(kDebugMode) print('Error: $e');
-    }
-  }
 
   Future<void> getData() async{
     final user = await DataBase.streakCollection?.child(Globals.user).get();
@@ -313,8 +76,19 @@ class _StreakState extends State<Streaks>{
        }
      } else if (Selected == 2){
        final user = await DataBase.userCollection?.child(Globals.user).get();
-       final friend_list = user?.child('friend_list').value as List;
+       List friend_list = [];
+       friend_list.addAll(user?.child('friend_list').value as List);
        if (friend_list.isEmpty) throw Exception('No friends to display');
+       int xpComparator(UserI a, UserI b) => b.xp.compareTo(a.xp);
+       for (var friend in friend_list){
+         final friend_ref = await DataBase.streakCollection?.child(friend).get();
+         String name = friend;
+         int xp = friend_ref?.child('xp').value as int;
+         int streak = friend_ref?.child('streak').value as int;
+         String? league = friend_ref?.child('league').value.toString();
+         leaderboard.add(UserI(name, xp, streak, league!));
+       }
+       leaderboard.sort(xpComparator);
      }
      return leaderboard;
    } catch(e){
@@ -536,7 +310,7 @@ class _StreakState extends State<Streaks>{
                                     onTap: () async{
                                       final ref = await DataBase.userCollection?.child(user.name).get();
                                       final int friendCount = ref?.child('friendCount').value as int;
-                                      openProfile(context, user, friendCount);
+                                      ProfileView.openProfile(context, user, friendCount);
                                     },
                                     child: ListTile(
                                   tileColor: AppTheme.colors.friendlyBlack,

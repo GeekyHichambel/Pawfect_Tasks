@@ -1,14 +1,16 @@
 import 'package:PawfectTasks/Components/Animations.dart';
 import 'package:PawfectTasks/Components/AppTheme.dart';
+import 'package:PawfectTasks/Components/profile.dart';
 import 'package:PawfectTasks/db/database.dart';
+import 'package:PawfectTasks/pages/streaks.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-
 import '../Components/CustomBox.dart';
 import '../Components/CustomTextField.dart';
+import '../Components/NotLoggedIn.dart';
 import '../GLOBALS.dart';
 
 class FriendPage extends StatefulWidget{
@@ -34,6 +36,37 @@ class FriendPageState extends State<FriendPage>{
       });
     });
   }
+
+  @override
+  void dispose(){
+    fNameC.dispose();
+    super.dispose();
+  }
+
+  Future<void> searchUser(BuildContext context,String Fname) async{
+    try{
+      if (Fname.isEmpty) {
+        GlobalVar.globalVar.showToast('Field Can\'t be left empty.');
+        throw Exception('Field Can\'t be left empty.');
+      }
+      final user = await DataBase.streakCollection?.child(Fname).get();
+      if (user == null || !user.exists){
+        GlobalVar.globalVar.showToast('Username is incorrect');
+        throw Exception('Username is incorrect');
+      }
+      final userInfo = await DataBase.userCollection?.child(Fname).get();
+      int xp = user.child('xp').value as int;
+      int streak = user.child('streak').value as int;
+      int friendsCount = userInfo?.child('friendCount').value as int;
+      String league = user.child('league').value.toString();
+      UserI userI = UserI(Fname, xp, streak, league);
+      ProfileView.openProfile(context, userI, friendsCount);
+    }catch (e){
+      if (kDebugMode) print('Error: $e');
+    }
+}
+
+
 
   Future<List> getRequests() async{
     try{
@@ -119,7 +152,9 @@ class FriendPageState extends State<FriendPage>{
     return Scaffold(
       backgroundColor: AppTheme.colors.friendlyWhite,
       body: Column(
-          children: [
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: Globals.LoggedIN? [
                 Padding(padding: const EdgeInsets.only(top: 20.0, left: 20.0, right: 20.0), child: Align(
                   alignment: Alignment.centerLeft,
                   child: FadeInAnimation(delay: 1.0,child:Text('Add a Friend',style: TextStyle(
@@ -155,7 +190,7 @@ class FriendPageState extends State<FriendPage>{
                       textColor: AppTheme.colors.onsetBlue,
                       suffixIcon: IconButton(
                         icon: const Icon(CupertinoIcons.search,), onPressed: () {
-
+                          searchUser(context, fNameC.text);
                       },
                         color: AppTheme.colors.onsetBlue,
                       ),
@@ -258,6 +293,8 @@ class FriendPageState extends State<FriendPage>{
                                 ),),),
                             )
                         ),
+          ] : [
+            const NotLoggedInWidget(),
           ],
       ),
     );

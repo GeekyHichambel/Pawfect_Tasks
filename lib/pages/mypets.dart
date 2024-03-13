@@ -140,6 +140,7 @@ class _MyPetState extends State<MyPet> with SingleTickerProviderStateMixin{
         await user?.child('petStatus/labra').ref.update({
           'starvation' : newHunger,
           'lastFed' : TZDateTime.now(getLocation('Asia/Kolkata')).toString(),
+          'lastHunger' : hunger,
         });
         getPetDetails();
       }
