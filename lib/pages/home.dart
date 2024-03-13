@@ -145,7 +145,7 @@ class _MainPageState extends State<MainPage>{
         useLegacyColorScheme: false,
         items: <BottomNavigationBarItem>[
           customNavigationBarItem(Icons.home, ''),
-          customNavigationBarItem(CupertinoIcons.person_2_alt, ''),
+          customNavigationBarItem(Icons.person_add_rounded, ''),
           customNavigationBarItem(Icons.pets_rounded, ''),
           customNavigationBarItem(Icons.shopping_cart_rounded, '')
         ],

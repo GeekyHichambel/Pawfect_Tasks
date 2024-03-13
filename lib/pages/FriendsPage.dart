@@ -157,12 +157,18 @@ class FriendPageState extends State<FriendPage>{
           children: Globals.LoggedIN? [
                 Padding(padding: const EdgeInsets.only(top: 20.0, left: 20.0, right: 20.0), child: Align(
                   alignment: Alignment.centerLeft,
-                  child: FadeInAnimation(delay: 1.0,child:Text('Add a Friend',style: TextStyle(
-                    fontFamily: Globals.sysFont,
-                    color: AppTheme.colors.friendlyBlack,
-                    fontWeight: FontWeight.w700,
-                    fontSize: 24,
-                  ),),),
+                  child: FadeInAnimation(delay: 1.0,child:Row(
+                    children: [
+                      Text('Add a Friend',style: TextStyle(
+                        fontFamily: Globals.sysFont,
+                        color: AppTheme.colors.friendlyBlack,
+                        fontWeight: FontWeight.w700,
+                        fontSize: 24,
+                      ),),
+                      const SizedBox(width: 8.0,),
+                      Icon(Icons.person_search_rounded, color: AppTheme.colors.friendlyBlack,size: 32,),
+                    ],
+                  )),
                 ),),
                 const SizedBox(height: 20,),
                 Container(

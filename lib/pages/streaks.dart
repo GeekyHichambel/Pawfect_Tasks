@@ -2,6 +2,7 @@ import 'package:PawfectTasks/Components/Animations.dart';
 import 'package:PawfectTasks/Components/profile.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import '../Components/NotLoggedIn.dart';
 import 'package:PawfectTasks/Components/CustomAppBar.dart';
@@ -74,8 +75,16 @@ class _StreakState extends State<Streaks>{
            leaderboard.add(UserI(name, xp, streak, league!));
          }
        }
+       bool inLeaderboard = leaderboard.any((user) => user.name == Globals.user);
+       if (!inLeaderboard){
+         if (leaderboard.length >= 25) leaderboard.removeLast();
+         leaderboard.add(UserI(Globals.user, user?.child('xp').value as int, user?.child('streak').value as int, league!));
+       }
+       int xpComparator(UserI a, UserI b) => b.xp.compareTo(a.xp);
+       leaderboard.sort(xpComparator);
      } else if (Selected == 2){
        final user = await DataBase.userCollection?.child(Globals.user).get();
+       final user_ref = await DataBase.streakCollection?.child(Globals.user).get();
        List friend_list = [];
        friend_list.addAll(user?.child('friend_list').value as List);
        if (friend_list.isEmpty) throw Exception('No friends to display');
@@ -88,6 +97,7 @@ class _StreakState extends State<Streaks>{
          String? league = friend_ref?.child('league').value.toString();
          leaderboard.add(UserI(name, xp, streak, league!));
        }
+       leaderboard.add(UserI(Globals.user, user_ref?.child('xp').value as int, user_ref?.child('streak').value as int, user_ref!.child('league').value.toString()));
        leaderboard.sort(xpComparator);
      }
      return leaderboard;
@@ -253,8 +263,7 @@ class _StreakState extends State<Streaks>{
                 ],
               ),
             ),
-            const SizedBox(height: 30,),
-            Align(alignment: Alignment.centerRight,
+            Container(color: AppTheme.colors.friendlyWhite, margin: const EdgeInsets.only(bottom: 10.0),child: Align(alignment: Alignment.centerRight,
                 child: Padding(padding: const EdgeInsets.only(right: 16.0), child: Row(
                     mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -277,7 +286,7 @@ class _StreakState extends State<Streaks>{
                       },
                       child: Icon(CupertinoIcons.person_2_fill, color: Selected == 2? AppTheme.colors.friendlyWhite : AppTheme.colors.onsetBlue, size: 16,)),),
                 ],
-              ),),
+              ),),),
             ),
             Expanded(child: FutureBuilder<List<UserI>>(
                   future: updateLeaderboard(),
@@ -299,10 +308,10 @@ class _StreakState extends State<Streaks>{
                       );
                     } else{
                       return Padding(
-                        padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 16.0,),
+                        padding: const EdgeInsets.only(left: 16.0, right: 16.0,),
                         child: ListView.builder(
                             itemCount: snapshot.data!.length,
-                            physics: const RangeMaintainingScrollPhysics(),
+                            physics: const AlwaysScrollableScrollPhysics(),
                             itemBuilder: (context, index){
                               UserI user = snapshot.data![index];
                               return Padding(padding: const EdgeInsets.only(bottom: 5.0),
