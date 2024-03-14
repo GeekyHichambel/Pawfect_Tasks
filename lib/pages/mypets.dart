@@ -298,7 +298,7 @@ class _MyPetState extends State<MyPet> with SingleTickerProviderStateMixin{
         });
       }
     }, onError: (error){
-      if (kDebugMode) print('Error in DB: $e');
+      if (kDebugMode) print('Error in DB: $error');
     });
   }
 

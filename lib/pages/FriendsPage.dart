@@ -6,7 +6,6 @@ import 'package:PawfectTasks/pages/streaks.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import '../Components/CustomBox.dart';
 import '../Components/CustomTextField.dart';
@@ -26,6 +25,7 @@ class FriendPageState extends State<FriendPage>{
   @override
   void initState() {
     super.initState();
+    setupListener();
     fNfocusNode.addListener(() {
       setState(() {
         if (fNfocusNode.hasFocus) {
@@ -41,6 +41,29 @@ class FriendPageState extends State<FriendPage>{
   void dispose(){
     fNameC.dispose();
     super.dispose();
+  }
+
+  void setupListener(){
+    DataBase.userCollection?.child(Globals.user).child('pending_list').onValue.listen((event) async{
+      if (event.snapshot.value != null) {
+        if (mounted) {
+          setState(() {
+            getRequests();
+          });
+        }
+      }
+    },onError: (e){
+      if(kDebugMode) print('Error in DB: $e');
+    });
+    DataBase.userCollection?.child(Globals.user).child('pending_list').onChildRemoved.listen((event) async{
+      if (event.snapshot.value != null){
+        if (mounted){
+          setState(() {
+            getRequests();
+          });
+        }
+      }
+    });
   }
 
   Future<void> searchUser(BuildContext context,String Fname) async{
@@ -247,7 +270,16 @@ class FriendPageState extends State<FriendPage>{
                                                  final user = snapshot.data![index];
                                                  return Padding(
                                                    padding: const EdgeInsets.only(bottom: 5.0),
-                                                   child: ListTile(
+                                                   child: GestureDetector(onTap: () async{
+                                                     final userSInfo = await DataBase.streakCollection?.child(user).get();
+                                                     final userInfo = await DataBase.userCollection?.child(user).get();
+                                                     int xp = userSInfo?.child('xp').value as int;
+                                                     int streak = userSInfo?.child('streak').value as int;
+                                                     int friendsCount = userInfo?.child('friendCount').value as int;
+                                                     String league = userSInfo!.child('league').value.toString();
+                                                     UserI userI = UserI(user, xp, streak, league);
+                                                     ProfileView.openProfile(context, userI, friendsCount);
+                                                   },child: ListTile(
                                                      tileColor: AppTheme.colors.friendlyBlack,
                                                      shape: RoundedRectangleBorder(side: BorderSide(color: AppTheme.colors.blissCream),borderRadius: const BorderRadius.all(Radius.circular(16.0))),
                                                      title: Text(user.toString().length > 8 ? '${user.toString().substring(0,5)}...': user.toString(), style: TextStyle(color: AppTheme.colors.friendlyWhite, fontWeight: FontWeight.w700,fontFamily: Globals.sysFont, fontSize: 16)),
@@ -290,7 +322,7 @@ class FriendPageState extends State<FriendPage>{
                                                              child: const Icon(CupertinoIcons.multiply, color: Colors.red, size: 12,)),),
                                                        ],
                                                      ),
-                                                   ),),
+                                                   ),),),
                                                  );
                                            }),
                                        );

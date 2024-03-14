@@ -26,25 +26,21 @@ class MarketPlace extends StatefulWidget{
 }
 
 class MarketPlaceState extends State<MarketPlace>{
-  late int cPawCoin = 0;
-  late int cPetFood = 0;
-  bool loading = false;
+  var cPawCoin = ValueNotifier(0);
+  var cPetFood = ValueNotifier(0);
+  var loading = ValueNotifier(false);
   
   void setupUpdateListener(){
     DataBase.itemCollection?.child(Globals.user).child('pawCoin').onValue.listen((event) async { 
       if (event.snapshot.value != null){
         final user = await DataBase.itemCollection?.child(Globals.user).get();
-        setState(() {
-          cPawCoin = user?.child('pawCoin').value as int;
-        });
+          cPawCoin.value = user?.child('pawCoin').value as int;
       }
     });
     DataBase.itemCollection?.child(Globals.user).child('petFood').onValue.listen((event) async {
       if (event.snapshot.value != null){
         final user = await DataBase.itemCollection?.child(Globals.user).get();
-        setState(() {
-          cPetFood = user?.child('petFood').value as int;
-        });
+          cPetFood.value = user?.child('petFood').value as int;
       }
     });
   }
@@ -82,9 +78,7 @@ Future<void> buyFood(BuildContext context,int foodValue, int cost) async{
     final int currentPetFood = user?.child('petFood').value as int;
     if (currentPawCoins < cost){
       GlobalVar.globalVar.showToast('You don\'t have enough Paw Coins.');
-      setState(() {
-        loading = false;
-      });
+      loading.value = false;
       return;
     }
     final newPawCoins = currentPawCoins - cost;
@@ -137,18 +131,16 @@ Future<void> openDialog(BuildContext context, name, price, foodValue) async{
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        loading? SpinKitThreeBounce(color: AppTheme.colors.onsetBlue,) :  ElevatedButton(onPressed: (){
-                          setState(() {
-                            loading = true;
-                          });
+                        ValueListenableBuilder(valueListenable: loading, builder: (context,value,child){
+                          return value? SpinKitThreeBounce(color: AppTheme.colors.onsetBlue,) :  ElevatedButton(onPressed: (){
+                          loading.value = true;
                           buyFood(context, foodValue, price).then((_){
-                            setState(() {
-                              loading = false;
-                            });
-                            Navigator.of(context).pop();
+                          loading.value = false;
+                          Navigator.of(context).pop();
                           });
-                        }, style: ButtonStyle(backgroundColor: MaterialStatePropertyAll<Color>(AppTheme.colors.friendlyWhite,)),
-                            child: const Text('Hell Yeah!', style: TextStyle(color: Colors.green),)),
+                          }, style: ButtonStyle(backgroundColor: MaterialStatePropertyAll<Color>(AppTheme.colors.friendlyWhite,)),
+                          child: const Text('Hell Yeah!', style: TextStyle(color: Colors.green),));
+                        }),
                         ElevatedButton(onPressed: (){
                           Navigator.of(context).pop();
                         }, style: ButtonStyle(backgroundColor: MaterialStatePropertyAll<Color>(AppTheme.colors.friendlyWhite)),
@@ -193,7 +185,9 @@ Future<void> openDialog(BuildContext context, name, price, foodValue) async{
               FadeInAnimation(delay: 1, child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  Text('$cPetFood', style: TextStyle(fontSize: 12, fontFamily: Globals.sysFont, color: AppTheme.colors.onsetBlue),),
+                  ValueListenableBuilder(valueListenable: cPetFood, builder: (context, value, child){
+                    return Text('$value', style: TextStyle(fontSize: 12, fontFamily: Globals.sysFont, color: AppTheme.colors.onsetBlue),);
+                  }),
                   const SizedBox(width: 5,),
                   Image.asset('assets/foodIcon.png', width: 20, height: 20,),
                   const SizedBox(width: 15,),
@@ -215,7 +209,9 @@ Future<void> openDialog(BuildContext context, name, price, foodValue) async{
                     ),
                   ),
                   const SizedBox(width: 5,),
-                  Text('$cPawCoin', style: TextStyle(fontSize: 12, fontFamily: Globals.sysFont, color: AppTheme.colors.onsetBlue),),
+                  ValueListenableBuilder(valueListenable: cPawCoin, builder: (context, value, child){
+                    return Text('$value', style: TextStyle(fontSize: 12, fontFamily: Globals.sysFont, color: AppTheme.colors.onsetBlue),);
+                  }),
                   const SizedBox(width: 5,),
                   Image.asset('assets/pawCoin.png', width: 20, height: 20,),
                 ],
