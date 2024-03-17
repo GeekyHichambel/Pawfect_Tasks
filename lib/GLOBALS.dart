@@ -14,6 +14,7 @@ class Globals {
   static FlutterSecureStorage prefs = const FlutterSecureStorage();
   static late bool LoggedIN;
   static late String user;
+  static late int currentImage;
 
   static Future<void> updatePetStatus() async {
     if (LoggedIN) {
@@ -21,6 +22,12 @@ class Globals {
       int initialHunger = data
           ?.child('petStatus/labra/starvation')
           .value as int;
+      int hp = data?.child('petStatus/labra/health').value as int;
+      if (hp == 0){
+        currentImage = 1;
+      }else{
+        currentImage = 0;
+      }
       if (initialHunger == 100) return;
       TZDateTime lastFed = TZDateTime.parse(getLocation('Asia/Kolkata'),data!.child('petStatus/labra/lastFed').value.toString());
       Duration timeDifference = TZDateTime.now(getLocation('Asia/Kolkata')).difference(lastFed);

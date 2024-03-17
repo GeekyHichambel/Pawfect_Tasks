@@ -76,6 +76,7 @@ class _LoginState extends State<LoginPage>{
       await Globals.prefs.write(key: 'user', value: username);
       Globals.LoggedIN = true;
       Globals.user = username;
+      await Globals.updatePetStatus();
       GlobalVar.globalVar.showToast('Successfully logged in!');
     } catch (e){
       if (kDebugMode){

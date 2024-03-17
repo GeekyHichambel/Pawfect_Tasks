@@ -21,7 +21,10 @@ class MyPet extends StatefulWidget{
 }
 
 class _MyPetState extends State<MyPet> with SingleTickerProviderStateMixin{
-  final ImageProvider imageProvider = const CachedNetworkImageProvider('https://media.discordapp.net/attachments/1159106537881600043/1216283353603506176/DogIdle.gif?ex=65ffd324&is=65ed5e24&hm=1f76935e7ead1b7180b8f4fbb194cce4a9a1153c6d67e27cabded6f072e820eb&=&width=681&height=681');
+  final List<ImageProvider> imageProvider = [
+    const CachedNetworkImageProvider('https://media.discordapp.net/attachments/1159106537881600043/1216283353603506176/DogIdle.gif?ex=65ffd324&is=65ed5e24&hm=1f76935e7ead1b7180b8f4fbb194cce4a9a1153c6d67e27cabded6f072e820eb&=&width=681&height=681'),
+    const CachedNetworkImageProvider('https://cdn.discordapp.com/attachments/767980613960990727/1218234199262101625/rip.gif?ex=6606ec02&is=65f47702&hm=a8b315bd79f8abc27fc9ccf15f022d553029e03d40d6b77703cbeba7dc12e7e7&'),
+  ];
   late String cPetName = 'Labra';
   late int cPetHp = 100;
   late int cPetHunger = 0;
@@ -50,12 +53,12 @@ class _MyPetState extends State<MyPet> with SingleTickerProviderStateMixin{
       String? mood = user?.child('petStatus/labra/mood').value.toString();
       if (cPetName != nickname || cPetHp != hp || cPetHunger != hunger || cPetMood != mood) {
         if (mounted) {
-          setState(() {
-            cPetName = nickname!;
-            cPetHp = hp;
-            cPetHunger = hunger;
-            cPetMood = mood!;
-          });
+            setState(() {
+              cPetName = nickname!;
+              cPetHp = hp;
+              cPetHunger = hunger;
+              cPetMood = mood!;
+            });
         }
       }
       if (cPetHunger > 0 || cPetHp < 100){
@@ -89,6 +92,7 @@ class _MyPetState extends State<MyPet> with SingleTickerProviderStateMixin{
       });
     }
   }
+
   Future<void> nameChange() async{
     try {
       String nickN = NameC.text;
@@ -128,17 +132,28 @@ class _MyPetState extends State<MyPet> with SingleTickerProviderStateMixin{
         final user = await DataBase.petsCollection?.child(Globals.user).get();
         final initialFood = itemRef?.child('petFood').value as int;
         final int hunger = user?.child('petStatus/labra/starvation').value as int;
+        final int health = user?.child('petStatus/labra/health').value as int;
         int ToSpend = Tofeed;
-        if (Tofeed > hunger){
-          Tofeed = hunger;
+        int newHunger=hunger;
+        final int newFood;
+        int newHealth=100;
+        if (health < 100){
+          newHealth = health + Tofeed;
+          if (newHealth > 100){
+            newHunger = hunger - (newHealth - 100);
+          }
+        }else {
+          newHunger = hunger - Tofeed;
         }
-        final int newHunger = hunger - Tofeed;
-        final int newFood = initialFood - ToSpend;
+        newHealth = newHealth.clamp(0, 100);
+        newHunger = newHunger.clamp(0, 100);
+        newFood = initialFood - ToSpend;
         await itemRef?.ref.update({
           'petFood' : newFood,
         });
         await user?.child('petStatus/labra').ref.update({
           'starvation' : newHunger,
+          'health' : newHealth,
           'lastFed' : TZDateTime.now(getLocation('Asia/Kolkata')).toString(),
           'lastHunger' : newHunger,
         });
@@ -324,7 +339,8 @@ class _MyPetState extends State<MyPet> with SingleTickerProviderStateMixin{
 
   @override
   Widget build(BuildContext context){
-    precacheImage(imageProvider, context);
+    precacheImage(imageProvider[0], context);
+    precacheImage(imageProvider[1], context);
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Padding(
@@ -345,14 +361,14 @@ class _MyPetState extends State<MyPet> with SingleTickerProviderStateMixin{
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(12.0),
                       child: Image(
-                          image: imageProvider,
+                          image: imageProvider[Globals.currentImage],
                       ),
                     ),
                 ),
             ) ,
             ),
             const SizedBox(height: 20,),
-            Row(
+            cPetHp == 0? Text('Shame on you!!',style: TextStyle(color: AppTheme.colors.friendlyBlack, fontFamily: Globals.sysFont, fontSize: 18)) : Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 ElevatedButton(onPressed: (){
@@ -471,7 +487,7 @@ class _MyPetState extends State<MyPet> with SingleTickerProviderStateMixin{
                                       children: [
                                         Text(cPetName.length>8? '${cPetName.substring(0,5)}...': cPetName, style: TextStyle(color: AppTheme.colors.friendlyWhite, fontFamily: Globals.sysFont, fontSize: 20),),
                                         const SizedBox(width: 10,),
-                                        IconButton(onPressed: (){
+                                        cPetHp == 0? const SizedBox.shrink() : IconButton(onPressed: (){
                                           openDialog(context);
                                         }, icon: const Icon(Icons.edit_rounded), color: AppTheme.colors.friendlyWhite)
                                       ],
@@ -489,7 +505,7 @@ class _MyPetState extends State<MyPet> with SingleTickerProviderStateMixin{
                                                 shadow: Colors.transparent,
                                                 child:  Padding(
                                                   padding: const EdgeInsets.all(2.0),
-                                                  child: Text('$cPetHp', style: TextStyle(color: cPetHp <= 20? Colors.red : cPetHp <=50? Colors.orange : cPetHp <= 80? Colors.yellow : Colors.lightGreen,  fontFamily: Globals.sysFont,),),
+                                                  child: Text(cPetHp == 0? '☠' : '$cPetHp', style: TextStyle(color: cPetHp <= 20? Colors.red : cPetHp <=50? Colors.orange : cPetHp <= 80? Colors.yellow : Colors.lightGreen,  fontFamily: Globals.sysFont,),),
                                                 ),
                                             ),
                                           ],
@@ -503,7 +519,7 @@ class _MyPetState extends State<MyPet> with SingleTickerProviderStateMixin{
                                               shadow: Colors.transparent,
                                               child:  Padding(
                                                 padding: const EdgeInsets.all(2.0),
-                                                child: Text('$cPetHunger', style: TextStyle(color: cPetHunger <= 20? Colors.lightGreen : cPetHp <=50? Colors.yellow : cPetHp <= 80? Colors.orange : Colors.red, fontFamily: Globals.sysFont,),),
+                                                child: Text(cPetHp == 0? '☠' : '$cPetHunger', style: TextStyle(color: cPetHunger <= 20? Colors.lightGreen : cPetHunger <=50? Colors.yellow : cPetHunger <= 80? Colors.orange : Colors.red, fontFamily: Globals.sysFont,),),
                                               ),
                                             ),
                                           ],
@@ -517,7 +533,7 @@ class _MyPetState extends State<MyPet> with SingleTickerProviderStateMixin{
                                               shadow: Colors.transparent,
                                               child:  Padding(
                                                 padding: const EdgeInsets.all(2.0),
-                                                child: Text(cPetMood, style: TextStyle(color: cPetMood == 'Happy'? Colors.pink : cPetMood == 'Normal' ? Colors.lightGreen : cPetMood == 'Sad' ? Colors.blueAccent : Colors.red, fontFamily: Globals.sysFont,),),
+                                                child: Text(cPetHp == 0? '☠' : cPetMood, style: TextStyle(color: cPetMood == 'Happy'? Colors.pink : cPetMood == 'Normal' ? Colors.lightGreen : cPetMood == 'Sad' ? Colors.blueAccent : Colors.red, fontFamily: Globals.sysFont,),),
                                               ),
                                             ),
                                           ],
