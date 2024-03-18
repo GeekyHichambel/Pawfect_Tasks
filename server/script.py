@@ -150,7 +150,7 @@ def update_hp(petStatsRef, petStats, pet_name, timeDifference):
 
         hp = petStats.get('health')
         new_hp = int((timeDifferenceHours // 2) * 10)
-        new_hp = hp - new_hp
+        new_hp = 100 - new_hp
         new_hp = min(max(new_hp, 0), 100)
 
         if hp == new_hp:
