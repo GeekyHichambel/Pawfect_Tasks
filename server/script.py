@@ -86,7 +86,7 @@ def update_hunger():
                             else:
                                 if hunger == 100:
                                     title = "Shame on you!!"
-                                    body = f"Hi, {username}.\nYour laziness resulted in the death of poor {nickname}.\nR.I.P⚰ {nickname}."
+                                    body = f"Hi, {username}.\nYour laziness resulted in the death of poor {nickname}.\nR.I.P ⚰️ {nickname}."
 
                                 else:
                                     title = "Your Pet needs you!!"
