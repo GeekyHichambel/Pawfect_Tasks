@@ -42,16 +42,10 @@ def update_hunger():
             for pet_name, pet_stats in pet_status_ref.get().items():
 
                 health = pet_stats.get('health')
-
-                if health == 0:
-                    print(f'(!) Bitch Got him dead\n')
-                    continue
-
                 last_fed = pet_stats.get('lastFed')
                 hunger = pet_stats.get('starvation')
                 last_hunger = pet_stats.get('lastHunger')
                 nickname = pet_stats.get('nickname')
-
                 date_format = "%Y-%m-%d %H:%M:%S.%f%z"
                 last_fed_time = datetime.strptime(last_fed, date_format)
                 time_difference_hours = None
@@ -84,16 +78,19 @@ def update_hunger():
                                 print(f'(-) No FCM tokens found for {username}. Notifications can\'t be sent.\n')
 
                             else:
-                                if hunger == 100:
-                                    title = "Shame on you!!"
-                                    body = f"Hi, {username}.\nYour laziness resulted in the death of poor {nickname}.\nR.I.P ⚰️ {nickname}."
+                                title = ''
+                                body = ''
 
-                                else:
+                                if hunger == 100 and health > 0:
                                     title = "Your Pet needs you!!"
                                     body = f'Hi, {username}.\n{nickname} is quite hungry and waiting to be fed. Hop on the app to feed him'
 
+                                elif health == 0:
+                                    title = "Shame on you!!"
+                                    body = f"Hi, {username}.\nYour laziness resulted in the death of poor {nickname}.\nR.I.P ⚰️ {nickname}"
+
                                 message = messaging.MulticastMessage(
-                                    notification=messaging.Notification(
+                                     notification=messaging.Notification(
                                         title=title,
                                         body=body,
                                     ),
