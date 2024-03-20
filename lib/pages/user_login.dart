@@ -186,7 +186,7 @@ class _LoginState extends State<LoginPage>{
                             Padding(padding: const EdgeInsetsDirectional.only(start: 8),
                               child: GestureDetector(
                                 onTap: (){
-
+                                  Navigator.of(context).pushReplacementNamed('/Uforgot');
                                 },
                                 child: Text('Forgot Password',
                                   style: TextStyle(

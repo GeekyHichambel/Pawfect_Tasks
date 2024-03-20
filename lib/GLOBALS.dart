@@ -1,4 +1,5 @@
 import 'package:PawfectTasks/db/database.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gif_plus/flutter_gif_plus.dart';
@@ -14,7 +15,11 @@ class Globals {
   static FlutterSecureStorage prefs = const FlutterSecureStorage();
   static late bool LoggedIN;
   static late String user;
+  static late String profilepicurl;
   static late int currentImage;
+  static late bool isprofilepic;
+  static const int focused = 1;
+  static const int unfocused = 2;
 
   static Future<void> updatePetStatus() async {
     if (LoggedIN) {
@@ -46,6 +51,17 @@ class Globals {
         'starvation': newHunger,
       });
     }
+  }
+
+  static Future<void> checkProfilePicUploaded() async{
+    Reference? reference = DataBase.userPicsStorage?.child(Globals.user);
+    if (reference == null){
+      isprofilepic = false;
+    }else{
+      isprofilepic = true;
+      profilepicurl = await reference.getDownloadURL();
+    }
+    if(kDebugMode) print('ProfilePic: $isprofilepic');
   }
 
   static Future<void> lastOnline() async{

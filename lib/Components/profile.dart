@@ -1,3 +1,4 @@
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -68,6 +69,23 @@ class ProfileView{
   static Future<void> openProfile(BuildContext context, UserI user, int friendCount) async{
     bool loading = false;
     bool friended = false;
+    bool isProfilepic = false;
+    String profilepicurl = '';
+
+    Future<void> getPic() async{
+      Reference? reference = DataBase.userPicsStorage?.child(user.name);
+      try {
+        if (reference == null) {
+          isProfilepic = false;
+        } else {
+          isProfilepic = true;
+          profilepicurl = await reference.getDownloadURL();
+        }
+      } catch (e){
+        if(kDebugMode) print('Error: $e');
+        isProfilepic = false;
+      }
+    }
 
     Future<void> isFriend() async{
       final userRef = await DataBase.userCollection?.child(Globals.user).get();
@@ -83,6 +101,7 @@ class ProfileView{
 
     try{
       await isFriend();
+      await getPic();
       await showDialog(context: context, builder: (context){
         return StatefulBuilder(builder: (BuildContext context,StateSetter setState){
           return SizedBox(height: 300,
@@ -102,7 +121,8 @@ class ProfileView{
                       width: 80,
                       height: 80,
                       decoration: BoxDecoration(
-                          color: AppTheme.colors.onsetBlue,
+                          border: Border.all(color: AppTheme.colors.friendlyBlack, width: 2.0),
+                          color: isProfilepic? AppTheme.colors.friendlyWhite : AppTheme.colors.onsetBlue,
                           shape: BoxShape.circle,
                           boxShadow: const [BoxShadow(
                             color: Colors.transparent,
@@ -111,7 +131,17 @@ class ProfileView{
                           ),
                           ]
                       ),
-                      child: Center(
+                      child: isProfilepic? ClipOval(
+                        child: Image.network(profilepicurl, fit: BoxFit.cover, loadingBuilder: (BuildContext context, Widget child,ImageChunkEvent? event){
+                          if (event == null){
+                            return child;
+                          }else {
+                            return SpinKitThreeBounce(
+                              color: AppTheme.colors.friendlyWhite,
+                            );
+                          }
+                        },),
+                      ) : Center(
                         child: Text(user.name[0],
                           textAlign: TextAlign.center,
                           style: TextStyle(

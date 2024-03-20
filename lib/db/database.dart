@@ -22,6 +22,7 @@ class DataBase{
   static DatabaseReference? petsCollection;
   static DatabaseReference? leaderboardCollection;
   static Reference? marketStorage;
+  static Reference? userPicsStorage;
   static FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
   static AndroidNotificationChannel androidChannel = const AndroidNotificationChannel(
       'high_importance_channel',
@@ -134,6 +135,7 @@ class DataBase{
     petsCollection = firebaseDatabase?.ref().child(PETS_COLLECTION);
     leaderboardCollection = firebaseDatabase?.ref().child(LEADERBOARD_COLLECTION);
     marketStorage = FirebaseStorage.instance.ref().child('pics');
+    userPicsStorage = FirebaseStorage.instance.ref().child('users_pics');
     tz.initializeTimeZones();
     if (kDebugMode) {
       firebaseDatabase?.setLoggingEnabled(true);

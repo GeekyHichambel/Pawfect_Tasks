@@ -47,6 +47,7 @@ class _SplashScreenState  extends State<SplashScreen> with SingleTickerProviderS
     await Globals.updatePref();
     await Globals.updatePetStatus();
     await Globals.lastOnline();
+    await Globals.checkProfilePicUploaded();
   }
 
   void navigateToHome(BuildContext context) {

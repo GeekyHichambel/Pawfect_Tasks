@@ -15,6 +15,10 @@ class CustomTextField extends StatelessWidget{
   final FocusNode? focusNode;
   final Widget? suffixIcon;
   final int? maxLines;
+  final bool readOnly;
+  final bool enabled;
+  final bool canRequestFocus;
+  final int? type;
 
   const CustomTextField({
     super.key,
@@ -31,6 +35,10 @@ class CustomTextField extends StatelessWidget{
     this.labelColor,
     this.controller,
     this.maxLines,
+    this.type,
+    this.canRequestFocus = true,
+    this.enabled = true,
+    this.readOnly = false,
   });
 
   @override
@@ -40,10 +48,12 @@ class CustomTextField extends StatelessWidget{
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
       color: bgColor,
       child: TextField(
+          enabled: enabled,
+          readOnly: readOnly,
           maxLines: maxLines,
           controller: controller,
           keyboardType: inputType,
-          enableInteractiveSelection: false,
+          enableInteractiveSelection: true,
           autocorrect: false,
           focusNode: focusNode,
           obscureText: obscureText,
@@ -56,15 +66,19 @@ class CustomTextField extends StatelessWidget{
             ),
             contentPadding: const EdgeInsetsDirectional.symmetric(horizontal: 10.0,vertical: 16.0),
             labelText: labelText,
-            border: const OutlineInputBorder(
-              borderRadius: BorderRadius.all(Radius.circular(16.0)),
-              borderSide: BorderSide.none,
+            disabledBorder: OutlineInputBorder(
+                borderRadius: const BorderRadius.all(Radius.circular(16.0)),
+                borderSide: BorderSide(color: borderColor, width: 1),),
+            border: OutlineInputBorder(
+              borderRadius: const BorderRadius.all(Radius.circular(16.0)),
+              borderSide: type == Globals.focused?  BorderSide(color: borderColor, width: 1) : BorderSide.none,
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: const BorderRadius.all(Radius.circular(16.0)),
               borderSide: BorderSide(color: borderColor, width: 1),
             ),
           ),
+          canRequestFocus: canRequestFocus,
           cursorColor: cursorColor,
           style: TextStyle(
             color: textColor,

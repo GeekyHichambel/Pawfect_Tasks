@@ -16,7 +16,6 @@ class ProfilePane extends StatefulWidget{
 }
 
 class _ProfilePaneState extends State<ProfilePane>{
-  bool imageUp = false;
   bool result = false;
   bool loading = false;
 
@@ -146,17 +145,12 @@ class _ProfilePaneState extends State<ProfilePane>{
                   children: [
                     const SizedBox(height: 30.0,),
                     Center(
-                      child: Material(
-                        elevation: 5.0,
-                        shadowColor: Colors.transparent,
-                        shape: CircleBorder(
-                          side: BorderSide(color: AppTheme.colors.onsetBlue, width: 2.5),
-                        ),
-                        child: Container(
+                      child: Container(
                           width: 200,
                           height: 200,
                           decoration: BoxDecoration(
-                              color: AppTheme.colors.onsetBlue,
+                              border: Border.all(color: AppTheme.colors.friendlyBlack, width: 2.0),
+                              color: Globals.isprofilepic? AppTheme.colors.friendlyWhite : AppTheme.colors.onsetBlue,
                               shape: BoxShape.circle,
                               boxShadow: const [BoxShadow(
                                 color: Colors.transparent,
@@ -165,9 +159,18 @@ class _ProfilePaneState extends State<ProfilePane>{
                               ),
                               ]
                           ),
-                          child: Center(
-                            child: imageUp? null :
-                            Text(Globals.user.isEmpty? 'F' : Globals.user[0],
+                          child: Globals.isprofilepic? ClipOval(
+                            child: Image.network(Globals.profilepicurl, fit: BoxFit.cover, loadingBuilder: (BuildContext context, Widget child,ImageChunkEvent? event){
+                              if (event == null){
+                                return child;
+                              }else {
+                                return SpinKitThreeBounce(
+                                  color: AppTheme.colors.friendlyWhite,
+                                );
+                              }
+                            },),
+                          ): Center(
+                            child: Text(Globals.user.isEmpty? 'F' : Globals.user[0],
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 fontFamily: Globals.sysFont,
@@ -178,7 +181,7 @@ class _ProfilePaneState extends State<ProfilePane>{
                             ),
                           ),
                         ),
-                      )),
+                      ),
                     const SizedBox(height: 20.0,),
                     Padding(padding: const EdgeInsetsDirectional.all(16.0),
                       child: FadeInAnimation(delay: 1,child: ListView(

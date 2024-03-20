@@ -6,6 +6,7 @@ import 'package:PawfectTasks/pages/settings/killM.dart';
 import 'package:PawfectTasks/pages/settings/notif.dart';
 import 'package:PawfectTasks/pages/settings/uInfo.dart';
 import 'package:PawfectTasks/pages/settings/user_customization.dart';
+import 'package:PawfectTasks/pages/user_forgot.dart';
 import 'package:flutter/material.dart';
 import 'package:PawfectTasks/Components/AppTheme.dart';
 import 'package:PawfectTasks/pages/ProfilePane.dart';
@@ -28,6 +29,7 @@ Future<void> main() async {
         '/streaks': (context) => const Streaks(),
         '/Ulogin': (context) => const LoginPage(),
         '/Usignup' : (context) => const SignUpPage(),
+        '/Uforgot' : (context) => const ForgotPage(),
         '/Settings' : (context) => const ProfilePane(),
         '/Friends' : (context) => const FriendPage(),
         '/S>about' : (context) => const aboutUs(),
