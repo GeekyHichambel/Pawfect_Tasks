@@ -21,8 +21,10 @@ class Uinfo extends StatefulWidget{
 
 class UinfoState extends State<Uinfo>{
   String mail = '';
+  bool ChangeLoading = false;
   bool Mread = true;
   File? profile_pic;
+  late TextEditingController mController = TextEditingController();
   final FocusNode MfocusNode = FocusNode();
 
   Future<void> getMail() async{
@@ -33,13 +35,13 @@ class UinfoState extends State<Uinfo>{
     String mailAdd = user_ref.child('mail').value.toString();
     setState(() {
       mail = mailAdd;
+      mController.text = mail;
     });
   }
 
   Future<void> getImage() async{
     final imagePicker = ImagePicker();
-    final pickedImage = await imagePicker.pickImage(source: ImageSource.gallery);
-
+    final pickedImage = await imagePicker.pickImage(source: ImageSource.gallery, imageQuality: 50);
     if (pickedImage != null){
       setState(() {
         profile_pic = File(pickedImage.path);
@@ -54,6 +56,13 @@ class UinfoState extends State<Uinfo>{
         await reference?.putFile(
             profile_pic!);
         Globals.profilepicurl = await reference!.getDownloadURL();
+      }catch (e){
+        if(kDebugMode) print('Exception: $e');
+      }
+    }
+    if (mController.text != mail){
+      try{
+
       }catch (e){
         if(kDebugMode) print('Exception: $e');
       }
@@ -105,8 +114,15 @@ class UinfoState extends State<Uinfo>{
               children: [
                 Positioned(
                   bottom: 0,
-                    child: CustomElevatedButton(onPress: (){
-                      saveChanges();
+                    child: ChangeLoading? SpinKitThreeBounce(color: AppTheme.colors.onsetBlue,): CustomElevatedButton(onPress: (){
+                      setState(() {
+                        ChangeLoading = true;
+                      });
+                      saveChanges().then((_){
+                        setState(() {
+                          ChangeLoading = false;
+                        });
+                      });
                 },
                   child: Center(child: Text('Save', style: TextStyle(fontFamily: Globals.sysFont, color: AppTheme.colors.friendlyWhite, fontSize: 12, fontWeight: FontWeight.w700),),),
                 )),
@@ -138,7 +154,7 @@ class UinfoState extends State<Uinfo>{
                                 return child;
                               }else {
                                 return SpinKitThreeBounce(
-                                  color: AppTheme.colors.friendlyWhite,
+                                  color: AppTheme.colors.onsetBlue,
                                 );
                               }
                             },),
@@ -211,16 +227,17 @@ class UinfoState extends State<Uinfo>{
                         textColor: AppTheme.colors.onsetBlue,
                         borderColor: AppTheme.colors.onsetBlue,
                         type: Globals.focused,
+                        maxLines: 1,
                         suffixIcon: IconButton(onPressed: () {
                           setState(() {
                             Mread = !Mread;
                           });
                           MfocusNode.requestFocus();
-                        }, icon: Icon(Icons.edit_rounded, color: AppTheme.colors.blissCream,size: 22,),),
+                        }, icon: Icon(Mread? Icons.edit_rounded : Icons.close_rounded, color: AppTheme.colors.blissCream,size: 22,),),
                         labelColor: AppTheme.colors.onsetBlue,
                         fontSize: 16.0,
                         focusNode: MfocusNode,
-                        controller: TextEditingController(text: mail),
+                        controller: mController,
                         readOnly: Mread,
                         canRequestFocus: true,
                         obscureText: false,

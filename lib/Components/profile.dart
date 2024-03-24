@@ -137,7 +137,7 @@ class ProfileView{
                             return child;
                           }else {
                             return SpinKitThreeBounce(
-                              color: AppTheme.colors.friendlyWhite,
+                              color: AppTheme.colors.onsetBlue,
                             );
                           }
                         },),

@@ -165,7 +165,7 @@ class _ProfilePaneState extends State<ProfilePane>{
                                 return child;
                               }else {
                                 return SpinKitThreeBounce(
-                                  color: AppTheme.colors.friendlyWhite,
+                                  color: AppTheme.colors.onsetBlue,
                                 );
                               }
                             },),

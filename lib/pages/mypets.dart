@@ -505,7 +505,7 @@ class _MyPetState extends State<MyPet> with SingleTickerProviderStateMixin{
                                                 shadow: Colors.transparent,
                                                 child:  Padding(
                                                   padding: const EdgeInsets.all(2.0),
-                                                  child: Text(cPetHp == 0? '☠' : '$cPetHp', style: TextStyle(color: cPetHp <= 20? Colors.red : cPetHp <=50? Colors.orange : cPetHp <= 80? Colors.yellow : Colors.lightGreen,  fontFamily: Globals.sysFont,),),
+                                                  child: Text(cPetHp == 0? '☠' : '$cPetHp', style: TextStyle(color: cPetHp <= 20? Colors.red : cPetHp <=50? Colors.orange : cPetHp <= 80? Colors.yellow[700] : Colors.lightGreen,  fontFamily: Globals.sysFont,),),
                                                 ),
                                             ),
                                           ],
@@ -519,7 +519,7 @@ class _MyPetState extends State<MyPet> with SingleTickerProviderStateMixin{
                                               shadow: Colors.transparent,
                                               child:  Padding(
                                                 padding: const EdgeInsets.all(2.0),
-                                                child: Text(cPetHp == 0? '☠' : '$cPetHunger', style: TextStyle(color: cPetHunger <= 20? Colors.lightGreen : cPetHunger <=50? Colors.yellow : cPetHunger <= 80? Colors.orange : Colors.red, fontFamily: Globals.sysFont,),),
+                                                child: Text(cPetHp == 0? '☠' : '$cPetHunger', style: TextStyle(color: cPetHunger <= 20? Colors.lightGreen : cPetHunger <=50? Colors.yellow[700] : cPetHunger <= 80? Colors.orange : Colors.red, fontFamily: Globals.sysFont,),),
                                               ),
                                             ),
                                           ],

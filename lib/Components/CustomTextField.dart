@@ -66,6 +66,9 @@ class CustomTextField extends StatelessWidget{
             ),
             contentPadding: const EdgeInsetsDirectional.symmetric(horizontal: 10.0,vertical: 16.0),
             labelText: labelText,
+            enabledBorder: type == Globals.focused? OutlineInputBorder(
+              borderRadius: const BorderRadius.all(Radius.circular(16.0)),
+              borderSide: BorderSide(color: borderColor, width: 1),) : null,
             disabledBorder: OutlineInputBorder(
                 borderRadius: const BorderRadius.all(Radius.circular(16.0)),
                 borderSide: BorderSide(color: borderColor, width: 1),),
