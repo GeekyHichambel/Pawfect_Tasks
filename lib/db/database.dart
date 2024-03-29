@@ -127,7 +127,17 @@ class DataBase{
             databaseURL: 'https://pawfecttasks-default-rtdb.asia-southeast1.firebasedatabase.app',
             storageBucket: 'pawfecttasks.appspot.com',
         )
-    ) : await Firebase.initializeApp();
+    ) : await Firebase.initializeApp(
+      options: const FirebaseOptions(
+          apiKey: 'AIzaSyCrzzrcLyyhhSMuVIxPbSUYajvSI7dUcAw',
+          appId: '1:60544625479:ios:5acda2a064e4ae8f63ba62',
+          messagingSenderId: '60544625479',
+          projectId: 'pawfecttasks',
+          authDomain: 'pawfecttasks.firebaseapp.com',
+          databaseURL: 'https://pawfecttasks-default-rtdb.asia-southeast1.firebasedatabase.app',
+          storageBucket: 'pawfecttasks.appspot.com',
+      )
+    );
     firebaseDatabase = FirebaseDatabase.instance;
     if (!kIsWeb) {
       firebaseDatabase?.setPersistenceEnabled(true);
