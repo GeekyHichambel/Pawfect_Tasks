@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -23,6 +24,7 @@ class DataBase{
   static DatabaseReference? leaderboardCollection;
   static Reference? marketStorage;
   static Reference? userPicsStorage;
+  static FirebaseAuth firebaseAuth = FirebaseAuth.instance;
   static FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
   static AndroidNotificationChannel androidChannel = const AndroidNotificationChannel(
       'high_importance_channel',
@@ -110,6 +112,7 @@ class DataBase{
           apiKey: "AIzaSyC9_jN7Ft-xA6IPPRrzwxyWJbhNRr8k_Kg",
           databaseURL: "https://pawfecttasks-default-rtdb.asia-southeast1.firebasedatabase.app",
           projectId: "pawfecttasks",
+          authDomain: 'pawfecttasks.web.app',
           storageBucket: "pawfecttasks.appspot.com",
           messagingSenderId: "60544625479",
           appId: "1:60544625479:web:0f041038fa97004463ba62",
@@ -120,6 +123,7 @@ class DataBase{
             appId: '1:60544625479:android:adf1d55fe912ff8263ba62',
             messagingSenderId: '60544625479',
             projectId: 'pawfecttasks',
+            authDomain: 'pawfecttasks.firebaseapp.com',
             databaseURL: 'https://pawfecttasks-default-rtdb.asia-southeast1.firebasedatabase.app',
             storageBucket: 'pawfecttasks.appspot.com',
         )

@@ -56,6 +56,7 @@ class _SplashScreenState  extends State<SplashScreen> with SingleTickerProviderS
 
   @override
   Widget build(BuildContext context) {
+      GlobalVar.globalVar.loadImages('assets/fect tasks.png', 'Image', context);
       return Scaffold(
         backgroundColor: AppTheme.colors.friendlyWhite,
         body: load? Lottie.asset('assets/splashScreen.json',

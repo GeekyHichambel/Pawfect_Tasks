@@ -54,14 +54,16 @@ class Globals {
   }
 
   static Future<void> checkProfilePicUploaded() async{
-    Reference? reference = DataBase.userPicsStorage?.child(Globals.user);
-    if (reference == null){
-      isprofilepic = false;
-    }else{
-      isprofilepic = true;
-      profilepicurl = await reference.getDownloadURL();
+    if (LoggedIN) {
+      Reference? reference = DataBase.userPicsStorage?.child(Globals.user);
+      if (reference == null) {
+        isprofilepic = false;
+      } else {
+        isprofilepic = true;
+        profilepicurl = await reference.getDownloadURL();
+      }
+      if (kDebugMode) print('ProfilePic: $isprofilepic');
     }
-    if(kDebugMode) print('ProfilePic: $isprofilepic');
   }
 
   static Future<void> lastOnline() async{
@@ -72,13 +74,15 @@ class Globals {
     }
   }
 
-  Future<void> loadImages(String assetPath, String type) async{
+  Future<void> loadImages(String assetPath, String type, BuildContext context) async{
     try{
       if (type == 'GIF') {
         await fetchGif(AssetImage(assetPath));
-        if (kDebugMode) {
-          print('Successfully loaded and cached images correctly');
-        }
+      }else{
+        await precacheImage(AssetImage(assetPath), context);
+      }
+      if (kDebugMode) {
+        print('Successfully loaded and cached images correctly');
       }
     }catch(e){
       if(kDebugMode){

@@ -150,7 +150,7 @@ class _ProfilePaneState extends State<ProfilePane>{
                           height: 200,
                           decoration: BoxDecoration(
                               border: Border.all(color: AppTheme.colors.friendlyBlack, width: 2.0),
-                              color: Globals.isprofilepic? AppTheme.colors.friendlyWhite : AppTheme.colors.onsetBlue,
+                              color: Globals.LoggedIN? Globals.isprofilepic? AppTheme.colors.friendlyWhite : AppTheme.colors.onsetBlue : AppTheme.colors.onsetBlue,
                               shape: BoxShape.circle,
                               boxShadow: const [BoxShadow(
                                 color: Colors.transparent,
@@ -159,7 +159,7 @@ class _ProfilePaneState extends State<ProfilePane>{
                               ),
                               ]
                           ),
-                          child: Globals.isprofilepic? ClipOval(
+                          child: Globals.LoggedIN? Globals.isprofilepic? ClipOval(
                             child: Image.network(Globals.profilepicurl, fit: BoxFit.cover, loadingBuilder: (BuildContext context, Widget child,ImageChunkEvent? event){
                               if (event == null){
                                 return child;
@@ -170,6 +170,16 @@ class _ProfilePaneState extends State<ProfilePane>{
                               }
                             },),
                           ): Center(
+                            child: Text(Globals.user.isEmpty? 'F' : Globals.user[0],
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontFamily: Globals.sysFont,
+                                fontSize: 80,
+                                color: AppTheme.colors.friendlyWhite,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ) : Center(
                             child: Text(Globals.user.isEmpty? 'F' : Globals.user[0],
                               textAlign: TextAlign.center,
                               style: TextStyle(

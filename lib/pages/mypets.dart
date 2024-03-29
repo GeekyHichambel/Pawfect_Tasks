@@ -22,7 +22,7 @@ class MyPet extends StatefulWidget{
 
 class _MyPetState extends State<MyPet> with SingleTickerProviderStateMixin{
   final List<ImageProvider> imageProvider = [
-    const CachedNetworkImageProvider('https://media.discordapp.net/attachments/1159106537881600043/1216283353603506176/DogIdle.gif?ex=65ffd324&is=65ed5e24&hm=1f76935e7ead1b7180b8f4fbb194cce4a9a1153c6d67e27cabded6f072e820eb&=&width=681&height=681'),
+    const CachedNetworkImageProvider('https://cdn.discordapp.com/attachments/1159106537881600043/1216283353603506176/DogIdle.gif?ex=66124824&is=65ffd324&hm=81b94a45ef164951227061a53b4cb741f9aa3f6d197f5f1ecc5002c0c6ff1624&'),
     const CachedNetworkImageProvider('https://cdn.discordapp.com/attachments/767980613960990727/1218234199262101625/rip.gif?ex=6606ec02&is=65f47702&hm=a8b315bd79f8abc27fc9ccf15f022d553029e03d40d6b77703cbeba7dc12e7e7&'),
   ];
   late String cPetName = 'Labra';

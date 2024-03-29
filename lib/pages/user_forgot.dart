@@ -32,6 +32,7 @@ class ForgotPageState extends State<ForgotPage>{
       return false;
     }
     String mail_address = user_ref.child('mail').value.toString();
+    await DataBase.firebaseAuth.sendPasswordResetEmail(email: mail_address);
     return true;
   }
 
@@ -137,7 +138,7 @@ class ForgotPageState extends State<ForgotPage>{
                               children: Stimer == 0? [
                                 Icon(CupertinoIcons.square_arrow_down, color: AppTheme.colors.friendlyWhite, size: 16,),
                                 const SizedBox(width: 10.0,),
-                                Text('Send Code', style: TextStyle(fontFamily: Globals.sysFont, color: AppTheme.colors.friendlyWhite, fontSize: 9, fontWeight: FontWeight.w700),),
+                                Text('Send', style: TextStyle(fontFamily: Globals.sysFont, color: AppTheme.colors.friendlyWhite, fontSize: 9, fontWeight: FontWeight.w700),),
                               ] : [
                                 Text('$Stimer', style: TextStyle(fontFamily: Globals.sysFont, color: AppTheme.colors.friendlyWhite, fontSize: 12, fontWeight: FontWeight.w700),),
                               ],),),

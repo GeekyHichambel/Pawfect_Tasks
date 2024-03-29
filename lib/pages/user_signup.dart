@@ -1,5 +1,4 @@
 import 'package:PawfectTasks/Components/CustomAppBar.dart';
-import 'package:bcrypt/bcrypt.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -19,17 +18,21 @@ class SignUpPage extends StatefulWidget{
 
 class _SignUpState extends State<SignUpPage>{
   late String userName;
+  late String userMail;
   late String userPassword;
   late String userCPassword;
   late TextEditingController userNameC = TextEditingController();
   late TextEditingController userPasswordC = TextEditingController();
   late TextEditingController userCPasswordC = TextEditingController();
+  late TextEditingController mailC = TextEditingController();
   final FocusNode UfocusNode = FocusNode();
   final FocusNode PfocusNode = FocusNode();
   final FocusNode CPfocusNode = FocusNode();
+  final FocusNode mfocusNode = FocusNode();
   bool showP = true;
   bool showCP = true;
   bool isUfocus = false;
+  bool isMfocus = false;
   bool isPfocus = false;
   bool isCPfocus = false;
   bool isLoading = false;
@@ -38,9 +41,10 @@ class _SignUpState extends State<SignUpPage>{
   Future<void> NewUser() async{
     try {
       userName = userNameC.text;
+      userMail = mailC.text;
       userPassword = userPasswordC.text;
       userCPassword = userCPasswordC.text;
-      if (userName.isEmpty || userPassword.isEmpty || userCPassword.isEmpty){
+      if (userName.isEmpty || userPassword.isEmpty || userCPassword.isEmpty || userMail.isEmpty){
         GlobalVar.globalVar.showToast('Empty text fields');
         throw Exception('Empty text fields');
       }
@@ -51,6 +55,10 @@ class _SignUpState extends State<SignUpPage>{
       if (!isValidUsername(userName)){
         GlobalVar.globalVar.showToast('Username can only contain alphabets and numbers');
         throw Exception('Username can only contain alphabets and numbers');
+      }
+      if (!isValidMail(userMail)){
+        GlobalVar.globalVar.showToast('Email is invalid');
+        throw Exception('Email is invalid');
       }
       if (userPassword.length < 8){
         GlobalVar.globalVar.showToast('Password is too short');
@@ -80,10 +88,9 @@ class _SignUpState extends State<SignUpPage>{
       const int friendCount = 0;
       const int xp = 0;
       const int petFood = 0;
-      final String hashed = BCrypt.hashpw(userPassword, BCrypt.gensalt());
       final Map<String, dynamic> userDoc = {
-        'userpass' : hashed,
         'friendCount' : friendCount,
+        'mail' : userMail,
       };
       final Map<String, dynamic> petsDoc = {
         'pets' : pets,
@@ -99,6 +106,7 @@ class _SignUpState extends State<SignUpPage>{
         'petFood' : petFood,
         'decoitems' : decoitems,
       };
+      await DataBase.firebaseAuth.createUserWithEmailAndPassword(email: userMail, password: userPassword);
       await DataBase.userCollection?.child(userName).set(userDoc);
       await DataBase.streakCollection?.child(userName).set(streakDoc);
       await DataBase.petsCollection?.child(userName).set(petsDoc);
@@ -117,6 +125,11 @@ class _SignUpState extends State<SignUpPage>{
     return regExp.hasMatch(username);
   }
 
+  bool isValidMail(String mailAdd){
+    final RegExp emailRegex = RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
+    return emailRegex.hasMatch(mailAdd);
+  }
+
   bool isValidPassword(String userPassword){
     RegExp regExp = RegExp(r'^[a-zA-Z0-9!@#\$&_?-]+$');
     return regExp.hasMatch(userPassword);
@@ -131,6 +144,16 @@ class _SignUpState extends State<SignUpPage>{
           isUfocus = true;
         } else{
           isUfocus = false;
+        }
+      });
+    });
+
+    mfocusNode.addListener(() {
+      setState(() {
+        if (mfocusNode.hasFocus) {
+          isMfocus = true;
+        } else{
+          isMfocus = false;
         }
       });
     });
@@ -212,15 +235,30 @@ class _SignUpState extends State<SignUpPage>{
                             ),
                             const SizedBox(height: 20.0,),
                             CustomTextField(
+                              inputType: TextInputType.emailAddress,
+                              fontSize: 16.0,
+                              labelText: !isMfocus? (userNameC.text.isNotEmpty? '' : 'Email') : (''),
+                              controller: mailC,
+                              focusNode: mfocusNode,
+                              labelColor: AppTheme.colors.friendlyWhite,
+                              cursorColor: AppTheme.colors.pleasingWhite,
+                              bgColor: AppTheme.colors.onsetBlue,
+                              textColor: AppTheme.colors.friendlyWhite,
+                              borderColor: AppTheme.colors.friendlyWhite,
+                              obscureText: false,
+                              maxLines: 1,
+                            ),
+                            const SizedBox(height: 20,),
+                            CustomTextField(
                                 labelText: !isPfocus? (userPasswordC.text.isNotEmpty? '' : 'Password') : (''),
                                 controller: userPasswordC,
                                 focusNode: PfocusNode,
                                 inputType: TextInputType.visiblePassword,
-                                labelColor: AppTheme.colors.friendlyWhite,
-                                cursorColor: AppTheme.colors.pleasingWhite,
-                                bgColor: AppTheme.colors.onsetBlue,
-                                textColor: AppTheme.colors.friendlyWhite,
-                                borderColor: AppTheme.colors.friendlyWhite,
+                                labelColor: AppTheme.colors.onsetBlue,
+                                cursorColor: Colors.grey,
+                                bgColor: AppTheme.colors.friendlyWhite,
+                                textColor: AppTheme.colors.onsetBlue,
+                                borderColor: AppTheme.colors.onsetBlue,
                                 fontSize: 16.0, obscureText: showP,
                                 suffixIcon: IconButton(
                                   icon: Icon(showP? Icons.visibility_outlined : Icons.visibility_off_outlined), onPressed: () {
@@ -239,11 +277,11 @@ class _SignUpState extends State<SignUpPage>{
                               labelText: !isCPfocus? (userCPasswordC.text.isNotEmpty? '' : 'Confirm Password') : (''),
                               controller: userCPasswordC,
                               focusNode: CPfocusNode,
-                              labelColor: AppTheme.colors.onsetBlue,
-                              bgColor: AppTheme.colors.friendlyWhite,
-                              cursorColor: Colors.grey,
-                              textColor: AppTheme.colors.onsetBlue,
-                              borderColor: AppTheme.colors.onsetBlue, obscureText: showCP,
+                              labelColor: AppTheme.colors.friendlyWhite,
+                              cursorColor: AppTheme.colors.pleasingWhite,
+                              bgColor: AppTheme.colors.onsetBlue,
+                              textColor: AppTheme.colors.friendlyWhite,
+                              borderColor: AppTheme.colors.friendlyWhite, obscureText: showCP,
                               suffixIcon: IconButton(
                                 icon: Icon(showCP? Icons.visibility_outlined : Icons.visibility_off_outlined), onPressed: () {
                                   setState(() {

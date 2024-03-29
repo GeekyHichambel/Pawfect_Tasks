@@ -1,5 +1,6 @@
 import 'package:PawfectTasks/Components/CustomAppBar.dart';
 import 'package:bcrypt/bcrypt.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:PawfectTasks/Components/Animations.dart';
@@ -43,11 +44,8 @@ class _LoginState extends State<LoginPage>{
         GlobalVar.globalVar.showToast('Username is incorrect');
         throw Exception('Username is incorrect');
       }
-      final String hashed = user.child('userpass').value.toString();
-      if (!BCrypt.checkpw(password, hashed)){
-        GlobalVar.globalVar.showToast('Password is incorrect');
-        throw Exception('Password is incorrect');
-      }
+      final String mailAdd = user.child('mail').value.toString();
+      await DataBase.firebaseAuth.signInWithEmailAndPassword(email: mailAdd, password: password);
       result = true;
       final fcmToken = await DataBase.firebaseMessaging.getToken(vapidKey: 'BNNtW1LKddzMglciVp8KHQwKTRRKLtwQDMxfUvn01ki4YEzrfzHsGHWbthx-PAWCimqH33r6u6skVVhTNk82grc');
       final User = await DataBase.userCollection?.child(username).get();
@@ -79,9 +77,12 @@ class _LoginState extends State<LoginPage>{
       await Globals.updatePetStatus();
       GlobalVar.globalVar.showToast('Successfully logged in!');
     } catch (e){
-      if (kDebugMode){
-        print('Error: $e');
+      if (e is FirebaseAuthException && e.code == 'wrong-password') {
+          GlobalVar.globalVar.showToast('Incorrect Password');
       }
+        if (kDebugMode) {
+          print('Error: $e');
+        }
     }
   }
 
