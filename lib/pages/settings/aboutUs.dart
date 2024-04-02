@@ -12,19 +12,16 @@ class aboutUs extends StatefulWidget{
 class aboutUsState extends State<aboutUs>{
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return SafeArea(child: Scaffold(
       backgroundColor: AppTheme.colors.friendlyWhite,
-      body: const Padding(
-        padding: EdgeInsets.symmetric(vertical: 20,horizontal: 10),
-        child: Column(
+      body: const Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Padding(padding: EdgeInsets.symmetric(vertical: 10,horizontal: 0),
+            Padding(padding: EdgeInsets.only(bottom: 20),
               child: CustomAppBar()
             )
           ],
-        ),
       ),
-    );
+    ));
   }
 }

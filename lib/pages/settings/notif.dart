@@ -12,19 +12,16 @@ class notif extends StatefulWidget{
 class notifState extends State<notif>{
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return SafeArea(child: Scaffold(
       backgroundColor: AppTheme.colors.friendlyWhite,
-      body: const Padding(
-        padding: EdgeInsets.symmetric(vertical: 20,horizontal: 10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(padding: EdgeInsets.symmetric(vertical: 10,horizontal: 0),
+      body: const Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(padding: EdgeInsets.only(bottom: 20),
               child: CustomAppBar()
-            )
-          ],
-        ),
+          )
+        ],
       ),
-    );
+    ));
   }
 }

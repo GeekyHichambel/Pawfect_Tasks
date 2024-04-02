@@ -22,8 +22,8 @@ class MyPet extends StatefulWidget{
 
 class _MyPetState extends State<MyPet> with SingleTickerProviderStateMixin{
   final List<ImageProvider> imageProvider = [
-    const CachedNetworkImageProvider('https://cdn.discordapp.com/attachments/1159106537881600043/1216283353603506176/DogIdle.gif?ex=66124824&is=65ffd324&hm=81b94a45ef164951227061a53b4cb741f9aa3f6d197f5f1ecc5002c0c6ff1624&'),
-    const CachedNetworkImageProvider('https://cdn.discordapp.com/attachments/767980613960990727/1218234199262101625/rip.gif?ex=6606ec02&is=65f47702&hm=a8b315bd79f8abc27fc9ccf15f022d553029e03d40d6b77703cbeba7dc12e7e7&'),
+    const CachedNetworkImageProvider('https://firebasestorage.googleapis.com/v0/b/pawfecttasks.appspot.com/o/gifs%2FDogIdle.gif?alt=media&token=eb663344-10c4-4c31-8b81-a982ca5be57d'),
+    const CachedNetworkImageProvider('https://firebasestorage.googleapis.com/v0/b/pawfecttasks.appspot.com/o/gifs%2Frip.gif?alt=media&token=55dde51d-26a9-4b74-93c0-2dc6de3e69c7'),
   ];
   late String cPetName = 'Labra';
   late int cPetHp = 100;

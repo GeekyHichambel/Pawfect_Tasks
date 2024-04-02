@@ -181,7 +181,7 @@ class UinfoState extends State<Uinfo>{
 
   @override
   Widget build(BuildContext context) {
-   return Scaffold(
+   return SafeArea(child: Scaffold(
      resizeToAvoidBottomInset: false,
       appBar: const PreferredSize(
         preferredSize: Size.fromHeight(100),
@@ -189,8 +189,8 @@ class UinfoState extends State<Uinfo>{
           padding: EdgeInsetsDirectional.only(
             start: 0,
             end: 0,
-            top: 30,
-            bottom: 0,
+            top: 0,
+            bottom: 20,
           ),
           child: CustomAppBar(),
         ),
@@ -393,6 +393,6 @@ class UinfoState extends State<Uinfo>{
           ],
         ),
                 ),
-   );
+   ));
   }
 }
