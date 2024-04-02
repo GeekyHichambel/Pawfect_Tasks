@@ -95,11 +95,11 @@ class _ProfilePaneState extends State<ProfilePane>{
 
   @override
   Widget build(BuildContext context){
-    return Scaffold(
+    return SafeArea(child: Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: AppTheme.colors.friendlyWhite,
       body: Padding(
-          padding: const EdgeInsetsDirectional.only(start: 10,end: 10,top: 20, bottom: 0),
+          padding: const EdgeInsetsDirectional.only(start: 10,end: 10,top: 0, bottom: 0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -443,6 +443,6 @@ class _ProfilePaneState extends State<ProfilePane>{
             ],
           ),
         ),
-    );
+    ));
   }
 }

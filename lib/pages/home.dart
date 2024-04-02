@@ -67,14 +67,14 @@ class _MainPageState extends State<MainPage>{
 
   @override
   Widget build(BuildContext context){
-    return Scaffold(
+    return SafeArea(child: Scaffold(
       appBar: PreferredSize(preferredSize: const Size.fromHeight(100),
         child: Container(
           decoration: BoxDecoration(
             color: AppTheme.colors.onsetBlue,
             border: Border(bottom: BorderSide(color: AppTheme.colors.darkOnsetBlue, strokeAlign: BorderSide.strokeAlignInside, width: 2.0))
           ),
-          child:Padding(padding: const EdgeInsets.only(left: 25.0,right: 25.0,top: 40.0,bottom: 20.0),
+          child:Padding(padding: const EdgeInsets.only(left: 25.0,right: 25.0,top: 20.0,bottom: 20.0),
                 child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -158,7 +158,7 @@ class _MainPageState extends State<MainPage>{
           });
         },
       ),
-    );
+    ));
   }
 }
 

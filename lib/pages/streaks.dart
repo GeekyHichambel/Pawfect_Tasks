@@ -149,14 +149,13 @@ class _StreakState extends State<Streaks>{
 
   @override
   Widget build(BuildContext context) {
-    return !pageLoaded? const Scaffold() : Scaffold(
+    return SafeArea(child: !pageLoaded? const Scaffold() : Scaffold(
       backgroundColor: AppTheme.colors.friendlyWhite,
       appBar: const PreferredSize(
         preferredSize: Size.fromHeight(100),
         child: Padding(
-          padding: EdgeInsetsDirectional.symmetric(
-            horizontal: 0,
-            vertical: 30,
+          padding: EdgeInsetsDirectional.only(
+            bottom: 20,
           ),
           child: CustomAppBar(),
         ),
@@ -345,7 +344,7 @@ class _StreakState extends State<Streaks>{
             const NotLoggedInWidget(),
           ]
         )
-    );
+    ));
   }
 
 }

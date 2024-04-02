@@ -1,5 +1,4 @@
 import 'package:PawfectTasks/Components/CustomAppBar.dart';
-import 'package:bcrypt/bcrypt.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -111,12 +110,10 @@ class _LoginState extends State<LoginPage>{
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return SafeArea(child: Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: AppTheme.colors.friendlyWhite,
-      body: Padding(
-        padding: const EdgeInsetsDirectional.symmetric(horizontal: 10.0, vertical: 10.0),
-        child: Column(
+      body: Column(
           children: [
             const Padding(padding: EdgeInsetsDirectional.symmetric(horizontal: 0.0, vertical: 10.0),
               child: CustomAppBar()
@@ -249,8 +246,7 @@ class _LoginState extends State<LoginPage>{
             ),
           ],
         ),
-      ),
-    );
+    ));
   }
 
 }

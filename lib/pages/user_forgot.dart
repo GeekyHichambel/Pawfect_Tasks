@@ -61,12 +61,10 @@ class ForgotPageState extends State<ForgotPage>{
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return SafeArea(child: Scaffold(
       backgroundColor: AppTheme.colors.friendlyWhite,
       resizeToAvoidBottomInset: false,
-      body: Padding(
-        padding: const EdgeInsets.all(10.0),
-        child: Column(
+      body: Column(
           children: [
             const Padding(padding: EdgeInsetsDirectional.symmetric(horizontal: 0.0, vertical: 10.0),
                 child: CustomAppBar()
@@ -179,8 +177,7 @@ class ForgotPageState extends State<ForgotPage>{
             )
           ],
         ),
-      ),
-    );
+    ));
   }
 
 }

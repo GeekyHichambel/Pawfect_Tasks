@@ -106,11 +106,16 @@ class _SignUpState extends State<SignUpPage>{
         'petFood' : petFood,
         'decoitems' : decoitems,
       };
+      final Map<String,dynamic> leaderDoc = {
+        'streak': streak,
+            'xp': xp,
+      };
       await DataBase.firebaseAuth.createUserWithEmailAndPassword(email: userMail, password: userPassword);
       await DataBase.userCollection?.child(userName).set(userDoc);
       await DataBase.streakCollection?.child(userName).set(streakDoc);
       await DataBase.petsCollection?.child(userName).set(petsDoc);
       await DataBase.itemCollection?.child(userName).set(itemsDoc);
+      await DataBase.leaderboardCollection?.child('Rookie').child(userName).set(leaderDoc);
       result = true;
       GlobalVar.globalVar.showToast('Successfully Signed Up');
     }catch(e){
@@ -182,12 +187,10 @@ class _SignUpState extends State<SignUpPage>{
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return SafeArea(child: Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: AppTheme.colors.friendlyWhite,
-      body: Padding(
-        padding: const EdgeInsetsDirectional.symmetric(horizontal: 10.0, vertical: 10.0),
-        child: Column(
+      body: Column(
           children: [
             const Padding(padding: EdgeInsetsDirectional.symmetric(horizontal: 0.0, vertical: 10.0),
               child: CustomAppBar(),
@@ -365,8 +368,7 @@ class _SignUpState extends State<SignUpPage>{
             )
           ],
         ),
-      ),
-    );
+    ));
   }
 
 }
