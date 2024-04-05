@@ -6,7 +6,7 @@ class Animations{
 }
 
 class FadeInAnimation extends StatefulWidget {
-  const FadeInAnimation({super.key, required this.child, required this.delay});
+  const FadeInAnimation({super.key, required this.delay, required this.child});
 
   final Widget child;
   final double delay;

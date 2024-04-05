@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:PawfectTasks/Components/NotLoggedIn.dart';
+import 'package:PawfectTasks/Components/OutlinedText.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -500,42 +501,30 @@ class _MyPetState extends State<MyPet> with SingleTickerProviderStateMixin{
                                           children: [
                                             Image.asset('assets/hp.png', width: 25, height: 25, fit: BoxFit.fill,),
                                             const SizedBox(height: 5,),
-                                            CustomBox(
-                                                color: AppTheme.colors.friendlyWhite,
-                                                shadow: Colors.transparent,
-                                                child:  Padding(
+                                            Padding(
                                                   padding: const EdgeInsets.all(2.0),
-                                                  child: Text(cPetHp == 0? '☠' : '$cPetHp', style: TextStyle(color: cPetHp <= 20? Colors.red : cPetHp <=50? Colors.orange : cPetHp <= 80? Colors.yellow[700] : Colors.lightGreen,  fontFamily: Globals.sysFont,),),
+                                                  child: OutlinedText(text: cPetHp == 0? '☠' : '$cPetHp', fillColor: cPetHp <= 20? Colors.red : cPetHp <=50? Colors.orange : cPetHp <= 80? Colors.yellow[700] : Colors.lightGreen, outlineColor: AppTheme.colors.friendlyWhite),
                                                 ),
-                                            ),
                                           ],
                                         ),
                                         Column(
                                           children: [
                                             Image.asset('assets/hunger.png', width: 30, height: 30, fit: BoxFit.fill,),
                                             const SizedBox(height: 0,),
-                                            CustomBox(
-                                              color: AppTheme.colors.friendlyWhite,
-                                              shadow: Colors.transparent,
-                                              child:  Padding(
+                                           Padding(
                                                 padding: const EdgeInsets.all(2.0),
-                                                child: Text(cPetHp == 0? '☠' : '$cPetHunger', style: TextStyle(color: cPetHunger <= 20? Colors.lightGreen : cPetHunger <=50? Colors.yellow[700] : cPetHunger <= 80? Colors.orange : Colors.red, fontFamily: Globals.sysFont,),),
+                                                child: OutlinedText(text: cPetHp == 0? '☠' : '$cPetHunger', fillColor: cPetHunger <= 20? Colors.lightGreen : cPetHunger <=50? Colors.yellow[700] : cPetHunger <= 80? Colors.orange : Colors.red, outlineColor: AppTheme.colors.friendlyWhite,),
                                               ),
-                                            ),
                                           ],
                                         ),
                                         Column(
                                           children: [
                                             Image.asset('assets/mood.png', width: 25, height: 25, fit: BoxFit.fill,),
                                             const SizedBox(height: 5,),
-                                            CustomBox(
-                                              color: AppTheme.colors.friendlyWhite,
-                                              shadow: Colors.transparent,
-                                              child:  Padding(
+                                           Padding(
                                                 padding: const EdgeInsets.all(2.0),
-                                                child: Text(cPetHp == 0? '☠' : cPetMood, style: TextStyle(color: cPetMood == 'Happy'? Colors.pink : cPetMood == 'Normal' ? Colors.lightGreen : cPetMood == 'Sad' ? Colors.blueAccent : Colors.red, fontFamily: Globals.sysFont,),),
+                                                child: OutlinedText(text: cPetHp == 0? '☠' : cPetMood, fillColor: cPetMood == 'Happy'? Colors.pink : cPetMood == 'Normal' ? Colors.lightGreen : cPetMood == 'Sad' ? Colors.blueAccent : Colors.red, outlineColor: AppTheme.colors.friendlyWhite,),
                                               ),
-                                            ),
                                           ],
                                         ),
                                       ],

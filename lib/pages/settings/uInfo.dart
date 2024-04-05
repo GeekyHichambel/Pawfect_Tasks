@@ -3,6 +3,7 @@ import 'package:PawfectTasks/Components/AppTheme.dart';
 import 'package:PawfectTasks/Components/CustomAppBar.dart';
 import 'package:PawfectTasks/Components/CustomElevatedButton.dart';
 import 'package:PawfectTasks/Components/CustomTextField.dart';
+import 'package:PawfectTasks/Components/OutlinedText.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
@@ -30,8 +31,11 @@ class UinfoState extends State<Uinfo>{
   File? profile_pic;
   late TextEditingController mController = TextEditingController();
   late TextEditingController pController = TextEditingController(text: '••••••••');
+  late TextEditingController gController = TextEditingController();
   final FocusNode MfocusNode = FocusNode();
   final FocusNode PfocusNode = FocusNode();
+  final FocusNode GfocusNode = FocusNode();
+  final GlobalKey<ScaffoldState> Skey = GlobalKey<ScaffoldState>();
 
   Future<void> getMail() async{
     final user_ref = await DataBase.userCollection?.child(Globals.user).get();
@@ -43,6 +47,55 @@ class UinfoState extends State<Uinfo>{
       mail = mailAdd;
       mController.text = mail;
     });
+  }
+  
+  Future<void> getGender() async{
+    final user_ref = await DataBase.userCollection?.child(Globals.user).get();
+    if (!user_ref!.hasChild('gender')){
+      return;
+    }
+    String gender = user_ref.child('gender').value.toString();
+    setState(() {
+      gController.text = gender;
+    });
+  }
+  
+  Future<void> updateGender() async{
+    List<String> options = ['Male', 'Female', 'Non-Binary'];
+    Skey.currentState?.showBottomSheet(backgroundColor: AppTheme.colors.friendlyBlack,(context){
+      return SizedBox(
+        height: 240,
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Expanded(
+                child:  ListView.builder(
+                    itemCount: options.length,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemBuilder: (context, index){
+                      return ListTile(
+                        onTap: (){
+                          setState(() {
+                            gController.text = options[index];
+                          });
+                          Navigator.of(context).pop();
+                        },
+                        title: Text(options[index], style: TextStyle(color: AppTheme.colors.friendlyWhite, fontFamily: Globals.sysFont, fontSize: 16),
+                        ));
+                    }),
+              ),
+              GestureDetector(
+                onTap: (){
+                  Navigator.of(context).pop();
+                },
+                child: OutlinedText(text: 'Cancel', fillColor: Colors.red, outlineColor: AppTheme.colors.friendlyWhite)),
+            ],
+          ),
+        )
+      );
+  });
   }
 
   Future<void> getImage() async{
@@ -58,6 +111,11 @@ class UinfoState extends State<Uinfo>{
   bool isValidMail(String mailAdd){
     final RegExp emailRegex = RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
     return emailRegex.hasMatch(mailAdd);
+  }
+
+  bool isValidPassword(String userPassword){
+    RegExp regExp = RegExp(r'^[a-zA-Z0-9!@#\$&_?-]+$');
+    return regExp.hasMatch(userPassword);
   }
   
   Future<String> popUpPassword(BuildContext context) async{
@@ -116,7 +174,7 @@ class UinfoState extends State<Uinfo>{
     return password;
   }
 
-  Future<void> saveChanges() async{
+  Future<void> saveChanges(BuildContext context) async{
     int changes = 0;
     if (profile_pic != null){
       try {
@@ -152,6 +210,40 @@ class UinfoState extends State<Uinfo>{
         if(kDebugMode) print('Exception: $e');
       }
     }
+    if (pController.text != '••••••••'){
+      try {
+        final String pass = pController.text;
+        if (!isValidPassword(pass)) {
+          GlobalVar.globalVar.showToast('Invalid Password');
+          return;
+        }
+        final user = await DataBase.userCollection?.child(Globals.user).get();
+        User? fuser = DataBase.firebaseAuth.currentUser;
+        if (fuser != null){
+          final String mailAdd = user!.child('mail').value.toString();
+          final String mailPass = await popUpPassword(context);
+          AuthCredential credential = EmailAuthProvider.credential(email: mailAdd, password: mailPass);
+          await fuser.reauthenticateWithCredential(credential);
+          await fuser.updatePassword(pass);
+        } else {
+          throw Exception('User null');
+        }
+        changes += 1;
+      }catch (e){
+        if(kDebugMode) print('Exception: $e');
+      }
+    }
+    if (gController.text.isNotEmpty){
+      try {
+        final String gender = gController.text;
+        await DataBase.userCollection?.child(Globals.user).update({
+          'gender' : gender,
+        });
+      } catch (e){
+        if(kDebugMode) print('Exception: $e');
+      }
+      changes += 1;
+    }
     if (changes != 0) {
       GlobalVar.globalVar.showToast('Changes Saved');
     } else{
@@ -163,17 +255,18 @@ class UinfoState extends State<Uinfo>{
   void initState(){
     super.initState();
     getMail();
-    PfocusNode.addListener(() {
-      if(!PfocusNode.hasFocus){
-        setState(() {
-          Pread = true;
-        });
-      }
-    });
+    getGender();
     MfocusNode.addListener(() {
       if (!MfocusNode.hasFocus){
         setState(() {
           Mread = true;
+        });
+      }
+    });
+    PfocusNode.addListener(() {
+      if (!PfocusNode.hasFocus){
+        setState(() {
+          Pread = true;
         });
       }
     });
@@ -182,18 +275,11 @@ class UinfoState extends State<Uinfo>{
   @override
   Widget build(BuildContext context) {
    return SafeArea(child: Scaffold(
+     key: Skey,
      resizeToAvoidBottomInset: false,
       appBar: const PreferredSize(
         preferredSize: Size.fromHeight(100),
-        child: Padding(
-          padding: EdgeInsetsDirectional.only(
-            start: 0,
-            end: 0,
-            top: 0,
-            bottom: 20,
-          ),
-          child: CustomAppBar(),
-        ),
+        child: CustomAppBar(),
       ),
       backgroundColor: AppTheme.colors.friendlyWhite,
       body: Padding(
@@ -223,7 +309,7 @@ class UinfoState extends State<Uinfo>{
                   resizeToAvoidBottomInset: true,
                   body: SingleChildScrollView(
                     padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 16.0),
-                    physics: const RangeMaintainingScrollPhysics(),
+                    physics: const AlwaysScrollableScrollPhysics(),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -356,7 +442,7 @@ class UinfoState extends State<Uinfo>{
                           type: Globals.focused,
                           maxLines: 1,
                           suffixIcon: IconButton(onPressed: () {
-                            setState(() {
+                            setState((){
                               Pread = !Pread;
                             });
                             PfocusNode.requestFocus();
@@ -367,8 +453,35 @@ class UinfoState extends State<Uinfo>{
                           controller: pController,
                           readOnly: Pread,
                           canRequestFocus: true,
-                          obscureText: false,
+                          obscureText: true,
                         ),),
+                        const SizedBox(height: 20),
+                        FadeInAnimation(delay: 1.75, child: Text('Gender',
+                          style: TextStyle(
+                            color: AppTheme.colors.friendlyBlack,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: Globals.sysFont,
+                            fontSize: 16.0,
+                          ),),),
+                        const SizedBox(height: 5,),
+                        FadeInAnimation(delay: 1.75, child: CustomTextField(
+                          cursorColor: AppTheme.colors.blissCream,
+                          bgColor: AppTheme.colors.friendlyWhite,
+                          textColor: AppTheme.colors.onsetBlue,
+                          borderColor: AppTheme.colors.onsetBlue,
+                          type: Globals.focused,
+                          maxLines: 1,
+                          suffixIcon: IconButton(onPressed: () {
+                            updateGender();
+                          }, icon: Icon(Icons.edit_rounded, color: AppTheme.colors.blissCream,size: 22,),),
+                          labelColor: AppTheme.colors.onsetBlue,
+                          fontSize: 16.0,
+                          focusNode: GfocusNode,
+                          controller: gController,
+                          readOnly: true,
+                          canRequestFocus: true,
+                          obscureText: false,
+                        ),)
                       ],
                     ),
                   ),),
@@ -378,7 +491,7 @@ class UinfoState extends State<Uinfo>{
                       setState(() {
                         ChangeLoading = true;
                       });
-                      saveChanges().then((_){
+                      saveChanges(context).then((_){
                         setState(() {
                           ChangeLoading = false;
                         });

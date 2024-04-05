@@ -267,7 +267,7 @@ class _StreakState extends State<Streaks>{
                   mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   ClipRRect(borderRadius: BorderRadius.circular(16.0), child: ElevatedButton(
-                      style: ButtonStyle(backgroundColor: MaterialStatePropertyAll<Color>(Selected == 1? AppTheme.colors.onsetBlue : AppTheme.colors.friendlyWhite),),
+                      style: ButtonStyle(elevation: const MaterialStatePropertyAll<double>(2.5),backgroundColor: MaterialStatePropertyAll<Color>(Selected == 1? AppTheme.colors.onsetBlue : AppTheme.colors.friendlyWhite),),
                       onPressed: (){
                         setState((){
                           Selected = 1;
@@ -276,7 +276,7 @@ class _StreakState extends State<Streaks>{
                       child: Icon(CupertinoIcons.globe, color: Selected == 1? AppTheme.colors.friendlyWhite : AppTheme.colors.onsetBlue, size: 16,)),),
                   const SizedBox(width: 5.0,),
                   ClipRRect(borderRadius: BorderRadius.circular(16.0), child: ElevatedButton(
-                      style: ButtonStyle(backgroundColor: MaterialStatePropertyAll<Color>(Selected == 2? AppTheme.colors.onsetBlue : AppTheme.colors.friendlyWhite)),
+                      style: ButtonStyle(elevation: const MaterialStatePropertyAll<double>(2.5),backgroundColor: MaterialStatePropertyAll<Color>(Selected == 2? AppTheme.colors.onsetBlue : AppTheme.colors.friendlyWhite)),
                       onPressed: (){
                         setState((){
                           Selected = 2;
