@@ -75,9 +75,11 @@ class _SignUpState extends State<SignUpPage>{
       }
       final TimeStamp = TZDateTime.now(getLocation('Asia/Kolkata'));
       final List<String> pets = ['labra'];
-      final Map<String, dynamic> petParams = {'mood' : 'Happy',
+      final Map<String, dynamic> petParams = {
+        'mood' : 'Happy',
         'health' : 100,
         'starvation' : 0,
+        'lastHunger' : 0,
         'lastFed' : TimeStamp.toString(),
         'nickname' : 'Labra',
       };

@@ -279,12 +279,13 @@ class _HomeState extends State<Home>{
                         height: 100, child: ScrollbarTheme(
                 data: ScrollbarThemeData(
                   crossAxisMargin: 2,
-                  mainAxisMargin: 2,
+                  mainAxisMargin: 8,
                   radius: const Radius.circular(16.0),
                   thumbVisibility: const MaterialStatePropertyAll<bool>(true),
                   trackVisibility: const MaterialStatePropertyAll<bool>(true),
                   thumbColor: MaterialStatePropertyAll<Color>(AppTheme.colors.blissCream),
-                  trackColor: const MaterialStatePropertyAll<Color>(Colors.grey),
+                  trackColor: const MaterialStatePropertyAll<Color>(Colors.transparent),
+                  trackBorderColor: const MaterialStatePropertyAll<Color>(Colors.transparent),
                 ),
                 child: Scrollbar(
                   radius: const Radius.circular(16.0),
@@ -322,12 +323,13 @@ class _HomeState extends State<Home>{
                         height: 50, child: ScrollbarTheme(
                       data: ScrollbarThemeData(
                         crossAxisMargin: 2,
-                        mainAxisMargin: 2,
+                        mainAxisMargin: 8,
                         radius: const Radius.circular(16.0),
                         thumbVisibility: const MaterialStatePropertyAll<bool>(true),
                         trackVisibility: const MaterialStatePropertyAll<bool>(true),
                         thumbColor: MaterialStatePropertyAll<Color>(AppTheme.colors.blissCream),
-                        trackColor: const MaterialStatePropertyAll<Color>(Colors.grey),
+                        trackColor: const MaterialStatePropertyAll<Color>(Colors.transparent),
+                        trackBorderColor: const MaterialStatePropertyAll<Color>(Colors.transparent),
                       ),
                       child: Scrollbar(
                         scrollbarOrientation: ScrollbarOrientation.bottom,
