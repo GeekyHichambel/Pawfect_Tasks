@@ -25,8 +25,8 @@ class CustomElevatedButton extends StatelessWidget{
           border: Border(
               top: BorderSide(color: AppTheme.colors.darkOnsetBlue, width: 2.0, strokeAlign: BorderSide.strokeAlignInside),
               left: BorderSide(color: AppTheme.colors.darkOnsetBlue, width: 2.0, strokeAlign: BorderSide.strokeAlignInside),
-              right: BorderSide(color: AppTheme.colors.darkOnsetBlue, width: 2.0, strokeAlign: BorderSide.strokeAlignInside),
-              bottom: BorderSide(color: AppTheme.colors.darkOnsetBlue, width: 5.0, strokeAlign: BorderSide.strokeAlignInside)),
+              right: BorderSide(color:  AppTheme.colors.darkOnsetBlue, width: 2.0, strokeAlign: BorderSide.strokeAlignInside),
+              bottom: BorderSide(color:  AppTheme.colors.darkOnsetBlue, width: 5.0, strokeAlign: BorderSide.strokeAlignInside)),
           shadow: Colors.transparent,
           color: AppTheme.colors.onsetBlue,
           child: Padding(
@@ -35,5 +35,4 @@ class CustomElevatedButton extends StatelessWidget{
         ),
     );
   }
-
 }

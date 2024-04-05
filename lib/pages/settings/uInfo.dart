@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:PawfectTasks/Components/AppTheme.dart';
 import 'package:PawfectTasks/Components/CustomAppBar.dart';
-import 'package:PawfectTasks/Components/CustomElevatedButton.dart';
+import 'package:PawfectTasks/Components/CustomGlassElevatedButton.dart';
 import 'package:PawfectTasks/Components/CustomTextField.dart';
 import 'package:PawfectTasks/Components/OutlinedText.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -487,7 +487,7 @@ class UinfoState extends State<Uinfo>{
                   ),),
                 Positioned(
                     bottom: 0,
-                    child: ChangeLoading? SpinKitThreeBounce(color: AppTheme.colors.onsetBlue,): CustomElevatedButton(onPress: (){
+                    child: ChangeLoading? SpinKitThreeBounce(color: AppTheme.colors.onsetBlue,): CustomGlassElevatedButton(onPress: (){
                       setState(() {
                         ChangeLoading = true;
                       });
@@ -497,7 +497,7 @@ class UinfoState extends State<Uinfo>{
                         });
                       });
                     },
-                      child: Center(child: Text('Save', style: TextStyle(fontFamily: Globals.sysFont, color: AppTheme.colors.friendlyWhite, fontSize: 12, fontWeight: FontWeight.w700),),),
+                      child: Text('Save', style: TextStyle(fontFamily: Globals.sysFont, color: AppTheme.colors.friendlyWhite, fontSize: 12, fontWeight: FontWeight.w700),),
                     )),
                   ],
                 ),),

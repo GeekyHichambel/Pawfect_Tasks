@@ -8,6 +8,7 @@ class CustomBox extends StatelessWidget{
   final Color shadow;
   final BoxBorder? border;
   final double elevation;
+  final Gradient? gradient;
 
   const CustomBox({
     super.key,
@@ -17,6 +18,7 @@ class CustomBox extends StatelessWidget{
     this.border,
     this.height,
     this.width,
+    this.gradient,
     this.elevation = 5.0,
 });
 
@@ -33,6 +35,7 @@ class CustomBox extends StatelessWidget{
             border: border,
             color: color,
             borderRadius: BorderRadius.circular(15.0),
+            gradient: gradient,
             boxShadow: [
               BoxShadow(
               color: shadow,
