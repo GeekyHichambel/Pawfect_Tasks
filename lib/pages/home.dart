@@ -1,6 +1,6 @@
 import 'dart:async';
-import 'package:PawfectTasks/Components/CustomTextField.dart';
 import 'package:PawfectTasks/pages/FriendsPage.dart';
+import 'package:PawfectTasks/pages/Tasks/Tasks.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +14,6 @@ import 'package:PawfectTasks/Components/CustomBottomNavigationBarItem.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import '../Components/Animations.dart';
 import 'marketplace.dart';
 
@@ -176,14 +175,8 @@ class _HomeState extends State<Home>{
   String currentTime = '';
   String TimeImg = '';
   int pendingTasks = 0;
-  List<String> Tasks = [];
+  List<String> tasks = [];
   bool isMounted = false;
-  bool isTfocus = false;
-  bool isDfocus = false;
-  late TextEditingController Tcontroller = TextEditingController();
-  late TextEditingController Dcontroller = TextEditingController();
-  final FocusNode Tnode = FocusNode();
-  final FocusNode Dnode = FocusNode();
 
   @override
     void initState(){
@@ -199,312 +192,12 @@ class _HomeState extends State<Home>{
             timer.cancel();
           }
         });
-      Tnode.addListener(() {
-        if (Tnode.hasFocus){
-          setState(() {
-            isTfocus = true;
-          });
-        }else{
-          isTfocus = false;
-        }
-      });
-      Dnode.addListener(() {
-        if (Dnode.hasFocus){
-          setState(() {
-            isDfocus = true;
-          });
-        }else{
-          isDfocus = false;
-        }
-      });
     }
 
   @override
     void dispose(){
       isMounted = mounted;
       super.dispose();
-  }
-
-  Future<void> addTasks(BuildContext context) async{
-    IconData? currentIcon;
-    Color? currentColor;
-
-    Future<void> iconPick() async{
-      ScrollController sIController = ScrollController();
-      ScrollController sCController = ScrollController();
-      List<IconData> icons = [
-        Icons.gamepad_rounded,
-        Icons.shopping_bag_rounded,
-        Icons.access_alarm_rounded,
-        Icons.laptop_chromebook_rounded,
-        Icons.menu_book_rounded,
-        Icons.fastfood_rounded,
-        Icons.sports_basketball_rounded,
-        Icons.sailing_rounded,
-        Icons.home_max_rounded,
-      ];
-      List<Color> colors = [
-        Colors.red,
-        Colors.green,
-        AppTheme.colors.onsetBlue,
-        AppTheme.colors.pukeOrange,
-        AppTheme.colors.lightBrown,
-        Colors.purple,
-        Colors.deepPurple,
-        Colors.pink,
-        Colors.lime,
-      ];
-      await showDialog(context: context, builder: (context){
-        return StatefulBuilder(builder: (BuildContext context, StateSetter setState){
-          return SizedBox(
-            height: 300,
-            child: AlertDialog(
-              elevation: 0,
-              scrollable: true,
-              alignment: Alignment.center,
-              contentPadding: const EdgeInsets.all(20.0),
-              backgroundColor: AppTheme.colors.friendlyBlack,
-              shadowColor: Colors.transparent,
-              shape: const RoundedRectangleBorder(side: BorderSide.none, borderRadius: BorderRadius.all(Radius.circular(16.0))),
-              content: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children:[
-                    Text('Task Icon', style: TextStyle(color: AppTheme.colors.onsetBlue, fontFamily: Globals.sysFont, fontSize: 18, fontWeight: FontWeight.w700),),
-                    const SizedBox(height: 10,),
-                    Container(
-                      decoration: BoxDecoration(
-                        color: AppTheme.colors.friendlyWhite.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(16.0),
-                      ),
-                        height: 100, child: ScrollbarTheme(
-                data: ScrollbarThemeData(
-                  crossAxisMargin: 2,
-                  mainAxisMargin: 8,
-                  radius: const Radius.circular(16.0),
-                  thumbVisibility: const MaterialStatePropertyAll<bool>(true),
-                  trackVisibility: const MaterialStatePropertyAll<bool>(true),
-                  thumbColor: MaterialStatePropertyAll<Color>(AppTheme.colors.blissCream),
-                  trackColor: const MaterialStatePropertyAll<Color>(Colors.transparent),
-                  trackBorderColor: const MaterialStatePropertyAll<Color>(Colors.transparent),
-                ),
-                child: Scrollbar(
-                  radius: const Radius.circular(16.0),
-                  controller: sIController,
-                  child: GridView.builder(
-                    controller: sIController,
-                    shrinkWrap: true,
-                    physics: const AlwaysScrollableScrollPhysics(),
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 4,
-                      crossAxisSpacing: 30.0,
-                      mainAxisSpacing: 10.0,
-                    ),
-                    itemCount: icons.length,
-                    itemBuilder: (context, index) {
-                      return GestureDetector(
-                        onTap: (){
-                            currentIcon = icons[index];
-                          Navigator.of(context).pop(currentIcon);
-                        },
-                        child: Icon(icons[index],color: AppTheme.colors.friendlyWhite, size: 16,),
-                      );
-                    },
-                  ),
-                ),
-              )),
-                    const SizedBox(height: 20,),
-                    Text('Task Color', style: TextStyle(color: AppTheme.colors.onsetBlue, fontFamily: Globals.sysFont, fontSize: 18, fontWeight: FontWeight.w700),),
-                    const SizedBox(height: 10,),
-                    Container(
-                        decoration: BoxDecoration(
-                          color: AppTheme.colors.friendlyWhite.withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(16.0),
-                        ),
-                        height: 50, child: ScrollbarTheme(
-                      data: ScrollbarThemeData(
-                        crossAxisMargin: 2,
-                        mainAxisMargin: 8,
-                        radius: const Radius.circular(16.0),
-                        thumbVisibility: const MaterialStatePropertyAll<bool>(true),
-                        trackVisibility: const MaterialStatePropertyAll<bool>(true),
-                        thumbColor: MaterialStatePropertyAll<Color>(AppTheme.colors.blissCream),
-                        trackColor: const MaterialStatePropertyAll<Color>(Colors.transparent),
-                        trackBorderColor: const MaterialStatePropertyAll<Color>(Colors.transparent),
-                      ),
-                      child: Scrollbar(
-                        scrollbarOrientation: ScrollbarOrientation.bottom,
-                        radius: const Radius.circular(16.0),
-                        controller: sCController,
-                        child: GridView.builder(
-                          controller: sCController,
-                          scrollDirection: Axis.horizontal,
-                          shrinkWrap: true,
-                          physics: const AlwaysScrollableScrollPhysics(),
-                          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 1,
-                            crossAxisSpacing: 10.0,
-                            mainAxisSpacing: 30.0,
-                          ),
-                          itemCount: colors.length,
-                          itemBuilder: (context, index) {
-                            return GestureDetector(
-                              onTap: (){
-                                currentColor = colors[index];
-                                Navigator.of(context).pop(currentColor);
-                              },
-                              child: Container(height: 16, width: 16,
-                                margin: const EdgeInsets.all(8.0),
-                                decoration: BoxDecoration(
-                                  color: colors[index],
-                                  shape: BoxShape.circle,
-                                ),)
-                            );
-                          },
-                        ),
-                      ),
-                    )),
-            ]),),
-          );
-        }).animate(effects: [
-          FadeEffect(duration: 200.ms, curve: Curves.fastLinearToSlowEaseIn),
-          ScaleEffect(duration: 200.ms, curve: Curves.easeIn)
-        ]);
-      });
-    }
-    
-    await precacheImage(const AssetImage('assets/cardBack.png'), context);
-    await showDialog(context: context, builder: (context){
-      return StatefulBuilder(
-          builder: (BuildContext context, StateSetter setState){
-            return Scaffold(
-              resizeToAvoidBottomInset: false,
-             body: Container(
-                decoration: BoxDecoration(
-                  color: AppTheme.colors.friendlyWhite,
-                  image: const DecorationImage(image: AssetImage('assets/cardBack.png'), fit: BoxFit.cover, filterQuality: FilterQuality.medium, opacity: 0.5)
-                ),
-                child: Padding( padding: const EdgeInsets.all(16.0), child:Stack(
-                  alignment: Alignment.center,
-                  children: [
-                  Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Row(
-                      mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Expanded(child: Text('Create A New Task', style: TextStyle(color: AppTheme.colors.friendlyBlack, fontSize: 24, fontWeight: FontWeight.w700, fontFamily: Globals.sysFont),),),
-                        IconButton(onPressed: (){
-
-                        }, icon: const Icon(Icons.arrow_forward_ios_rounded,size: 25,), color: AppTheme.colors.onsetBlue, ),
-                        ]),
-                    const SizedBox(height: 20,),
-                  Expanded(child:Scaffold(backgroundColor: Colors.transparent, resizeToAvoidBottomInset: true, body: SingleChildScrollView(child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Center(
-                          child:Stack(
-                            children: [
-                              Container(
-                                margin: const EdgeInsets.all(25),
-                                width: 100,
-                                height: 100,
-                                decoration: BoxDecoration(
-                                    color: currentColor ?? AppTheme.colors.onsetBlue,
-                                    shape: BoxShape.circle,
-                                    boxShadow: const [BoxShadow(
-                                      color: Colors.transparent,
-                                      offset: Offset(0, 0),
-                                      blurRadius: 30.0,
-                                    ),
-                                    ]
-                                ),
-                                child: Center(
-                                  child: currentIcon == null ? Text('T',
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      fontFamily: Globals.sysFont,
-                                      fontSize: 40,
-                                      color: AppTheme.colors.friendlyWhite,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ) : Icon(currentIcon, size: 40, color: AppTheme.colors.friendlyWhite,),
-                                ),
-                              ),
-                              Positioned(
-                                bottom: 15,
-                                  right: 15,
-                                  child: ElevatedButton(
-                                onPressed: () {
-                                    iconPick().then((_){
-                                      setState((){
-                                        currentIcon = currentIcon;
-                                        currentColor = currentColor;
-                                      });
-                                    });
-                                  },
-                                    style: ButtonStyle(
-                                        shape: const MaterialStatePropertyAll<OutlinedBorder>(CircleBorder(side: BorderSide())),
-                                        backgroundColor: MaterialStatePropertyAll<Color>(AppTheme.colors.friendlyBlack),
-                                        padding: const MaterialStatePropertyAll<EdgeInsetsGeometry>(EdgeInsets.zero),
-                                    ),
-                              child: Icon(CupertinoIcons.pencil, color: AppTheme.colors.friendlyWhite,size: 16,),))
-                            ],
-                          ),
-                        ),
-                        const SizedBox(height: 20,),
-                        Text('Task Name', style: TextStyle(color: AppTheme.colors.friendlyBlack, fontFamily: Globals.sysFont, fontSize: 18, fontWeight: FontWeight.w700),),
-                        CustomTextField(
-                            labelText: '',
-                            focusNode: Tnode,
-                            controller: Tcontroller,
-                            labelColor: AppTheme.colors.onsetBlue,
-                            cursorColor: Colors.grey,
-                            bgColor: AppTheme.colors.friendlyWhite,
-                            textColor: AppTheme.colors.onsetBlue,
-                            borderColor: AppTheme.colors.onsetBlue,
-                            fontSize: 16,
-                            obscureText: false),
-                        const SizedBox(height: 20,),
-                        Text('Description', style: TextStyle(color: AppTheme.colors.friendlyBlack, fontFamily: Globals.sysFont, fontSize: 18, fontWeight: FontWeight.w700),),
-                        CustomTextField(
-                            focusNode: Dnode,
-                            controller: Dcontroller,
-                            maxLines: 5,
-                            labelText: '',
-                            labelColor: AppTheme.colors.onsetBlue,
-                            cursorColor: Colors.grey,
-                            bgColor: AppTheme.colors.friendlyWhite,
-                            textColor: AppTheme.colors.onsetBlue,
-                            borderColor: AppTheme.colors.onsetBlue,
-                            fontSize: 16,
-                            obscureText: false),
-                      ],
-                    ),),),),
-                  ],),
-                    Positioned(
-                        bottom: 0,
-                        child: ElevatedButton(
-                          style: ButtonStyle(backgroundColor: MaterialStatePropertyAll<Color>(AppTheme.colors.friendlyBlack)),
-                          onPressed: () {
-                            Tcontroller.clear();
-                            Dcontroller.clear();
-                            Navigator.of(context).pop();
-                          }, child: Icon(CupertinoIcons.multiply, color: AppTheme.colors.friendlyWhite,),
-                        )),
-                  ],
-                ),)
-            ).animate(
-              effects: [
-                SlideEffect(
-                  duration: 250.ms,
-                  curve: Curves.linear,
-                  begin: Offset.fromDirection(4.7),
-                )
-              ]));
-          }
-      );
-    });
   }
 
   void _getTasks(){
@@ -547,7 +240,7 @@ class _HomeState extends State<Home>{
     return Scaffold(
       floatingActionButton: InkWell(
         onTap: () {
-          addTasks(context);
+          Tasks.addTasks(context);
         },overlayColor: const MaterialStatePropertyAll<Color?>(Colors.transparent),
         splashColor: Colors.transparent,
         child: Material(
