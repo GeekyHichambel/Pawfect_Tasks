@@ -503,7 +503,7 @@ class _MyPetState extends State<MyPet> with SingleTickerProviderStateMixin{
                                             const SizedBox(height: 5,),
                                             Padding(
                                                   padding: const EdgeInsets.all(2.0),
-                                                  child: OutlinedText(text: cPetHp == 0? '☠' : '$cPetHp', fillColor: cPetHp <= 20? Colors.red : cPetHp <=50? Colors.orange : cPetHp <= 80? Colors.yellow[700] : Colors.lightGreen, outlineColor: AppTheme.colors.friendlyWhite),
+                                                  child: OutlinedText(text: cPetHp == 0? '☠' : '$cPetHp', fillColor: cPetHp <= 20? Colors.red : cPetHp <=50? Colors.orangeAccent : cPetHp <= 80? Colors.yellow[700] : Colors.greenAccent, outlineColor: AppTheme.colors.friendlyWhite, strokeWidth: 1.5,),
                                                 ),
                                           ],
                                         ),
@@ -513,7 +513,7 @@ class _MyPetState extends State<MyPet> with SingleTickerProviderStateMixin{
                                             const SizedBox(height: 0,),
                                            Padding(
                                                 padding: const EdgeInsets.all(2.0),
-                                                child: OutlinedText(text: cPetHp == 0? '☠' : '$cPetHunger', fillColor: cPetHunger <= 20? Colors.lightGreen : cPetHunger <=50? Colors.yellow[700] : cPetHunger <= 80? Colors.orange : Colors.red, outlineColor: AppTheme.colors.friendlyWhite,),
+                                                child: OutlinedText(text: cPetHp == 0? '☠' : '$cPetHunger', fillColor: cPetHunger <= 20? Colors.greenAccent : cPetHunger <=50? Colors.yellow[700] : cPetHunger <= 80? Colors.orangeAccent : Colors.red, outlineColor: AppTheme.colors.friendlyWhite, strokeWidth: 1.5,),
                                               ),
                                           ],
                                         ),
@@ -523,7 +523,7 @@ class _MyPetState extends State<MyPet> with SingleTickerProviderStateMixin{
                                             const SizedBox(height: 5,),
                                            Padding(
                                                 padding: const EdgeInsets.all(2.0),
-                                                child: OutlinedText(text: cPetHp == 0? '☠' : cPetMood, fillColor: cPetMood == 'Happy'? Colors.pink : cPetMood == 'Normal' ? Colors.lightGreen : cPetMood == 'Sad' ? Colors.blueAccent : Colors.red, outlineColor: AppTheme.colors.friendlyWhite,),
+                                                child: OutlinedText(text: cPetHp == 0? '☠' : cPetMood, fillColor: cPetMood == 'Happy'? Colors.pink : cPetMood == 'Normal' ? Colors.greenAccent : cPetMood == 'Sad' ? Colors.blueAccent : Colors.red, outlineColor: AppTheme.colors.friendlyWhite, strokeWidth: 1.5),
                                               ),
                                           ],
                                         ),

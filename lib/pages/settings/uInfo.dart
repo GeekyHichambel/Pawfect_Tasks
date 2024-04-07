@@ -29,6 +29,7 @@ class UinfoState extends State<Uinfo>{
   bool Mread = true;
   bool Pread = true;
   File? profile_pic;
+  bool genderChanged = false;
   late TextEditingController mController = TextEditingController();
   late TextEditingController pController = TextEditingController(text: '••••••••');
   late TextEditingController gController = TextEditingController();
@@ -79,6 +80,7 @@ class UinfoState extends State<Uinfo>{
                         onTap: (){
                           setState(() {
                             gController.text = options[index];
+                            genderChanged = true;
                           });
                           Navigator.of(context).pop();
                         },
@@ -233,7 +235,7 @@ class UinfoState extends State<Uinfo>{
         if(kDebugMode) print('Exception: $e');
       }
     }
-    if (gController.text.isNotEmpty){
+    if (genderChanged){
       try {
         final String gender = gController.text;
         await DataBase.userCollection?.child(Globals.user).update({

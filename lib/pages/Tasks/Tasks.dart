@@ -1,4 +1,7 @@
+import 'dart:async';
+import 'dart:convert';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart' as flutter_animate;
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
@@ -10,9 +13,50 @@ import 'ThirdPage.dart';
 
 class Tasks{
 
+  static Future<int> createNewTask(String name, String? description, IconData? icon, Color? color) async{
+    try {
+      final String? taskIcon = icon?.codePoint.toString();
+      final String? taskColor = color?.value.toString();
+      final String taskName = name;
+      final String? taskDescription = description;
+
+      if (taskName == ''){
+        GlobalVar.globalVar.showToast('Task name can\'t be empty');
+        throw Exception('Task name can\'t be empty');
+      }
+
+      Map<String, dynamic> task = {
+        'color': taskColor,
+        'icon': taskIcon,
+        'name': taskName,
+        'description': taskDescription,
+      };
+
+      List<Map<String,dynamic>> encodableList = [];
+      encodableList.addAll(Globals.tasks);
+      encodableList.add(task);
+
+      Globals.displayTasks.add({
+        'color': color,
+        'icon': icon,
+        'name': name,
+        'description': description,
+      });
+
+      await Globals.prefs.delete(key: 'tasks');
+      final jsonList = jsonEncode(encodableList);
+      await Globals.prefs.write(key: 'tasks', value: jsonList);
+      return 0;
+    }catch (e){
+      if(kDebugMode) print('Exception : $e');
+      return 100;
+    }
+  }
+
   static Future<void> addTasks(BuildContext context) async{
     final pageController = PageController(keepPage: true);
     int currentPage = 0;
+
     TextEditingController Tcontroller = TextEditingController();
     TextEditingController Dcontroller = TextEditingController();
 
@@ -69,7 +113,11 @@ class Tasks{
                                   Expanded(child: Text('Create A New Task',textAlign: TextAlign.center, style: TextStyle(color: AppTheme.colors.friendlyBlack, fontSize: 18, fontWeight: FontWeight.w700, fontFamily: Globals.sysFont),),),
                                   currentPage == Pages.length - 1? GestureDetector(
                                     onTap: (){
-
+                                      createNewTask(Tcontroller.text, Dcontroller.text, FirstPageState.currentIcon, FirstPageState.currentColor).then((result){
+                                        if (result == 0) {
+                                          Navigator.of(context).pop();
+                                        }
+                                      });
                                     },
                                     child: Text('Done', style: TextStyle(color: AppTheme.colors.onsetBlue, fontSize: 15.5, fontWeight: FontWeight.bold,  fontFamily: Globals.sysFont),),
                                   ): IconButton(onPressed: (){
@@ -92,7 +140,9 @@ class Tasks{
                                 children:[
                                   SmoothPageIndicator(controller: pageController, count: Pages.length, effect: ScrollingDotsEffect(
                                     activeDotColor: AppTheme.colors.onsetBlue,
+                                    activeDotScale: 1.5,
                                     dotColor: AppTheme.colors.blissCream,
+                                    spacing: 10.0
                                   ),),
                                   const SizedBox(height: 20,),
                                   ElevatedButton(

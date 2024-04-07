@@ -175,7 +175,7 @@ class _HomeState extends State<Home>{
   String currentTime = '';
   String TimeImg = '';
   int pendingTasks = 0;
-  List<String> tasks = [];
+  List<Map<String,dynamic>> tasks = [];
   bool isMounted = false;
 
   @override
@@ -183,7 +183,6 @@ class _HomeState extends State<Home>{
       super.initState();
       isMounted = mounted;
       _getTasks();
-      _getPendingTasks();
       _updateTime();
       Timer.periodic(const Duration(seconds: 1), (Timer timer) {
           if (isMounted) {
@@ -201,16 +200,12 @@ class _HomeState extends State<Home>{
   }
 
   void _getTasks(){
-    // Fetch the tasks list
-  }
-
-  void _getPendingTasks(){
-    //calculate pending tasks
-    int tasks = 0;
     setState(() {
-      pendingTasks = tasks;
+      tasks = Globals.displayTasks;
+      pendingTasks = tasks.length;
     });
   }
+
 
   void _updateTime(){
     if (mounted) {
@@ -240,7 +235,9 @@ class _HomeState extends State<Home>{
     return Scaffold(
       floatingActionButton: InkWell(
         onTap: () {
-          Tasks.addTasks(context);
+          Tasks.addTasks(context).then((_){
+            _getTasks();
+          });
         },overlayColor: const MaterialStatePropertyAll<Color?>(Colors.transparent),
         splashColor: Colors.transparent,
         child: Material(
@@ -312,7 +309,7 @@ class _HomeState extends State<Home>{
             ),
             Expanded(child: Padding(padding: const EdgeInsets.all(16.0),
               child: FadeInAnimation(delay: 1.5,child: CustomBox(
-                color: AppTheme.colors.friendlyWhite,
+                color: Colors.transparent,
                 shadow: Colors.transparent,
                 border: Border(
                     top: BorderSide(color: AppTheme.colors.blissCream, width: 2.0, strokeAlign: BorderSide.strokeAlignInside),
@@ -320,7 +317,32 @@ class _HomeState extends State<Home>{
                     right: BorderSide(color: AppTheme.colors.blissCream, width: 2.0, strokeAlign: BorderSide.strokeAlignInside),
                     bottom: BorderSide(color: AppTheme.colors.blissCream, width: 5.0, strokeAlign: BorderSide.strokeAlignInside)),
                 child: Center(
-                    child: Text((pendingTasks > 0) ? '$pendingTasks' : 'We\'re done for today!', style: TextStyle(color: AppTheme.colors.blissCream, fontWeight: FontWeight.w700),),),
+                    child: pendingTasks > 0 ? Padding(padding: const EdgeInsets.all(5.0),child:ListView.builder(itemCount: pendingTasks,itemBuilder: (context, index){
+                      return Padding(padding: const EdgeInsets.only(left: 2, right: 2, bottom: 2.0, top: 2),child: Container(
+                          decoration: BoxDecoration(
+                            color: AppTheme.colors.complimentaryBlack.withOpacity(0.6),
+                            borderRadius: const BorderRadius.all(Radius.circular(16.0)),
+                            border: Border.all(color: AppTheme.colors.blissCream.withOpacity(0.6)),
+                          ),
+                          child: ListTile(
+                        tileColor: Colors.transparent,
+                        leading: CircleAvatar(
+                          backgroundColor: tasks[index]['color'] ?? AppTheme.colors.onsetBlue,
+                          child: tasks[index]['icon'] == null?  Text('T',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontFamily: Globals.sysFont,
+                              color: AppTheme.colors.friendlyWhite,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18,
+                            )) : Icon(tasks[index]['icon'],
+                            color: AppTheme.colors.friendlyWhite,
+                            size: 18,
+                          ),
+                        ),
+                        title: Text(tasks[index]['name'], style: TextStyle(color: AppTheme.colors.friendlyWhite, fontWeight: FontWeight.w700, fontFamily: Globals.sysFont, fontSize: 16),),
+                      )));
+                    })) : Text('We\'re done for today!', style: TextStyle(color: AppTheme.colors.blissCream, fontWeight: FontWeight.w700, fontFamily: Globals.sysFont),),),
               ),)
             )
             ),

@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_animate/flutter_animate.dart' as flutter_animate;
 
 import '../../Components/AppTheme.dart';
@@ -23,8 +24,8 @@ class FirstPage extends StatefulWidget {
 class FirstPageState extends State<FirstPage> with AutomaticKeepAliveClientMixin{
   final FocusNode Tnode = FocusNode();
   final FocusNode Dnode = FocusNode();
-  IconData? currentIcon;
-  Color? currentColor;
+  static IconData? currentIcon;
+  static Color? currentColor;
   bool isTfocus = false;
   bool isDfocus = false;
 
@@ -113,7 +114,7 @@ class FirstPageState extends State<FirstPage> with AutomaticKeepAliveClientMixin
                               currentIcon = icons[index];
                               Navigator.of(context).pop(currentIcon);
                             },
-                            child: Icon(icons[index],color: AppTheme.colors.friendlyWhite, size: 16,),
+                            child: Icon(icons[index],color: AppTheme.colors.friendlyWhite, size: 18,),
                           );
                         },
                       ),
@@ -203,6 +204,11 @@ class FirstPageState extends State<FirstPage> with AutomaticKeepAliveClientMixin
   }
 
   @override
+  void dispose(){
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     super.build(context);
     return Column(
@@ -259,7 +265,12 @@ class FirstPageState extends State<FirstPage> with AutomaticKeepAliveClientMixin
           ),
         ),
         const SizedBox(height: 20,),
-        Text('Task Name', style: TextStyle(color: AppTheme.colors.friendlyBlack, fontFamily: Globals.sysFont, fontSize: 18, fontWeight: FontWeight.w700),),
+        RichText(
+            text: TextSpan(
+                text: '*', style: const TextStyle(color: Colors.red, fontSize: 18, fontWeight: FontWeight.w700),
+                children: [
+                  TextSpan(text: 'Task Name', style: TextStyle(color: AppTheme.colors.friendlyBlack, fontFamily: Globals.sysFont, fontSize: 18, fontWeight: FontWeight.w700),),
+                ])),
         CustomTextField(
             type: Globals.focused,
             labelText: '',

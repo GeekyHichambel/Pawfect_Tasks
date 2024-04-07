@@ -121,7 +121,7 @@ class ProfileView{
                       width: 80,
                       height: 80,
                       decoration: BoxDecoration(
-                          border: Border.all(color: AppTheme.colors.friendlyBlack, width: 2.0),
+                          border: Border.all(color: AppTheme.colors.blissCream, width: 2.0),
                           color: isProfilepic? AppTheme.colors.friendlyWhite : AppTheme.colors.onsetBlue,
                           shape: BoxShape.circle,
                           boxShadow: const [BoxShadow(

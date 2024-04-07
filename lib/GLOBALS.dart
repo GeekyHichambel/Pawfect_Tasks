@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:PawfectTasks/db/database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
@@ -15,6 +17,8 @@ class Globals {
   static FlutterSecureStorage prefs = const FlutterSecureStorage();
   static late bool LoggedIN;
   static late String user;
+  static late List<Map<String,dynamic>> tasks;
+  static late List<Map<String,dynamic>> displayTasks;
   static late String profilepicurl;
   static late int currentImage;
   static late bool isprofilepic;
@@ -104,8 +108,42 @@ class Globals {
         user = await prefs.read(key: 'user') as String;
       }
     }
+    if (await prefs.read(key: 'tasks') != null){
+      final jsonString = await prefs.read(key: 'tasks');
+      if (jsonString != null) {
+        final List<dynamic> jsonList = jsonDecode(jsonString);
+        if (kDebugMode) print(jsonList);
+        final List<Map<String,dynamic>> list = jsonList.map<Map<String,dynamic>>((dynamic map) {
+          return Map<String,dynamic>.from(map).map((key,value){
+            if (key == 'icon'){
+              if (value != null) {
+                IconData iconData = IconData(
+                    int.parse(value), fontFamily: 'MaterialIcons');
+                return MapEntry<String, dynamic>(key, iconData);
+              }else{
+                return MapEntry<String, dynamic>(key, null);
+              }
+            }else if (key == 'color') {
+              if (value != null) {
+                Color color = Color(int.parse(value));
+                return MapEntry<String, dynamic>(key, color);
+              } else{
+                return MapEntry<String, dynamic>(key, null);
+              }
+            }else {
+              return MapEntry<String,dynamic>(key, value);
+            }
+          });
+        }).toList();
+        tasks = jsonList.cast<Map<String,dynamic>>();
+        displayTasks = list;
+      }
+    }else{
+      tasks = [];
+      displayTasks = [];
+    }
     if (kDebugMode) {
-      print('Logged In: $LoggedIN, User: $user');
+      print('Logged In: $LoggedIN, User: $user, Tasks: $tasks');
     }
   }
 
