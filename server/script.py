@@ -81,7 +81,7 @@ def update_hunger():
                                 title = ''
                                 body = ''
 
-                                if hunger == 100 and health > 0:
+                                if hunger >= 50 and health > 0:
                                     title = "Your Pet needs you!!"
                                     body = f'Hi, {username}.\n{nickname} is quite hungry and waiting to be fed. Hop on the app to feed him'
 
