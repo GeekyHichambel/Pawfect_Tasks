@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:PawfectTasks/GLOBALS.dart';
+import 'package:flutter/services.dart';
 
 class CustomTextField extends StatelessWidget{
   final Color? cursorColor;
@@ -19,6 +20,7 @@ class CustomTextField extends StatelessWidget{
   final bool enabled;
   final bool canRequestFocus;
   final int? type;
+  final int? maxLength;
 
   const CustomTextField({
     super.key,
@@ -36,6 +38,7 @@ class CustomTextField extends StatelessWidget{
     this.controller,
     this.maxLines,
     this.type,
+    this.maxLength,
     this.canRequestFocus = true,
     this.enabled = true,
     this.readOnly = false,
@@ -55,6 +58,8 @@ class CustomTextField extends StatelessWidget{
           keyboardType: inputType,
           enableInteractiveSelection: true,
           autocorrect: false,
+          maxLength: maxLength,
+          maxLengthEnforcement: MaxLengthEnforcement.enforced,
           focusNode: focusNode,
           obscureText: obscureText,
           decoration: InputDecoration(

@@ -1,8 +1,8 @@
 import 'dart:async';
+import 'package:PawfectTasks/Components/CustomElevatedButton.dart';
 import 'package:PawfectTasks/pages/FriendsPage.dart';
 import 'package:PawfectTasks/pages/Tasks/Tasks.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:PawfectTasks/Components/AppTheme.dart';
 import 'package:PawfectTasks/Components/CustomBox.dart';
@@ -11,10 +11,10 @@ import 'package:PawfectTasks/db/database.dart';
 import 'package:PawfectTasks/pages/ProfilePane.dart';
 import 'package:PawfectTasks/pages/mypets.dart';
 import 'package:PawfectTasks/Components/CustomBottomNavigationBarItem.dart';
-import 'package:flutter/painting.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import '../Components/Animations.dart';
+import '../Components/OutlinedText.dart';
 import 'marketplace.dart';
 
 
@@ -171,10 +171,12 @@ class Home extends StatefulWidget{
   _HomeState createState() => _HomeState();
 }
 
-class _HomeState extends State<Home>{
+class _HomeState extends State<Home> with TickerProviderStateMixin{
   String currentTime = '';
   String TimeImg = '';
   int pendingTasks = 0;
+  int completedTasks = 0;
+  int expanded = -1;
   List<Map<String,dynamic>> tasks = [];
   bool isMounted = false;
 
@@ -202,6 +204,15 @@ class _HomeState extends State<Home>{
   void _getTasks(){
     setState(() {
       tasks = Globals.displayTasks;
+      int count = 0;
+      for (var task in Globals.displayTasks){
+        task.forEach((key, value) {
+          if (key == 'completed'){
+            if (value) count++;
+          }
+        });
+      }
+      completedTasks = count;
       pendingTasks = tasks.length;
     });
   }
@@ -303,12 +314,56 @@ class _HomeState extends State<Home>{
                   fontFamily: Globals.sysFont,
                   color: AppTheme.colors.friendlyBlack,
                   fontWeight: FontWeight.w700,
-                  fontSize: 24,
+                  fontSize: 20,
                 ),
               ),),
             ),
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: FadeInAnimation(delay: 1.5,child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                SizedBox(
+                      height: 40,
+                      width: 40,
+                      child: IconButton(onPressed: (){
+                        Navigator.of(context).pushNamed('/calendar');
+                      }, icon: Container(
+                        decoration: BoxDecoration(
+                          color: AppTheme.colors.complimentaryBlack,
+                          borderRadius: const BorderRadius.all(Radius.circular(16)),
+                        ),
+                       alignment: Alignment.center,
+                        child: Icon(CupertinoIcons.calendar, color: AppTheme.colors.pleasingWhite, size: 14,),),
+                      ),
+                    ),
+                  RichText(
+                    text: TextSpan(
+                        text: 'Pending Tasks: ',
+                        style: TextStyle(
+                          fontFamily: Globals.sysFont,
+                          color: AppTheme.colors.complimentaryBlack,
+                          fontWeight: FontWeight.w500,
+                          fontSize: 14,
+                        ),
+                        children: [
+                          TextSpan(
+                            text: '${pendingTasks - completedTasks}',
+                            style: TextStyle(
+                              fontFamily: Globals.sysFont,
+                              color: AppTheme.colors.onsetBlue,
+                              fontWeight: FontWeight.w700,
+                              fontSize: 14,
+                            ),
+                          )
+                        ]
+                    ),
+                  ),],),
+              )
+            ),
             Expanded(child: Padding(padding: const EdgeInsets.all(16.0),
-              child: FadeInAnimation(delay: 1.5,child: CustomBox(
+              child: FadeInAnimation(delay: 1.75,child: CustomBox(
                 color: Colors.transparent,
                 shadow: Colors.transparent,
                 border: Border(
@@ -318,30 +373,107 @@ class _HomeState extends State<Home>{
                     bottom: BorderSide(color: AppTheme.colors.blissCream, width: 5.0, strokeAlign: BorderSide.strokeAlignInside)),
                 child: Center(
                     child: pendingTasks > 0 ? Padding(padding: const EdgeInsets.all(5.0),child:ListView.builder(itemCount: pendingTasks,itemBuilder: (context, index){
-                      return Padding(padding: const EdgeInsets.only(left: 2, right: 2, bottom: 2.0, top: 2),child: Container(
+                      return Padding(padding: const EdgeInsets.only(left: 2, right: 2, bottom: 2.0, top: 2),
+                          child: Container(
                           decoration: BoxDecoration(
                             color: AppTheme.colors.complimentaryBlack.withOpacity(0.6),
                             borderRadius: const BorderRadius.all(Radius.circular(16.0)),
                             border: Border.all(color: AppTheme.colors.blissCream.withOpacity(0.6)),
                           ),
-                          child: ListTile(
-                        tileColor: Colors.transparent,
-                        leading: CircleAvatar(
-                          backgroundColor: tasks[index]['color'] ?? AppTheme.colors.onsetBlue,
-                          child: tasks[index]['icon'] == null?  Text('T',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontFamily: Globals.sysFont,
-                              color: AppTheme.colors.friendlyWhite,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18,
-                            )) : Icon(tasks[index]['icon'],
-                            color: AppTheme.colors.friendlyWhite,
-                            size: 18,
-                          ),
-                        ),
-                        title: Text(tasks[index]['name'], style: TextStyle(color: AppTheme.colors.friendlyWhite, fontWeight: FontWeight.w700, fontFamily: Globals.sysFont, fontSize: 16),),
-                      )));
+                          child: Column(
+                            children: [
+                              ListTile(
+                                contentPadding: const EdgeInsets.symmetric(horizontal: 8),
+                                horizontalTitleGap: 10,
+                                tileColor: Colors.transparent,
+                                leading: CircleAvatar(
+                                  backgroundColor: tasks[index]['color'] ?? AppTheme.colors.onsetBlue,
+                                  child: tasks[index]['icon'] == null?  Text('T',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontFamily: Globals.sysFont,
+                                        color: AppTheme.colors.friendlyWhite,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 18,
+                                      )) : Icon(tasks[index]['icon'],
+                                    color: AppTheme.colors.friendlyWhite,
+                                    size: 18,
+                                  ),
+                                ),
+                                title: Text(tasks[index]['name'], style: TextStyle(color: AppTheme.colors.friendlyWhite, fontWeight: FontWeight.w600, fontFamily: Globals.sysFont, fontSize: 15, decoration: tasks[index]['completed']? TextDecoration.lineThrough : null, decorationColor: tasks[index]['color'], decorationThickness: 3), ),
+                                subtitle: Text(tasks[index]['startTime'] ?? '', style: TextStyle(color: AppTheme.colors.pleasingWhite, fontFamily: Globals.sysFont, fontSize: 16, decoration: tasks[index]['completed']? TextDecoration.lineThrough : null, decorationColor: tasks[index]['color'], decorationThickness: 2),),
+                                trailing: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    tasks[index]['completed']? const SizedBox.shrink() : SizedBox(
+                                      height: 30.0,
+                                      width: 30.0,
+                                      child: IconButton(
+                                        padding: EdgeInsets.zero,
+                                        onPressed: (){
+                                          Tasks.completeTask(index, context).then((_){
+                                            GlobalVar.globalVar.showToast('Task marked as completed');
+                                            _getTasks();
+                                          });
+                                        },
+                                        icon: Icon(CupertinoIcons.check_mark, size: 16, color: AppTheme.colors.friendlyWhite,),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: 30.0,
+                                      width: 30.0,
+                                      child: IconButton(
+                                        padding: EdgeInsets.zero,
+                                        onPressed: (){
+                                          setState(() {
+                                            if (expanded == index){
+                                              expanded = -1;
+                                            }else {
+                                              expanded = index;
+                                            }
+                                          });
+                                        },
+                                        icon: Icon(expanded == index? CupertinoIcons.chevron_up : Icons.more_vert_rounded, size: 16, color: AppTheme.colors.friendlyWhite,),
+                                      ),
+                                    ),
+                                  ],
+                                )),
+                              expanded == index? Padding(padding: const EdgeInsets.all(5.0),
+                                  child: Column(
+                                    children: [
+                                      Text(tasks[index]['duration'] ?? '', style: TextStyle(color: AppTheme.colors.pleasingWhite, fontFamily: Globals.sysFont, fontSize: 12),),
+                                      const SizedBox(height: 5,),
+                                      Text(tasks[index]['description'].isEmpty? 'No description to display': tasks[index]['description'],
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          fontFamily: Globals.sysFont,
+                                          color: AppTheme.colors.friendlyWhite,
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 12,
+                                        ),),
+                                      const SizedBox(height: 20,),
+                                      SizedBox(
+                                        height: 40,
+                                        width: 80,
+                                        child: CustomElevatedButton(onPress: (){
+                                          Tasks.deleteTask(index).then((_){
+                                            GlobalVar.globalVar.showToast('Task Deleted');
+                                            _getTasks();
+                                          });
+                                        },
+                                            outlineColor: AppTheme.colors.pleasingWhite,
+                                            fillColor: AppTheme.colors.complimentaryBlack.withOpacity(0.6),
+                                            child: Center(
+                                              child: OutlinedText(text: 'Delete', fillColor: Colors.red, outlineColor: AppTheme.colors.friendlyWhite, fontSize: 9,)
+                                        )
+                                      ),),
+                                      const SizedBox(height: 5.0,),
+                                    ],
+                                  ),) : const SizedBox.shrink(),
+                            ],
+                          )
+                      ));
                     })) : Text('We\'re done for today!', style: TextStyle(color: AppTheme.colors.blissCream, fontWeight: FontWeight.w700, fontFamily: Globals.sysFont),),),
               ),)
             )
@@ -350,5 +482,6 @@ class _HomeState extends State<Home>{
         ),
       ),
     );
+
   }
 }

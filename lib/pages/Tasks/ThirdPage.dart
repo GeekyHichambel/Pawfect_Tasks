@@ -1,4 +1,8 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:scroll_date_picker/scroll_date_picker.dart';
+import '../../Components/AppTheme.dart';
+import '../../GLOBALS.dart';
 
 class ThirdPage extends StatefulWidget{
   const ThirdPage({
@@ -10,6 +14,7 @@ class ThirdPage extends StatefulWidget{
 }
 
 class ThirdPageState extends State<ThirdPage> with AutomaticKeepAliveClientMixin{
+  DateTime selectedDate = DateTime.now();
 
   @override
   bool get wantKeepAlive => true;
@@ -17,6 +22,32 @@ class ThirdPageState extends State<ThirdPage> with AutomaticKeepAliveClientMixin
   @override
   Widget build(BuildContext context){
     super.build(context);
-    return const  Column();
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          margin: const EdgeInsets.only(top: 25, bottom: 25),
+          child:  RichText(
+              text: TextSpan(
+                  text: '*', style: const TextStyle(color: Colors.red, fontSize: 18, fontWeight: FontWeight.w700),
+                  children: [
+                    TextSpan(text: 'Date', style: TextStyle(color: AppTheme.colors.friendlyBlack, fontFamily: Globals.sysFont, fontSize: 18, fontWeight: FontWeight.w700),),
+                  ])),
+        ),
+        const SizedBox(height: 5,),
+        SizedBox(
+          height: 250,
+          child: ScrollDatePicker(
+            selectedDate: selectedDate,
+            onDateTimeChanged: (DateTime value) {
+              setState(() {
+                selectedDate = value;
+              });
+            },
+            options: const DatePickerOptions(backgroundColor: Colors.transparent),
+          ),
+        ),
+      ],
+    );
   }
 }

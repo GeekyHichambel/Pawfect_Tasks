@@ -27,6 +27,7 @@ class UserI{
 class _StreakState extends State<Streaks>{
   bool pageLoaded = false;
   String Uleague = 'Rookie';
+  int USlot = 0;
   int UXP = 0;
   int UStreak = 0;
   int Selected = 1;
@@ -35,10 +36,12 @@ class _StreakState extends State<Streaks>{
   Future<void> getData() async{
     final user = await DataBase.streakCollection?.child(Globals.user).get();
     final league = user?.child('league').value.toString();
+    final slot = user?.child('slot').value as int;
     final xp = user?.child('xp').value as int;
     final streak = user?.child('streak').value as int;
     setState(() {
       Uleague = league!;
+      USlot = slot;
       UStreak = streak;
       UXP = xp;
     });
@@ -61,7 +64,7 @@ class _StreakState extends State<Streaks>{
            .value
            .toString();
        final leaderboard_ref = await DataBase.leaderboardCollection?.child(
-           league!).limitToFirst(25).get();
+           league!).child('Slot$USlot').limitToFirst(25).get();
        if (leaderboard_ref != null && leaderboard_ref.exists) {
          for (var element in leaderboard_ref.children) {
            String name = element.key.toString();
@@ -77,7 +80,7 @@ class _StreakState extends State<Streaks>{
        bool inLeaderboard = leaderboard.any((user) => user.name == Globals.user);
        if (!inLeaderboard){
          if (leaderboard.length >= 25) leaderboard.removeLast();
-         leaderboard.add(UserI(Globals.user, user?.child('xp').value as int, user?.child('streak').value as int, league!));
+         leaderboard.add(UserI(Globals.user, user?.child('xp').value as int, user?.child('streak').value as int, league!, ));
        }
        int xpComparator(UserI a, UserI b) => b.xp.compareTo(a.xp);
        leaderboard.sort(xpComparator);

@@ -90,6 +90,16 @@ class _SignUpState extends State<SignUpPage>{
       const int friendCount = 0;
       const int xp = 0;
       const int petFood = 0;
+      final Snapshot = await DataBase.leaderboardCollection?.child('Rookie').get();
+      final int? slotNo = Snapshot?.children.length;
+      final Ssnapshot = await DataBase.leaderboardCollection?.child('Rookie/Slot$slotNo').get();
+      final int? number = Ssnapshot?.children.length;
+      late final int slot;
+      if (number! < 25){
+        slot = slotNo!;
+      }else{
+        slot = slotNo! + 1;
+      }
       final Map<String, dynamic> userDoc = {
         'friendCount' : friendCount,
         'mail' : userMail,
@@ -102,6 +112,7 @@ class _SignUpState extends State<SignUpPage>{
         'streak' : streak,
         'xp' : xp,
         'league' : 'Rookie',
+        'slot' : slot,
       };
       final Map<String, dynamic> itemsDoc = {
         'pawCoin' : pawCoin,
@@ -117,7 +128,7 @@ class _SignUpState extends State<SignUpPage>{
       await DataBase.streakCollection?.child(userName).set(streakDoc);
       await DataBase.petsCollection?.child(userName).set(petsDoc);
       await DataBase.itemCollection?.child(userName).set(itemsDoc);
-      await DataBase.leaderboardCollection?.child('Rookie').child(userName).set(leaderDoc);
+      await DataBase.leaderboardCollection?.child('Rookie/Slot$slot').child(userName).set(leaderDoc);
       result = true;
       GlobalVar.globalVar.showToast('Successfully Signed Up');
     }catch(e){

@@ -5,11 +5,19 @@ import 'CustomBox.dart';
 class CustomElevatedButton extends StatelessWidget{
   final void Function() onPress;
   final Widget child;
+  final double height;
+  final double width;
+  final Color? outlineColor;
+  final Color? fillColor;
 
-  const CustomElevatedButton({
+  CustomElevatedButton({
     super.key,
     required this.onPress,
     required this.child,
+    this.height = 50,
+    this.width = 100,
+    this.outlineColor,
+    this.fillColor,
   });
 
   @override
@@ -20,15 +28,15 @@ class CustomElevatedButton extends StatelessWidget{
           padding: MaterialStatePropertyAll<EdgeInsets>(EdgeInsets.zero),
         ),
         child: CustomBox(
-          height: 50,
-          width: 100,
+          height: height,
+          width: width,
           border: Border(
-              top: BorderSide(color: AppTheme.colors.darkOnsetBlue, width: 2.0, strokeAlign: BorderSide.strokeAlignInside),
-              left: BorderSide(color: AppTheme.colors.darkOnsetBlue, width: 2.0, strokeAlign: BorderSide.strokeAlignInside),
-              right: BorderSide(color:  AppTheme.colors.darkOnsetBlue, width: 2.0, strokeAlign: BorderSide.strokeAlignInside),
-              bottom: BorderSide(color:  AppTheme.colors.darkOnsetBlue, width: 5.0, strokeAlign: BorderSide.strokeAlignInside)),
+              top: BorderSide(color: outlineColor ?? AppTheme.colors.darkOnsetBlue, width: 2.0, strokeAlign: BorderSide.strokeAlignInside),
+              left: BorderSide(color: outlineColor ?? AppTheme.colors.darkOnsetBlue, width: 2.0, strokeAlign: BorderSide.strokeAlignInside),
+              right: BorderSide(color:  outlineColor ?? AppTheme.colors.darkOnsetBlue, width: 2.0, strokeAlign: BorderSide.strokeAlignInside),
+              bottom: BorderSide(color:  outlineColor ?? AppTheme.colors.darkOnsetBlue, width: 5.0, strokeAlign: BorderSide.strokeAlignInside)),
           shadow: Colors.transparent,
-          color: AppTheme.colors.onsetBlue,
+          color: fillColor ?? AppTheme.colors.onsetBlue,
           child: Padding(
             padding: const EdgeInsets.all(5.0),
             child: child),

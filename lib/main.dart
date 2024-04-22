@@ -1,3 +1,4 @@
+import 'package:PawfectTasks/pages/Calendar.dart';
 import 'package:PawfectTasks/pages/FriendsPage.dart';
 import 'package:PawfectTasks/pages/settings/TermsConditions.dart';
 import 'package:PawfectTasks/pages/settings/aboutUs.dart';
@@ -26,6 +27,7 @@ Future<void> main() async {
       darkTheme: darkMode,
       routes: {
         '/home' : (context) => const MainPage(),
+        '/calendar' : (context) => const Calendar(),
         '/streaks': (context) => const Streaks(),
         '/Ulogin': (context) => const LoginPage(),
         '/Usignup' : (context) => const SignUpPage(),

@@ -102,9 +102,10 @@ class ProfileView{
     try{
       await isFriend();
       await getPic();
-      await showDialog(context: context, builder: (context){
+      context.mounted? await showDialog(context: context, builder: (context) {
         return StatefulBuilder(builder: (BuildContext context,StateSetter setState){
-          return SizedBox(height: 300,
+          return Container(height: 300,
+            constraints: BoxConstraints.loose(const Size.fromHeight(300)),
             child: AlertDialog(
               elevation: 0.0,
               scrollable: true,
@@ -310,7 +311,7 @@ class ProfileView{
             ScaleEffect(duration: 200.ms, curve: Curves.easeIn)
           ]);
         });
-      });
+      }) : null;
     } catch (e){
       if(kDebugMode) print('Error: $e');
     }

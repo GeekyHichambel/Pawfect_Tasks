@@ -1,11 +1,11 @@
 import 'dart:convert';
-
 import 'package:PawfectTasks/db/database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gif_plus/flutter_gif_plus.dart';
 import 'dart:io';
+import 'package:intl/intl.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:PawfectTasks/Components/AppTheme.dart';
@@ -17,14 +17,18 @@ class Globals {
   static FlutterSecureStorage prefs = const FlutterSecureStorage();
   static late bool LoggedIN;
   static late String user;
+  static late Map<String,dynamic> AllTasks;
   static late List<Map<String,dynamic>> tasks;
   static late List<Map<String,dynamic>> displayTasks;
+  static late Map<String, dynamic> taskCompleted;
+  static late int tasksCompletedToday;
   static late String profilepicurl;
   static late int currentImage;
   static late bool isprofilepic;
   static const int focused = 1;
   static const int unfocused = 2;
 
+  //TODO: Delete the uncompleted tasks when a day is passed
   static Future<void> updatePetStatus() async {
     if (LoggedIN) {
       final data = await DataBase.petsCollection?.child(user).get();
@@ -110,40 +114,71 @@ class Globals {
     }
     if (await prefs.read(key: 'tasks') != null){
       final jsonString = await prefs.read(key: 'tasks');
+      final String currentDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
       if (jsonString != null) {
-        final List<dynamic> jsonList = jsonDecode(jsonString);
-        if (kDebugMode) print(jsonList);
-        final List<Map<String,dynamic>> list = jsonList.map<Map<String,dynamic>>((dynamic map) {
-          return Map<String,dynamic>.from(map).map((key,value){
-            if (key == 'icon'){
-              if (value != null) {
-                IconData iconData = IconData(
-                    int.parse(value), fontFamily: 'MaterialIcons');
-                return MapEntry<String, dynamic>(key, iconData);
-              }else{
-                return MapEntry<String, dynamic>(key, null);
+        AllTasks = jsonDecode(jsonString);
+        if (kDebugMode) print(AllTasks);
+        if (AllTasks.containsKey(currentDate)){
+          final List<dynamic> jsonList = AllTasks[currentDate];
+          final List<Map<String,dynamic>> list = jsonList.map<Map<String,dynamic>>((dynamic map) {
+            return Map<String,dynamic>.from(map).map((key,value){
+              if (key == 'icon'){
+                if (value != null) {
+                  IconData iconData = IconData(
+                      int.parse(value), fontFamily: 'MaterialIcons');
+                  return MapEntry<String, dynamic>(key, iconData);
+                }else{
+                  return MapEntry<String, dynamic>(key, null);
+                }
+              }else if (key == 'color') {
+                if (value != null) {
+                  Color color = Color(int.parse(value));
+                  return MapEntry<String, dynamic>(key, color);
+                } else{
+                  return MapEntry<String, dynamic>(key, null);
+                }
+              }else if (key == 'completed') {
+                if (value == 'false'){
+                  return MapEntry<String,dynamic>(key, false);
+                }else{
+                  return MapEntry<String,dynamic>(key, true);
+                }
+              }else {
+                return MapEntry<String,dynamic>(key, value);
               }
-            }else if (key == 'color') {
-              if (value != null) {
-                Color color = Color(int.parse(value));
-                return MapEntry<String, dynamic>(key, color);
-              } else{
-                return MapEntry<String, dynamic>(key, null);
-              }
-            }else {
-              return MapEntry<String,dynamic>(key, value);
-            }
-          });
-        }).toList();
-        tasks = jsonList.cast<Map<String,dynamic>>();
-        displayTasks = list;
+            });
+          }).toList();
+          tasks = jsonList.cast<Map<String,dynamic>>();
+          displayTasks = list;
+        } else{
+          tasks = [];
+          displayTasks = [];
+        }
       }
     }else{
       tasks = [];
       displayTasks = [];
+      AllTasks = {};
+    }
+    if (await prefs.read(key: 'tasksCompleted') != null){
+      final jsonString = await prefs.read(key: 'tasksCompleted');
+      final String currentDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+      if (jsonString != null){
+        taskCompleted = jsonDecode(jsonString);
+        if (kDebugMode) print(taskCompleted);
+        if (taskCompleted.containsKey(currentDate)){
+          final jsonData = taskCompleted[currentDate];
+          tasksCompletedToday = jsonData;
+        }else{
+          tasksCompletedToday = 0;
+        }
+      }
+    }else{
+      taskCompleted = {};
+      tasksCompletedToday = 0;
     }
     if (kDebugMode) {
-      print('Logged In: $LoggedIN, User: $user, Tasks: $tasks');
+      print('Logged In: $LoggedIN, User: $user, Tasks: $tasks, Tasks Completed: $tasksCompletedToday');
     }
   }
 
