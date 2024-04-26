@@ -284,7 +284,7 @@ class UinfoState extends State<Uinfo>{
       ),
       backgroundColor: AppTheme.colors.friendlyWhite,
       body: Padding(
-        padding: const EdgeInsets.only(top: 0, bottom: 20, left: 10, right: 10),
+        padding: const EdgeInsets.only(top: 20, bottom: 20, left: 10, right: 10),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: Globals.LoggedIN? MainAxisAlignment.start : MainAxisAlignment.center,

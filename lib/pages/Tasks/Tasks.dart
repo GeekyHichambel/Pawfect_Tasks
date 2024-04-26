@@ -249,7 +249,6 @@ class Tasks{
       final String startTime = minDiff >= 10? '${start.inHours} : $minDiff' : '${start.inHours} : 0$minDiff';
       final String duration = '${_duration.inHours} hours. ${_duration.inMinutes - (_duration.inHours * 60)} min.';
       final DateTime date = _date;
-      //TODO: add the date option for task creation
       if (taskName == ''){
         GlobalVar.globalVar.showToast('Task name can\'t be empty');
         throw Exception('Task name can\'t be empty');

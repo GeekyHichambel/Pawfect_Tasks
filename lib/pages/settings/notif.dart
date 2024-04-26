@@ -13,13 +13,14 @@ class notifState extends State<notif>{
   @override
   Widget build(BuildContext context) {
     return SafeArea(child: Scaffold(
+      appBar: const PreferredSize(
+        preferredSize: Size.fromHeight(100),
+        child: CustomAppBar(name: 'Notifications'),
+      ),
       backgroundColor: AppTheme.colors.friendlyWhite,
       body: const Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(padding: EdgeInsets.only(bottom: 20),
-              child: CustomAppBar(name: 'Notifications',)
-          )
         ],
       ),
     ));
