@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:PawfectTasks/Components/AppTheme.dart';
 import 'package:lottie/lottie.dart';
@@ -16,6 +18,8 @@ class _SplashScreenState  extends State<SplashScreen> with SingleTickerProviderS
   late VideoPlayerController videoPlayerController;
   bool load = true;
   bool animationCompleted = false;
+  final GlobalKey<ScaffoldState> Skey = GlobalKey<ScaffoldState>();
+
 
   @override
   void initState(){
@@ -45,6 +49,7 @@ class _SplashScreenState  extends State<SplashScreen> with SingleTickerProviderS
     await DataBase.connect();
     await DataBase.initNotifications();
     await Globals.updatePref();
+    await Globals.checkPremium();
     await Globals.updatePetStatus();
     await Globals.lastOnline();
     await Globals.checkProfilePicUploaded();
@@ -75,19 +80,22 @@ class _SplashScreenState  extends State<SplashScreen> with SingleTickerProviderS
             ): SizedBox(
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.height,
-          child: Padding(
-            padding: const EdgeInsetsDirectional.all(20.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Image(image: AssetImage('assets/fect tasks.png')),
-                LinearProgressIndicator(color: AppTheme.colors.onsetBlue, borderRadius: BorderRadius.circular(10), backgroundColor: AppTheme.colors.friendlyBlack,),
-                const SizedBox(height: 20,),
-                Center(child: Text('Onboarding now, please hang on tightly', style: TextStyle(color: Colors.grey,fontSize: 14,fontFamily: Globals.sysFont),textAlign: TextAlign.center,),)
-              ],
-            ),
-          )
+          child: Scaffold(
+            key: Skey,
+            body: Padding(
+              padding: const EdgeInsetsDirectional.all(20.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Image(image: AssetImage('assets/fect tasks.png')),
+                  LinearProgressIndicator(color: AppTheme.colors.onsetBlue, borderRadius: BorderRadius.circular(10), backgroundColor: AppTheme.colors.friendlyBlack,),
+                  const SizedBox(height: 20,),
+                  Center(child: Text('Onboarding now, please hang on tightly', style: TextStyle(color: Colors.grey,fontSize: 14,fontFamily: Globals.sysFont),textAlign: TextAlign.center,),)
+                ],
+              ),
+            )
+          ),
         ),
       );
   }

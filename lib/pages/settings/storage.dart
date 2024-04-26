@@ -18,7 +18,7 @@ class killMState extends State<killM>{
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(padding: EdgeInsets.only(bottom: 20),
-              child: CustomAppBar()
+              child: CustomAppBar(name: 'Storage',)
           )
         ],
       ),

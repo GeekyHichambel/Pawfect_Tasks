@@ -18,7 +18,7 @@ class cFeedState extends State<cFeed>{
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(padding: EdgeInsets.only(bottom: 20),
-              child: CustomAppBar()
+              child: CustomAppBar(name: 'Help Center',)
           )
         ],
       ),

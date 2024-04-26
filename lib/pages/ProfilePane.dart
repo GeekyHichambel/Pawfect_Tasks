@@ -6,6 +6,7 @@ import 'package:PawfectTasks/Components/Animations.dart';
 import 'package:PawfectTasks/Components/AppTheme.dart';
 import 'package:PawfectTasks/Components/CustomBox.dart';
 import 'package:PawfectTasks/GLOBALS.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
@@ -104,7 +105,9 @@ class _ProfilePaneState extends State<ProfilePane>{
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(padding: const EdgeInsets.symmetric(vertical: 10.0,horizontal: 0.0),
-                child: Row(
+                child: Container(
+                  color: Colors.transparent,
+                  child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       IconButton(
@@ -121,8 +124,7 @@ class _ProfilePaneState extends State<ProfilePane>{
                           child: Text(
                             'Log In',
                             style: TextStyle(
-                              color: AppTheme.colors.friendlyWhite
-                              ,
+                              color: AppTheme.colors.friendlyWhite,
                             ),
                           )): ElevatedButton(onPressed: (){
                         setState(() {
@@ -138,9 +140,10 @@ class _ProfilePaneState extends State<ProfilePane>{
                     ],
                   ),
                 ),
+                ),
               Expanded(child:
               SingleChildScrollView(
-                physics: const AlwaysScrollableScrollPhysics(),
+                physics: const RangeMaintainingScrollPhysics(),
                 child: Column(
                   children: [
                     const SizedBox(height: 30.0,),
@@ -193,6 +196,73 @@ class _ProfilePaneState extends State<ProfilePane>{
                         ),
                       ),
                     const SizedBox(height: 20.0,),
+                        !Globals.isPremium? Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: GestureDetector(
+                            onTap: (){
+
+                            },
+                            child: Stack(
+                                alignment: AlignmentDirectional.centerStart,
+                                fit: StackFit.passthrough,
+                                children: [
+                                 Container(
+                                      height: 150,
+                                      width: double.infinity,
+                                      decoration: BoxDecoration(
+                                        border: Border.all(color: AppTheme.colors.blissCream),
+                                        borderRadius: BorderRadius.circular(16.0),
+                                      ),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.max,
+                                          mainAxisAlignment: MainAxisAlignment.start,
+                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                          children: [
+                                            Expanded(
+                                              flex: 2,
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                children: [
+                                                  const SizedBox(height: 5,),
+                                                  Text('Try Premium Now!', style: TextStyle(
+                                                    fontFamily: Globals.sysFont,
+                                                    fontSize: 16,
+                                                    color: AppTheme.colors.friendlyBlack,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),),
+                                                  const SizedBox(height: 10,),
+                                                  Text('No Ads, exclusive features, and much more.', style: TextStyle(
+                                                    fontFamily: Globals.sysFont,
+                                                    fontSize: 10,
+                                                    color: Colors.grey,
+                                                  ),),
+                                                ],
+                                              ),
+                                            ),
+                                            Expanded(
+                                              child: Padding(
+                                                padding: const EdgeInsets.all(16.0),
+                                                child: Image.asset('assets/premium_logo.png'),
+                                              )
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                  ),
+                                  ClipRRect(
+                                    borderRadius: const BorderRadius.all(Radius.circular(10.0)),
+                                    child: Image.asset('assets/premium.png', height: 150,
+                                      width: double.infinity,
+                                      fit: BoxFit.fill,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                          ),
+                        ) : const SizedBox.shrink(),
                     Padding(padding: const EdgeInsetsDirectional.all(16.0),
                       child: FadeInAnimation(delay: 1,child: ListView(
                         shrinkWrap: true,
@@ -248,12 +318,12 @@ class _ProfilePaneState extends State<ProfilePane>{
                                         children: [
                                           Row(
                                             children: [
-                                              Text('Kill Mode', style: TextStyle(color: AppTheme.colors.friendlyWhite, fontSize: 14.0, fontWeight: FontWeight.bold, fontFamily: Globals.sysFont),),
+                                              Text('Storage', style: TextStyle(color: AppTheme.colors.friendlyWhite, fontSize: 14.0, fontWeight: FontWeight.bold, fontFamily: Globals.sysFont),),
                                               const SizedBox(width: 3,),
-                                              Icon(Icons.dangerous_rounded, color: AppTheme.colors.friendlyWhite, size: 14.0,),
+                                              Icon(Icons.storage_rounded, color: AppTheme.colors.friendlyWhite, size: 14.0,),
                                             ],
                                           ),
-                                          Text('Raise the stakes with kill mode', style: TextStyle(color: AppTheme.colors.pleasingWhite, fontSize: 12.0, fontWeight: FontWeight.normal, fontFamily: Globals.sysFont),),
+                                          Text('Manage the app data', style: TextStyle(color: AppTheme.colors.pleasingWhite, fontSize: 12.0, fontWeight: FontWeight.normal, fontFamily: Globals.sysFont),),
                                         ],
                                       ),
                                       Align(
@@ -299,38 +369,6 @@ class _ProfilePaneState extends State<ProfilePane>{
                           const SizedBox(height: 16.0),
                           GestureDetector(
                             onTap: (){
-                              Navigator.of(context).pushNamed('/S>custom');
-                            },child: CustomBox(color: AppTheme.colors.friendlyBlack,
-                              shadow: Colors.transparent,
-                              height: 60,
-                              child: Padding(
-                                  padding: const EdgeInsetsDirectional.fromSTEB(20, 8, 20, 8),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Row(
-                                            children: [
-                                              Text('Customization', style: TextStyle(color: AppTheme.colors.friendlyWhite, fontSize: 14.0, fontWeight: FontWeight.bold, fontFamily: Globals.sysFont),),
-                                              const SizedBox(width: 3,),
-                                              Icon(Icons.dashboard_customize_rounded, color: AppTheme.colors.friendlyWhite, size: 14.0,),
-                                            ],
-                                          ),
-                                          Text('Customization settings', style: TextStyle(color: AppTheme.colors.pleasingWhite, fontSize: 12.0, fontWeight: FontWeight.normal, fontFamily: Globals.sysFont),),
-                                        ],
-                                      ),
-                                      Align(
-                                        child: Icon(CupertinoIcons.arrow_right_circle, color: AppTheme.colors.friendlyWhite,),
-                                      )
-                                    ],
-                                  )
-                              )),
-                          ),
-                          const SizedBox(height: 16.0),
-                          GestureDetector(
-                            onTap: (){
                               Navigator.of(context).pushNamed('/S>feed');
                             },
                             child: CustomBox(color: AppTheme.colors.friendlyBlack,
@@ -346,14 +384,14 @@ class _ProfilePaneState extends State<ProfilePane>{
                                           children: [
                                             Row(
                                               children: [
-                                                Text('Customer Feedback', style: TextStyle(color: AppTheme.colors.friendlyWhite
+                                                Text('Help Center', style: TextStyle(color: AppTheme.colors.friendlyWhite
                                                     , fontSize: 14.0, fontWeight: FontWeight.bold, fontFamily: Globals.sysFont),),
                                                 const SizedBox(width: 3,),
                                                 Icon(Icons.feedback_rounded, color: AppTheme.colors.friendlyWhite
                                                   , size: 14.0,),
                                               ],
                                             ),
-                                            Text('Give us your valuable feedback', style: TextStyle(color: AppTheme.colors.pleasingWhite, fontSize: 12.0, fontWeight: FontWeight.normal, fontFamily: Globals.sysFont),),
+                                            Text('Receive help from the teams', style: TextStyle(color: AppTheme.colors.pleasingWhite, fontSize: 12.0, fontWeight: FontWeight.normal, fontFamily: Globals.sysFont),),
                                           ],
                                         ),
                                         Align(
@@ -365,39 +403,39 @@ class _ProfilePaneState extends State<ProfilePane>{
                                 )),
                           ),
                           const SizedBox(height: 16.0),
-                          GestureDetector(
-                            onTap: (){
-                              Navigator.of(context).pushNamed('/S>terms');
-                            },
-                            child: CustomBox(color: AppTheme.colors.friendlyBlack,
-                                shadow: Colors.transparent,
-                                height: 60,
-                                child: Padding(
-                                  padding: const EdgeInsetsDirectional.fromSTEB(20, 8, 20, 8),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Row(
-                                            children: [
-                                              Text('Terms & Conditions', style: TextStyle(color: AppTheme.colors.friendlyWhite, fontSize: 14.0, fontWeight: FontWeight.bold, fontFamily: Globals.sysFont),),
-                                              const SizedBox(width: 3,),
-                                              Icon(CupertinoIcons.book_circle, color: AppTheme.colors.friendlyWhite, size: 14.0,),
-                                            ],
-                                          ),
-                                          Text('Our terms and conditions', style: TextStyle(color: AppTheme.colors.pleasingWhite, fontSize: 12.0, fontWeight: FontWeight.normal, fontFamily: Globals.sysFont),),
-                                        ],
-                                      ),
-                                      Align(
-                                        child: Icon(CupertinoIcons.arrow_right_circle, color: AppTheme.colors.friendlyWhite,),
-                                      )
-                                    ],
-                                  ),
-                                )),
-                          ),
-                          const SizedBox(height: 16,),
+                          // GestureDetector(
+                          //   onTap: (){
+                          //     Navigator.of(context).pushNamed('/S>terms');
+                          //   },
+                          //   child: CustomBox(color: AppTheme.colors.friendlyBlack,
+                          //       shadow: Colors.transparent,
+                          //       height: 60,
+                          //       child: Padding(
+                          //         padding: const EdgeInsetsDirectional.fromSTEB(20, 8, 20, 8),
+                          //         child: Row(
+                          //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          //           children: [
+                          //             Column(
+                          //               crossAxisAlignment: CrossAxisAlignment.start,
+                          //               children: [
+                          //                 Row(
+                          //                   children: [
+                          //                     Text('Terms & Conditions', style: TextStyle(color: AppTheme.colors.friendlyWhite, fontSize: 14.0, fontWeight: FontWeight.bold, fontFamily: Globals.sysFont),),
+                          //                     const SizedBox(width: 3,),
+                          //                     Icon(CupertinoIcons.book_circle, color: AppTheme.colors.friendlyWhite, size: 14.0,),
+                          //                   ],
+                          //                 ),
+                          //                 Text('Our terms and conditions', style: TextStyle(color: AppTheme.colors.pleasingWhite, fontSize: 12.0, fontWeight: FontWeight.normal, fontFamily: Globals.sysFont),),
+                          //               ],
+                          //             ),
+                          //             Align(
+                          //               child: Icon(CupertinoIcons.arrow_right_circle, color: AppTheme.colors.friendlyWhite,),
+                          //             )
+                          //           ],
+                          //         ),
+                          //       )),
+                          // ),
+                          // const SizedBox(height: 16,),
                           GestureDetector(
                             onTap: (){
                               Navigator.of(context).pushNamed('/S>about');
@@ -415,7 +453,7 @@ class _ProfilePaneState extends State<ProfilePane>{
                                           children: [
                                             Row(
                                               children: [
-                                                Text('About us', style: TextStyle(color: AppTheme.colors.friendlyWhite
+                                                Text('About Us', style: TextStyle(color: AppTheme.colors.friendlyWhite
                                                     , fontSize: 14.0, fontWeight: FontWeight.bold, fontFamily: Globals.sysFont),),
                                                 const SizedBox(width: 3,),
                                                 Icon(CupertinoIcons.info_circle, color: AppTheme.colors.friendlyWhite

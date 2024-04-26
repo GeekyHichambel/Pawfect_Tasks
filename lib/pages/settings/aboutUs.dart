@@ -18,7 +18,7 @@ class aboutUsState extends State<aboutUs>{
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(padding: EdgeInsets.only(bottom: 20),
-              child: CustomAppBar()
+              child: CustomAppBar(name: 'About Us')
             )
           ],
       ),

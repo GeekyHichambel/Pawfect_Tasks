@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:scroll_date_picker/scroll_date_picker.dart';
 import '../../Components/AppTheme.dart';
@@ -14,7 +13,8 @@ class ThirdPage extends StatefulWidget{
 }
 
 class ThirdPageState extends State<ThirdPage> with AutomaticKeepAliveClientMixin{
-  DateTime selectedDate = DateTime.now();
+  static DateTime selectedDate = DateTime.now();
+  DateTime minimumDate = DateTime.now();
 
   @override
   bool get wantKeepAlive => true;
@@ -38,13 +38,15 @@ class ThirdPageState extends State<ThirdPage> with AutomaticKeepAliveClientMixin
         SizedBox(
           height: 250,
           child: ScrollDatePicker(
+            minimumDate: minimumDate,
+            maximumDate: minimumDate.add(const Duration(days: 7)),
             selectedDate: selectedDate,
             onDateTimeChanged: (DateTime value) {
               setState(() {
                 selectedDate = value;
               });
             },
-            options: const DatePickerOptions(backgroundColor: Colors.transparent),
+            options: DatePickerOptions(backgroundColor: Colors.white.withOpacity(0.0)),
           ),
         ),
       ],

@@ -239,7 +239,7 @@ class Tasks{
     await Globals.prefs.write(key: 'tasks', value: jsonMap);
   }
 
-  static Future<int> createNewTask(String name, String? description, Duration start, Duration _duration,IconData? icon, Color? color) async{
+  static Future<int> createNewTask(String name, String? description, Duration start, Duration _duration,IconData? icon, Color? color,DateTime _date) async{
     try {
       final String? taskIcon = icon?.codePoint.toString();
       final String? taskColor = color?.value.toString();
@@ -248,7 +248,8 @@ class Tasks{
       final int minDiff = start.inMinutes - (start.inHours*60);
       final String startTime = minDiff >= 10? '${start.inHours} : $minDiff' : '${start.inHours} : 0$minDiff';
       final String duration = '${_duration.inHours} hours. ${_duration.inMinutes - (_duration.inHours * 60)} min.';
-
+      final DateTime date = _date;
+      //TODO: add the date option for task creation
       if (taskName == ''){
         GlobalVar.globalVar.showToast('Task name can\'t be empty');
         throw Exception('Task name can\'t be empty');
@@ -272,42 +273,59 @@ class Tasks{
       }
 
       final String currentDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+      final String selectedDate = DateFormat('yyyy-MM-dd').format(date);
 
-      if (Globals.tasks.isNotEmpty) {
-        Globals.tasks.add(task);
-        Globals.tasks.sort((a,b) => parseTime(a['startTime']).compareTo(parseTime(b['startTime'])));
-      } else {
-        Globals.tasks = [task];
-      }
+      if (currentDate == selectedDate) {
+        if (Globals.tasks.isNotEmpty) {
+          Globals.tasks.add(task);
+          Globals.tasks.sort((a, b) =>
+              parseTime(a['startTime']).compareTo(parseTime(b['startTime'])));
+        } else {
+          Globals.tasks = [task];
+        }
 
-      if (Globals.displayTasks.isNotEmpty) {
-        Globals.displayTasks.add({
-          'color': color,
-          'icon': icon,
-          'name': name,
-          'description': description,
-          'startTime' : startTime,
-          'duration' : duration,
-          'completed' : false,
-        });
-        Globals.displayTasks.sort((a, b) => parseTime(a['startTime']).compareTo(parseTime(b['startTime'])));
-      } else {
-        Globals.displayTasks = [{
-          'color': color,
-          'icon': icon,
-          'name': name,
-          'description': description,
-          'startTime' : startTime,
-          'duration' : duration,
-          'completed' : false,
-        }];
-      }
+        if (Globals.displayTasks.isNotEmpty) {
+          Globals.displayTasks.add({
+            'color': color,
+            'icon': icon,
+            'name': name,
+            'description': description,
+            'startTime': startTime,
+            'duration': duration,
+            'completed': false,
+          });
+          Globals.displayTasks.sort((a, b) =>
+              parseTime(a['startTime']).compareTo(parseTime(b['startTime'])));
+        } else {
+          Globals.displayTasks = [{
+            'color': color,
+            'icon': icon,
+            'name': name,
+            'description': description,
+            'startTime': startTime,
+            'duration': duration,
+            'completed': false,
+          }
+          ];
+        }
 
-      await Globals.prefs.delete(key: 'tasks');
-      if (Globals.AllTasks.containsKey(currentDate)){
-        Globals.AllTasks.update(currentDate, (value) => Globals.tasks);
+        await Globals.prefs.delete(key: 'tasks');
+        if (Globals.AllTasks.containsKey(currentDate)) {
+          Globals.AllTasks.update(currentDate, (value) => Globals.tasks);
+        } else {
+          Globals.AllTasks[currentDate] = Globals.tasks;
+        }
       }else{
-        Globals.AllTasks[currentDate] = Globals.tasks;
+        await Globals.prefs.delete(key: 'tasks');
+        if (Globals.AllTasks.containsKey(selectedDate)){
+          late final List<Map<String,dynamic>> tasks = Globals.AllTasks[selectedDate];
+            tasks.add(task);
+            tasks.sort((a, b) =>
+                parseTime(a['startTime']).compareTo(parseTime(b['startTime'])));
+          Globals.AllTasks.update(selectedDate, (value) => tasks);
+        }else{
+          Globals.AllTasks[selectedDate] = [task];
+        }
       }
       final jsonMap = jsonEncode(Globals.AllTasks);
       await Globals.prefs.write(key: 'tasks', value: jsonMap);
@@ -381,12 +399,13 @@ class Tasks{
                                   Expanded(child: Text('Create A New Task',textAlign: TextAlign.center, style: TextStyle(color: AppTheme.colors.friendlyBlack, fontSize: 18, fontWeight: FontWeight.w700, fontFamily: Globals.sysFont),),),
                                   currentPage == Pages.length - 1? GestureDetector(
                                     onTap: (){
-                                      createNewTask(Tcontroller.text, Dcontroller.text, SecondPageState.startTime, SecondPageState.duuration, FirstPageState.currentIcon, FirstPageState.currentColor,).then((result){
+                                      createNewTask(Tcontroller.text, Dcontroller.text, SecondPageState.startTime, SecondPageState.duuration, FirstPageState.currentIcon, FirstPageState.currentColor, ThirdPageState.selectedDate).then((result){
                                         if (result == 0) {
                                           FirstPageState.currentColor = null;
                                           FirstPageState.currentIcon = null;
                                           SecondPageState.duuration = const Duration(minutes: 15);
                                           SecondPageState.startTime = const Duration();
+                                          ThirdPageState.selectedDate = DateTime.now();
                                           Navigator.of(context).pop();
                                           GlobalVar.globalVar.showToast('New Task Added');
                                         }
@@ -428,6 +447,7 @@ class Tasks{
                                 FirstPageState.currentIcon = null;
                                 SecondPageState.duuration = const Duration(minutes: 15);
                                 SecondPageState.startTime = const Duration();
+                                ThirdPageState.selectedDate = DateTime.now();
                                 Navigator.of(context).pop();
                               }, child: Icon(CupertinoIcons.multiply, color: AppTheme.colors.friendlyWhite,),
                             ),

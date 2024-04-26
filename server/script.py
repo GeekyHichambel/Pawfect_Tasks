@@ -30,6 +30,8 @@ def update_hunger():
 
         for username, user_data in users_ref.get().items():
             pet_status_ref = users_ref.child(username).child('petStatus')
+            pet_ref = users_ref.child(username)
+            pet_data = pet_ref.get()
 
             if pet_status_ref is None:
                 raise ValueError(f'(-) The pet_status_ref for user {username} can\'t be found.\n')
@@ -123,7 +125,7 @@ def update_hunger():
                 if new_hunger == hunger:
                     print('(*) No updates required.\n')
                     if hunger == 100:
-                        update_hp(pet_status_ref, pet_stats, pet_name, time_diff.total_seconds())
+                        update_hp(pet_ref, pet_data, pet_status_ref, pet_stats, pet_name, time_diff.total_seconds())
                     continue
 
                 pet_status_ref.child(pet_name).update({'starvation' : new_hunger})
@@ -140,7 +142,7 @@ def update_hunger():
         print(f'(~) > > > > > > > > > > > > > > > > > > > > > > > > > > > > > > < < < < < < < < < < < < < < < < < < < < < < < < < < < < < <\n\n\n')
 
 
-def update_hp(petStatsRef, petStats, pet_name, timeDifference):
+def update_hp(pet_ref, pet_data, petStatsRef, petStats, pet_name, timeDifference):
     try:
         timeDifferenceHours = int(timeDifference // 3600)
         timeDifferenceHours -= 10
@@ -153,6 +155,10 @@ def update_hp(petStatsRef, petStats, pet_name, timeDifference):
         if hp == new_hp:
             print(f'(*) No need to update hp\n')
             return
+
+        if new_hp == 0:
+            pets_died = pet_data.get('petsDied')
+            pet_ref.update({'petsDied' : pets_died + 1})
 
         petStatsRef.child(pet_name).update({'health' : new_hp})
         print(f'(+) Successfully updated the hp for {pet_name} to {new_hp}\n\n')

@@ -245,7 +245,7 @@ Future<void> openDialog(BuildContext context, name, price, foodValue) async{
                       } else{
                         return Padding(padding: const EdgeInsets.all(16.0),
                           child: GridView.builder(
-                            physics: const AlwaysScrollableScrollPhysics(),
+                            physics: const RangeMaintainingScrollPhysics(),
                             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                               crossAxisCount: 3,
                               crossAxisSpacing: 30.0,

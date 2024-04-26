@@ -103,10 +103,12 @@ class _SignUpState extends State<SignUpPage>{
       final Map<String, dynamic> userDoc = {
         'friendCount' : friendCount,
         'mail' : userMail,
+        'premium' : false,
       };
       final Map<String, dynamic> petsDoc = {
         'pets' : pets,
         'petStatus' : petStatus,
+        'petsDied' : 0,
       };
       final Map<String, dynamic> streakDoc = {
         'streak' : streak,
@@ -277,7 +279,7 @@ class _SignUpState extends State<SignUpPage>{
                                 borderColor: AppTheme.colors.onsetBlue,
                                 fontSize: 16.0, obscureText: showP,
                                 suffixIcon: IconButton(
-                                  icon: Icon(showP? Icons.visibility_outlined : Icons.visibility_off_outlined), onPressed: () {
+                                  icon: Icon(showP? Icons.visibility_outlined : Icons.visibility_off_outlined, color: AppTheme.colors.onsetBlue,), onPressed: () {
                                     setState(() {
                                       showP = !showP;
                                     });
@@ -299,7 +301,7 @@ class _SignUpState extends State<SignUpPage>{
                               textColor: AppTheme.colors.friendlyWhite,
                               borderColor: AppTheme.colors.friendlyWhite, obscureText: showCP,
                               suffixIcon: IconButton(
-                                icon: Icon(showCP? Icons.visibility_outlined : Icons.visibility_off_outlined), onPressed: () {
+                                icon: Icon(showCP? Icons.visibility_outlined : Icons.visibility_off_outlined, color: AppTheme.colors.friendlyWhite,), onPressed: () {
                                   setState(() {
                                     showCP = !showCP;
                                   });

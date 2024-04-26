@@ -330,13 +330,13 @@ class _HomeState extends State<Home> with TickerProviderStateMixin{
                       child: IconButton(onPressed: (){
                         Navigator.of(context).pushNamed('/calendar');
                       }, icon: Container(
-                        decoration: BoxDecoration(
-                          color: AppTheme.colors.complimentaryBlack,
-                          borderRadius: const BorderRadius.all(Radius.circular(16)),
+                        decoration: const BoxDecoration(
+                          color: Colors.transparent,
+                          borderRadius: BorderRadius.all(Radius.circular(16)),
                         ),
                        alignment: Alignment.center,
-                        child: Icon(CupertinoIcons.calendar, color: AppTheme.colors.pleasingWhite, size: 14,),),
-                      ),
+                        child: Icon(CupertinoIcons.calendar, color: AppTheme.colors.darkOnsetBlue, size: 20,),),
+                     ),
                     ),
                   RichText(
                     text: TextSpan(

@@ -17,6 +17,7 @@ class Globals {
   static FlutterSecureStorage prefs = const FlutterSecureStorage();
   static late bool LoggedIN;
   static late String user;
+  static late bool isPremium;
   static late Map<String,dynamic> AllTasks;
   static late List<Map<String,dynamic>> tasks;
   static late List<Map<String,dynamic>> displayTasks;
@@ -28,7 +29,6 @@ class Globals {
   static const int focused = 1;
   static const int unfocused = 2;
 
-  //TODO: Delete the uncompleted tasks when a day is passed
   static Future<void> updatePetStatus() async {
     if (LoggedIN) {
       final data = await DataBase.petsCollection?.child(user).get();
@@ -79,6 +79,15 @@ class Globals {
       await DataBase.userCollection?.child(user).child('stats').update({
         'last_online' : TZDateTime.now(getLocation('Asia/Kolkata')).toString(),
       });
+    }
+  }
+
+  static Future<void> checkPremium() async{
+    if (LoggedIN){
+      final ref = await DataBase.userCollection?.child(user).child('premium').get();
+      isPremium = ref?.value as bool;
+    }else{
+      isPremium = false;
     }
   }
 

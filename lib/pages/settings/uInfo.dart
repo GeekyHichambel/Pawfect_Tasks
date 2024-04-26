@@ -102,12 +102,11 @@ class UinfoState extends State<Uinfo>{
 
   Future<void> getImage() async{
     final imagePicker = ImagePicker();
-    final pickedImage = await imagePicker.pickImage(source: ImageSource.gallery, imageQuality: 50);
-    if (pickedImage != null){
+    final pickedImage = await imagePicker.pickImage(source: ImageSource.gallery, imageQuality: 10);
+    if (pickedImage == null) return;
       setState(() {
         profile_pic = File(pickedImage.path);
       });
-    }
   }
 
   bool isValidMail(String mailAdd){
@@ -281,7 +280,7 @@ class UinfoState extends State<Uinfo>{
      resizeToAvoidBottomInset: false,
       appBar: const PreferredSize(
         preferredSize: Size.fromHeight(100),
-        child: CustomAppBar(),
+        child: CustomAppBar(name: 'User Info'),
       ),
       backgroundColor: AppTheme.colors.friendlyWhite,
       body: Padding(
@@ -290,20 +289,7 @@ class UinfoState extends State<Uinfo>{
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: Globals.LoggedIN? MainAxisAlignment.start : MainAxisAlignment.center,
           children: Globals.LoggedIN? [
-            FadeInAnimation(delay: 1, child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Text('Account',
-                    style: TextStyle(
-                      color: AppTheme.colors.friendlyBlack,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: Globals.sysFont,
-                      fontSize: 32.0,
-                    ),),
-                  const SizedBox(width: 20.0,),
-                  Image.asset('assets/user_icon.png', width: 45, height: 45,),
-                ]
-            ),),Expanded(child: Stack(
+            Expanded(child: Stack(
               alignment: Alignment.topCenter,
               children: [
                 Scaffold(
@@ -311,7 +297,7 @@ class UinfoState extends State<Uinfo>{
                   resizeToAvoidBottomInset: true,
                   body: SingleChildScrollView(
                     padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 16.0),
-                    physics: const AlwaysScrollableScrollPhysics(),
+                    physics: const RangeMaintainingScrollPhysics(),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
