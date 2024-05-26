@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:PawfectTasks/Components/UpdatePopup.dart';
 import 'package:flutter/material.dart';
 import 'package:PawfectTasks/Components/AppTheme.dart';
 import 'package:lottie/lottie.dart';
@@ -46,13 +47,14 @@ class _SplashScreenState  extends State<SplashScreen> with SingleTickerProviderS
   }
 
   Future<void> loadConfigs() async{
-    await DataBase.connect();
-    await DataBase.initNotifications();
     await Globals.updatePref();
     await Globals.checkPremium();
     await Globals.updatePetStatus();
     await Globals.lastOnline();
     await Globals.checkProfilePicUploaded();
+    if (Globals.autoUpdateCheck){
+      await Globals.checkUpdates(context);
+    }
   }
 
   void navigateToHome(BuildContext context) {

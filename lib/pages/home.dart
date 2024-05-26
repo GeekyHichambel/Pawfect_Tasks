@@ -401,7 +401,13 @@ class _HomeState extends State<Home> with TickerProviderStateMixin{
                                   ),
                                 ),
                                 title: Text(tasks[index]['name'], style: TextStyle(color: AppTheme.colors.friendlyWhite, fontWeight: FontWeight.w600, fontFamily: Globals.sysFont, fontSize: 15, decoration: tasks[index]['completed']? TextDecoration.lineThrough : null, decorationColor: tasks[index]['color'], decorationThickness: 3), ),
-                                subtitle: Text(tasks[index]['startTime'] ?? '', style: TextStyle(color: AppTheme.colors.pleasingWhite, fontFamily: Globals.sysFont, fontSize: 16, decoration: tasks[index]['completed']? TextDecoration.lineThrough : null, decorationColor: tasks[index]['color'], decorationThickness: 2),),
+                                subtitle: Row(
+                                  children: [
+                                    Text(tasks[index]['startTime'] ?? '', style: TextStyle(color: AppTheme.colors.pleasingWhite, fontFamily: Globals.sysFont, fontSize: 16, decoration: tasks[index]['completed']? TextDecoration.lineThrough : null, decorationColor: tasks[index]['color'], decorationThickness: 2),),
+                                    const SizedBox(width: 10,),
+                                    tasks[index]['reminder'] ? Icon(Icons.access_alarm_rounded, color: AppTheme.colors.onsetBlue, size: 18,) : const SizedBox.shrink(),
+                                  ],
+                                ),
                                 trailing: Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   mainAxisSize: MainAxisSize.min,

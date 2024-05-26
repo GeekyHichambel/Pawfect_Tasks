@@ -1,4 +1,5 @@
 import 'package:PawfectTasks/Components/CustomAppBar.dart';
+import 'package:PawfectTasks/pages/splashScreen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -73,7 +74,10 @@ class _LoginState extends State<LoginPage>{
       await Globals.prefs.write(key: 'user', value: username);
       Globals.LoggedIN = true;
       Globals.user = username;
+      await Globals.checkPremium();
       await Globals.updatePetStatus();
+      await Globals.lastOnline();
+      await Globals.checkProfilePicUploaded();
       GlobalVar.globalVar.showToast('Successfully logged in!');
     } catch (e){
       if (e is FirebaseAuthException && e.code == 'wrong-password') {

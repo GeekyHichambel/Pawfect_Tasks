@@ -298,6 +298,32 @@ class ProfileView{
                                     )),
                                   ],),),
                             ),
+                            CustomBox(
+                              elevation: 24.0,
+                              border: Border(
+                                  top: BorderSide(color: AppTheme.colors.blissCream, width: 1.0, strokeAlign: BorderSide.strokeAlignInside),
+                                  left: BorderSide(color: AppTheme.colors.blissCream, width: 1.0, strokeAlign: BorderSide.strokeAlignInside),
+                                  right: BorderSide(color: AppTheme.colors.blissCream, width: 1.0, strokeAlign: BorderSide.strokeAlignInside),
+                                  bottom: BorderSide(color: AppTheme.colors.blissCream, width: 1.0, strokeAlign: BorderSide.strokeAlignInside)),
+                              shadow: Colors.transparent,
+                              color: AppTheme.colors.friendlyBlack,
+                              child: Padding(
+                                padding: const EdgeInsets.all(5.0),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Expanded(child: Image.asset('assets/petDed.png',),),
+                                    const SizedBox(width: 5.0,),
+                                    Expanded(flex: 2, child:Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text('${user.petsDied}', style: TextStyle(fontFamily: Globals.sysFont, color: AppTheme.colors.pukeOrange,fontWeight: FontWeight.w700, fontSize: 8),),
+                                        Text('Pets Died', style: TextStyle(fontFamily: Globals.sysFont, color: AppTheme.colors.blissCream, fontSize: 8),),
+                                      ],
+                                    )),
+                                  ],),),
+                            ),
                           ],
                         ),
                       ),

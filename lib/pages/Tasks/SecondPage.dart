@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import '../../Components/AppTheme.dart';
 import '../../Components/CustomTextField.dart';
 import '../../Components/OutlinedText.dart';
@@ -22,7 +23,9 @@ class SecondPage extends StatefulWidget{
 class SecondPageState extends State<SecondPage> with AutomaticKeepAliveClientMixin{
   final FocusNode DUnode = FocusNode();
   static Duration startTime = const Duration();
-  static Duration duuration = const Duration(minutes: 15);
+  static Duration duuration = const Duration(minutes: 0);
+  static bool reminder = false;
+  bool reminder_valid = true;
 
   @override
   bool get wantKeepAlive => true;
@@ -41,7 +44,7 @@ class SecondPageState extends State<SecondPage> with AutomaticKeepAliveClientMix
                       duuration = duration;
                     },
                     mode: CupertinoTimerPickerMode.hm,
-                    initialTimerDuration: const Duration(minutes: 15),
+                    initialTimerDuration: const Duration(minutes: 0),
                     minuteInterval: 15,
                   ),
           ),
@@ -85,21 +88,19 @@ class SecondPageState extends State<SecondPage> with AutomaticKeepAliveClientMix
               text: TextSpan(
                   text: '*', style: const TextStyle(color: Colors.red, fontSize: 18, fontWeight: FontWeight.w700),
                   children: [
-                    TextSpan(text: 'Start Time', style: TextStyle(color: AppTheme.colors.friendlyBlack, fontFamily: Globals.sysFont, fontSize: 18, fontWeight: FontWeight.w700),),
+                    TextSpan(text: 'Time', style: TextStyle(color: AppTheme.colors.friendlyBlack, fontFamily: Globals.sysFont, fontSize: 18, fontWeight: FontWeight.w700),),
                   ])),
         ),
-        CupertinoTimerPicker(onTimerDurationChanged: (duration){
-            startTime = duration;
-          },
-          mode: CupertinoTimerPickerMode.hm,
+        SizedBox(
+          height: 200,
+          child: CupertinoTimerPicker(onTimerDurationChanged: (duration){
+              startTime = duration;
+            },
+            mode: CupertinoTimerPickerMode.hm,
+          ),
         ),
         const SizedBox(height: 20,),
-        RichText(
-            text: TextSpan(
-                text: '*', style: const TextStyle(color: Colors.red, fontSize: 18, fontWeight: FontWeight.w700),
-                children: [
-                  TextSpan(text: 'Duration', style: TextStyle(color: AppTheme.colors.friendlyBlack, fontFamily: Globals.sysFont, fontSize: 18, fontWeight: FontWeight.w700),),
-                ])),
+        Text('Duration', style: TextStyle(color: AppTheme.colors.friendlyBlack, fontFamily: Globals.sysFont, fontSize: 18, fontWeight: FontWeight.w700),),
         const SizedBox(height: 5,),
         CustomTextField(
             type: Globals.focused,
@@ -120,6 +121,49 @@ class SecondPageState extends State<SecondPage> with AutomaticKeepAliveClientMix
             fontSize: 16,
             readOnly: true,
             obscureText: false),
+        const SizedBox(height: 20,),
+        GestureDetector(
+          onTap: Globals.isPremium? (){
+            //nothing
+          } : (){
+            GlobalVar.globalVar.showToast('This is a premium feature');
+          },
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.workspace_premium_rounded, color: Globals.isPremium? AppTheme.colors.onsetBlue : AppTheme.colors.onsetBlue.withOpacity(0.5),),
+                      Text('Remind Me', style: TextStyle(color: Globals.isPremium? AppTheme.colors.friendlyBlack : AppTheme.colors.friendlyBlack.withOpacity(0.3), fontFamily: Globals.sysFont, fontSize: 18, fontWeight: FontWeight.w700),)
+                    ],
+                  ),
+                  Switch(value: reminder, onChanged: (value){
+                    if (Globals.isPremium) {
+                      setState(() {
+                        reminder = value;
+                      });
+                    }},
+                    trackColor: MaterialStatePropertyAll(Globals.isPremium? AppTheme.colors.friendlyWhite.withOpacity(0.54) : AppTheme.colors.friendlyWhite.withOpacity(0.24)),
+                    thumbColor: MaterialStatePropertyAll(Globals.isPremium? AppTheme.colors.onsetBlue : AppTheme.colors.onsetBlue.withOpacity(0.5)),
+                    trackOutlineColor: MaterialStatePropertyAll(Globals.isPremium? AppTheme.colors.onsetBlue : AppTheme.colors.onsetBlue.withOpacity(0.5)),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 10,),
+              Icon(Icons.info_outline_rounded, color: Globals.isPremium? AppTheme.colors.friendlyBlack : AppTheme.colors.friendlyBlack.withOpacity(0.3), size: 24,),
+              const SizedBox(height: 5,),
+              Text('Gives you a reminder beforehand so you don\'t miss your task',style: TextStyle(
+                fontFamily: Globals.sysFont,
+                color: Globals.isPremium? AppTheme.colors.friendlyBlack : AppTheme.colors.friendlyBlack.withOpacity(0.3),
+                fontSize: 12,
+              )),
+            ],
+          ),
+        ),
       ],
     );
   }

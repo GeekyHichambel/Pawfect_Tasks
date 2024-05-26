@@ -1,11 +1,14 @@
 import 'package:PawfectTasks/Components/AppTheme.dart';
 import 'package:PawfectTasks/GLOBALS.dart';
 import 'package:PawfectTasks/db/database.dart';
+import 'package:cool_dropdown/cool_dropdown.dart';
+import 'package:cool_dropdown/models/cool_dropdown_item.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:timezone/timezone.dart';
 import '../Components/Animations.dart';
 import '../Components/CustomBox.dart';
 import '../Components/NotLoggedIn.dart';
@@ -15,8 +18,10 @@ class ImageInfo {
   final Uint8List imageData;
   final int price;
   final int foodValue;
-
-  ImageInfo(this.name, this.imageData, this.price, this.foodValue);
+  final int hp;
+  ImageInfo(this.name, this.imageData, this.price, this.foodValue, this.hp);
+  ImageInfo.forFood(this.name, this.imageData, this.price, this.foodValue) : hp = 0;
+  ImageInfo.forPet(this.name, this.imageData, this.price, this.hp) : foodValue = 0;
 }
 
 class MarketPlace extends StatefulWidget{
@@ -29,6 +34,14 @@ class MarketPlaceState extends State<MarketPlace>{
   var cPawCoin = ValueNotifier(0);
   var cPetFood = ValueNotifier(0);
   var loading = ValueNotifier(false);
+  String filter = 'Food';
+  
+  List<CoolDropdownItem> item_list = [
+    CoolDropdownItem(label: 'Food', value: 'Food', icon: Image.asset('assets/foodIcon.png', width: 30, height: 30,)),
+    CoolDropdownItem(label: 'Pets', value: 'Pets', icon: Image.asset('assets/pets.png', width: 30, height: 30,)),
+  ];
+  final DropdownController _controller = DropdownController();
+  
   
   void setupUpdateListener(){
     DataBase.itemCollection?.child(Globals.user).child('pawCoin').onValue.listen((event) async { 
@@ -47,20 +60,46 @@ class MarketPlaceState extends State<MarketPlace>{
 
   Future<List<ImageInfo>> fetchImages() async{
     try{
-      final ListResult? result = await DataBase.marketStorage?.listAll();
       List<ImageInfo> imageList = [];
-      if (result != null){
-        for (final Reference ref in result.items){
-          final String imageName = ref.name;
-          final RegExp regExp = RegExp(r'^[0-9]\[(.*?)\]\[(\d+)\]\[(\d+)\]\.png$');
-           final Match? match = regExp.firstMatch(imageName);
-          if (match != null) {
-            final String displayName = match.group(1)!;
-            final int price = int.parse(match.group(2)!);
-            final int foodValue = int.parse(match.group(3)!);
-            final Uint8List? imageData = await ref.getData();
-            if (imageData != null) {
-              imageList.add(ImageInfo(displayName,imageData,price,foodValue));
+      if (filter == 'Food') {
+        final ListResult? result = await DataBase.marketFoodStorage?.listAll();
+        if (result != null) {
+          for (final Reference ref in result.items) {
+            final String imageName = ref.name;
+            final RegExp regExp = RegExp(
+                r'^[0-9]\[(.*?)\]\[(\d+)\]\[(\d+)\]\.png$');
+            final Match? match = regExp.firstMatch(imageName);
+            if (match != null) {
+              final String displayName = match.group(1)!;
+              final int price = int.parse(match.group(2)!);
+              final int foodValue = int.parse(match.group(3)!);
+              final Uint8List? imageData = await ref.getData();
+              if (imageData != null) {
+                imageList.add(
+                    ImageInfo.forFood(displayName, imageData, price, foodValue));
+              }
+            }
+          }
+        }
+      }else if (filter == 'Pets'){
+        final ListResult? result = await DataBase.marketPetStorage?.listAll();
+        if (result != null){
+          for (final Reference ref in result.items){
+            final String imageName = ref.name;
+            final RegExp regExp = RegExp(
+                r'^[0-9]\[(.*?)\]\[(\d+)\]\[(\d+)\]\.png$'
+            );
+            final Match? match = regExp.firstMatch(imageName);
+            if (match != null){
+              final String displayName = match.group(1)!;
+              final int price = int.parse(match.group(2)!);
+              final int hp = int.parse(match.group(3)!);
+              final Uint8List? imageData = await ref.getData();
+              if (imageData != null){
+                imageList.add(
+                  ImageInfo.forPet(displayName, imageData, price, hp)
+                );
+              }
             }
           }
         }
@@ -91,6 +130,34 @@ Future<void> buyFood(BuildContext context,int foodValue, int cost) async{
     );
 }
 
+  Future<void> buyPet(BuildContext context,String petType, int cost) async{
+    final user = await DataBase.itemCollection?.child(Globals.user).get();
+    final int currentPawCoins = user?.child('pawCoin').value as int;
+    if (currentPawCoins < cost){
+      GlobalVar.globalVar.showToast('You don\'t have enough Paw Coins.');
+      loading.value = false;
+      return;
+    }
+    final newPawCoins = currentPawCoins - cost;
+    await DataBase.itemCollection?.child(Globals.user).update(
+        {
+          'pawCoin' : newPawCoins,
+        }
+    );
+    final TimeStamp = TZDateTime.now(getLocation('Asia/Kolkata'));
+    await DataBase.petsCollection?.child(Globals.user).child('petStatus/labra').update(
+      {
+        'mood' : 'Happy',
+        'health' : 100,
+        'starvation' : 0,
+        'lastHunger' : 0,
+        'lastFed' : TimeStamp.toString(),
+        'nickname' : 'Labra',
+      }
+    );
+    Globals.currentImage = 0;
+  }
+
 Future<void> openDialog(BuildContext context, name, price, foodValue) async{
     await showDialog(
         context: context, builder: (context){
@@ -112,7 +179,11 @@ Future<void> openDialog(BuildContext context, name, price, foodValue) async{
                     const SizedBox(height: 20,),
                     Row(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
+                        children: filter == 'Pets'? [
+                          Text('$foodValue', style: TextStyle(color: AppTheme.colors.pinkyPink, fontFamily: Globals.sysFont, fontSize: 18),),
+                          const SizedBox(width: 5,),
+                          Image.asset('assets/hp.png', width: 24, height: 24,),
+                        ] : [
                           Text('+$foodValue', style: TextStyle(color: AppTheme.colors.lightBrown, fontFamily: Globals.sysFont, fontSize: 18),),
                           const SizedBox(width: 5,),
                           Image.asset('assets/foodIcon.png', width: 24, height: 24,),
@@ -134,10 +205,17 @@ Future<void> openDialog(BuildContext context, name, price, foodValue) async{
                         ValueListenableBuilder(valueListenable: loading, builder: (context,value,child){
                           return value? SpinKitThreeBounce(color: AppTheme.colors.onsetBlue,) :  ElevatedButton(onPressed: (){
                           loading.value = true;
-                          buyFood(context, foodValue, price).then((_){
-                          loading.value = false;
-                          Navigator.of(context).pop();
-                          });
+                          if (filter == 'Pets'){
+                           buyPet(context, name, price).then((_){
+                             loading.value = false;
+                             Navigator.of(context).pop();
+                           });
+                          }else {
+                            buyFood(context, foodValue, price).then((_) {
+                              loading.value = false;
+                              Navigator.of(context).pop();
+                            });
+                          }
                           }, style: ButtonStyle(backgroundColor: MaterialStatePropertyAll<Color>(AppTheme.colors.friendlyWhite,)),
                           child: const Text('Hell Yeah!', style: TextStyle(color: Colors.green),));
                         }),
@@ -183,37 +261,74 @@ Future<void> openDialog(BuildContext context, name, price, foodValue) async{
             ]),),
               const SizedBox(height: 20,),
               FadeInAnimation(delay: 1, child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  ValueListenableBuilder(valueListenable: cPetFood, builder: (context, value, child){
-                    return Text('$value', style: TextStyle(fontSize: 12, fontFamily: Globals.sysFont, color: AppTheme.colors.onsetBlue),);
-                  }),
-                  const SizedBox(width: 5,),
-                  Image.asset('assets/foodIcon.png', width: 20, height: 20,),
-                  const SizedBox(width: 15,),
-                  SizedBox(
-                    width: 20,
-                    height: 20,
-                    child: IconButton(onPressed: (){
-                      //TODO: Payment Gateway
-                    }, icon: const Icon(Icons.add),
-                      hoverColor: AppTheme.colors.darkOnsetBlue,
-                      style: ButtonStyle(
-                        iconSize: const MaterialStatePropertyAll<double?>(10),
-                        padding: const MaterialStatePropertyAll<EdgeInsets>(EdgeInsets.all(5.0)),
-                        shape: const MaterialStatePropertyAll<OutlinedBorder?>(RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20.0)))),
-                        elevation: const MaterialStatePropertyAll<double?>(5.0),
-                        iconColor: MaterialStatePropertyAll<Color?>(AppTheme.colors.pleasingWhite),
-                        backgroundColor: MaterialStatePropertyAll<Color?>(AppTheme.colors.friendlyBlack),
+                  CoolDropdown(
+                      dropdownList: item_list,
+                      controller: _controller,
+                      dropdownOptions: const DropdownOptions(
+                        width: 100,
+                        duration: Duration(milliseconds: 100),
                       ),
-                    ),
+                      dropdownItemOptions: DropdownItemOptions(
+                        selectedBoxDecoration: BoxDecoration(color: AppTheme.colors.onsetBlue.withOpacity(0.45), borderRadius: const BorderRadius.all(Radius.circular(10))),
+                        duration: const Duration(milliseconds: 100),
+                        backDuration: const Duration(milliseconds: 200),
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        textStyle: TextStyle(fontFamily: Globals.sysFont, fontWeight: FontWeight.w400, fontSize: 16, color: AppTheme.colors.friendlyBlack),
+                        selectedTextStyle: TextStyle(fontFamily: Globals.sysFont, fontWeight: FontWeight.w700, fontSize: 16, color: AppTheme.colors.onsetBlue),
+                        alignment: Alignment.center,
+                      ),
+                      resultOptions: ResultOptions(
+                        openBoxDecoration: BoxDecoration(border: Border.all(color: AppTheme.colors.onsetBlue), borderRadius: const BorderRadius.all(Radius.circular(10))),
+                        render: ResultRender.none,
+                        width: 50,
+                        icon: SizedBox(
+                          width: 25,
+                          height: 25,
+                          child: Icon(Icons.shopping_cart_rounded, color: AppTheme.colors.onsetBlue,),
+                        )
+                      ),
+                      onChange: (val){
+                        setState((){
+                          filter = val;
+                        });
+                      }
                   ),
-                  const SizedBox(width: 5,),
-                  ValueListenableBuilder(valueListenable: cPawCoin, builder: (context, value, child){
-                    return Text('$value', style: TextStyle(fontSize: 12, fontFamily: Globals.sysFont, color: AppTheme.colors.onsetBlue),);
-                  }),
-                  const SizedBox(width: 5,),
-                  Image.asset('assets/pawCoin.png', width: 20, height: 20,),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      ValueListenableBuilder(valueListenable: cPetFood, builder: (context, value, child){
+                        return Text('$value', style: TextStyle(fontSize: 12, fontFamily: Globals.sysFont, color: AppTheme.colors.onsetBlue),);
+                      }),
+                      const SizedBox(width: 5,),
+                      Image.asset('assets/foodIcon.png', width: 20, height: 20,),
+                      const SizedBox(width: 15,),
+                      SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: IconButton(onPressed: (){
+
+                        }, icon: const Icon(Icons.add),
+                          hoverColor: AppTheme.colors.darkOnsetBlue,
+                          style: ButtonStyle(
+                            iconSize: const MaterialStatePropertyAll<double?>(10),
+                            padding: const MaterialStatePropertyAll<EdgeInsets>(EdgeInsets.all(5.0)),
+                            shape: const MaterialStatePropertyAll<OutlinedBorder?>(RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20.0)))),
+                            elevation: const MaterialStatePropertyAll<double?>(5.0),
+                            iconColor: MaterialStatePropertyAll<Color?>(AppTheme.colors.pleasingWhite),
+                            backgroundColor: MaterialStatePropertyAll<Color?>(AppTheme.colors.friendlyBlack),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 5,),
+                      ValueListenableBuilder(valueListenable: cPawCoin, builder: (context, value, child){
+                        return Text('$value', style: TextStyle(fontSize: 12, fontFamily: Globals.sysFont, color: AppTheme.colors.onsetBlue),);
+                      }),
+                      const SizedBox(width: 5,),
+                      Image.asset('assets/pawCoin.png', width: 20, height: 20,),
+                    ],
+                  ),
                 ],
               )),
             const SizedBox(height: 5,),
@@ -258,9 +373,12 @@ Future<void> openDialog(BuildContext context, name, price, foodValue) async{
                                   Expanded(
                                     child: GestureDetector(
                                       onTap: (){
-                                   openDialog(context, snapshot.data![index].name, snapshot.data![index].price, snapshot.data![index].foodValue);
+                                   openDialog(context, snapshot.data![index].name, snapshot.data![index].price, snapshot.data![index].hp);
                                   },
-                                      child: Image.memory(snapshot.data![index].imageData),
+                                      child: filter == 'Pets'? ClipRRect(
+                                        borderRadius: BorderRadius.circular(25),
+                                        child:  Image.memory(snapshot.data![index].imageData)
+                                      ): Image.memory(snapshot.data![index].imageData),
                                     ),
                                   ),
                                   Text(snapshot.data![index].name, style: TextStyle(fontSize: 10,fontFamily: Globals.sysFont, color: AppTheme.colors.friendlyBlack)),

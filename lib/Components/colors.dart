@@ -12,6 +12,7 @@ class AppColors{
   final friendlyBlack = const Color(0xff101415);
   final pleasingWhite = const Color(0xb3ffffff);
   final superPleasingWhite = Colors.white38;
+  final pinkyPink = const Color(0xffff66c4);
   final complimentaryBlack = const Color(0xff0D242E);
   const AppColors();
 }

@@ -78,11 +78,13 @@ class FriendPageState extends State<FriendPage>{
         throw Exception('Username is incorrect');
       }
       final userInfo = await DataBase.userCollection?.child(Fname).get();
+      final userPInfo = await DataBase.petsCollection?.child(Fname).get();
       int xp = user.child('xp').value as int;
       int streak = user.child('streak').value as int;
       int friendsCount = userInfo?.child('friendCount').value as int;
       String league = user.child('league').value.toString();
-      UserI userI = UserI(Fname, xp, streak, league);
+      int petsDied = userPInfo?.child('petsDied').value as int;
+      UserI userI = UserI(Fname, xp, streak, league, petsDied);
       ProfileView.openProfile(context, userI, friendsCount);
     }catch (e){
       if (kDebugMode) print('Error: $e');
@@ -273,11 +275,13 @@ class FriendPageState extends State<FriendPage>{
                                                    child: GestureDetector(onTap: () async{
                                                      final userSInfo = await DataBase.streakCollection?.child(user).get();
                                                      final userInfo = await DataBase.userCollection?.child(user).get();
+                                                     final userPInfo = await DataBase.petsCollection?.child(user).get();
                                                      int xp = userSInfo?.child('xp').value as int;
                                                      int streak = userSInfo?.child('streak').value as int;
                                                      int friendsCount = userInfo?.child('friendCount').value as int;
                                                      String league = userSInfo!.child('league').value.toString();
-                                                     UserI userI = UserI(user, xp, streak, league);
+                                                     int petsDied = userPInfo?.child('petsDied').value as int;
+                                                     UserI userI = UserI(user, xp, streak, league, petsDied);
                                                      ProfileView.openProfile(context, userI, friendsCount);
                                                    },child: ListTile(
                                                      tileColor: AppTheme.colors.friendlyBlack,

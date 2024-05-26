@@ -84,6 +84,8 @@ class _ProfilePaneState extends State<ProfilePane>{
       await Globals.prefs.delete(key: 'user');
       Globals.LoggedIN = false;
       Globals.user = '';
+      Globals.profilepicurl = '';
+      Globals.isprofilepic = false;
       result = true;
       GlobalVar.globalVar.showToast('Successfully logged out!');
     } catch (e){
@@ -403,39 +405,6 @@ class _ProfilePaneState extends State<ProfilePane>{
                                 )),
                           ),
                           const SizedBox(height: 16.0),
-                          // GestureDetector(
-                          //   onTap: (){
-                          //     Navigator.of(context).pushNamed('/S>terms');
-                          //   },
-                          //   child: CustomBox(color: AppTheme.colors.friendlyBlack,
-                          //       shadow: Colors.transparent,
-                          //       height: 60,
-                          //       child: Padding(
-                          //         padding: const EdgeInsetsDirectional.fromSTEB(20, 8, 20, 8),
-                          //         child: Row(
-                          //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          //           children: [
-                          //             Column(
-                          //               crossAxisAlignment: CrossAxisAlignment.start,
-                          //               children: [
-                          //                 Row(
-                          //                   children: [
-                          //                     Text('Terms & Conditions', style: TextStyle(color: AppTheme.colors.friendlyWhite, fontSize: 14.0, fontWeight: FontWeight.bold, fontFamily: Globals.sysFont),),
-                          //                     const SizedBox(width: 3,),
-                          //                     Icon(CupertinoIcons.book_circle, color: AppTheme.colors.friendlyWhite, size: 14.0,),
-                          //                   ],
-                          //                 ),
-                          //                 Text('Our terms and conditions', style: TextStyle(color: AppTheme.colors.pleasingWhite, fontSize: 12.0, fontWeight: FontWeight.normal, fontFamily: Globals.sysFont),),
-                          //               ],
-                          //             ),
-                          //             Align(
-                          //               child: Icon(CupertinoIcons.arrow_right_circle, color: AppTheme.colors.friendlyWhite,),
-                          //             )
-                          //           ],
-                          //         ),
-                          //       )),
-                          // ),
-                          // const SizedBox(height: 16,),
                           GestureDetector(
                             onTap: (){
                               Navigator.of(context).pushNamed('/S>about');
@@ -453,7 +422,7 @@ class _ProfilePaneState extends State<ProfilePane>{
                                           children: [
                                             Row(
                                               children: [
-                                                Text('About Us', style: TextStyle(color: AppTheme.colors.friendlyWhite
+                                                Text('About', style: TextStyle(color: AppTheme.colors.friendlyWhite
                                                     , fontSize: 14.0, fontWeight: FontWeight.bold, fontFamily: Globals.sysFont),),
                                                 const SizedBox(width: 3,),
                                                 Icon(CupertinoIcons.info_circle, color: AppTheme.colors.friendlyWhite

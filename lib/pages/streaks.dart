@@ -21,7 +21,8 @@ class UserI{
   final int xp;
   final int streak;
   final String league;
-  UserI(this.name, this.xp, this.streak, this.league);
+  final int petsDied;
+  UserI(this.name, this.xp, this.streak, this.league, this.petsDied);
 }
 
 class _StreakState extends State<Streaks>{
@@ -74,32 +75,36 @@ class _StreakState extends State<Streaks>{
            int streak = element
                .child('streak')
                .value as int;
-           leaderboard.add(UserI(name, xp, streak, league!));
+           int ded = (await DataBase.petsCollection?.child(name).child('petsDied').get())?.value as int;
+           leaderboard.add(UserI(name, xp, streak, league!,ded));
          }
        }
        bool inLeaderboard = leaderboard.any((user) => user.name == Globals.user);
        if (!inLeaderboard){
          if (leaderboard.length >= 25) leaderboard.removeLast();
-         leaderboard.add(UserI(Globals.user, user?.child('xp').value as int, user?.child('streak').value as int, league!, ));
+         leaderboard.add(UserI(Globals.user, user?.child('xp').value as int, user?.child('streak').value as int, league!, (await DataBase.petsCollection?.child(Globals.user).child('petsDied').get())?.value as int));
        }
        int xpComparator(UserI a, UserI b) => b.xp.compareTo(a.xp);
        leaderboard.sort(xpComparator);
      } else if (Selected == 2){
        final user = await DataBase.userCollection?.child(Globals.user).get();
        final user_ref = await DataBase.streakCollection?.child(Globals.user).get();
+       final user_pet_ref = await DataBase.petsCollection?.child(Globals.user).get();
        List friend_list = [];
        friend_list.addAll(user?.child('friend_list').value as List);
        if (friend_list.isEmpty) throw Exception('No friends to display');
        int xpComparator(UserI a, UserI b) => b.xp.compareTo(a.xp);
        for (var friend in friend_list){
          final friend_ref = await DataBase.streakCollection?.child(friend).get();
+         final friend_pet_ref = await DataBase.petsCollection?.child(friend).get();
          String name = friend;
          int xp = friend_ref?.child('xp').value as int;
          int streak = friend_ref?.child('streak').value as int;
          String? league = friend_ref?.child('league').value.toString();
-         leaderboard.add(UserI(name, xp, streak, league!));
+         int petDed = friend_pet_ref?.child('petsDied').value as int;
+         leaderboard.add(UserI(name, xp, streak, league!, petDed));
        }
-       leaderboard.add(UserI(Globals.user, user_ref?.child('xp').value as int, user_ref?.child('streak').value as int, user_ref!.child('league').value.toString()));
+       leaderboard.add(UserI(Globals.user, user_ref?.child('xp').value as int, user_ref?.child('streak').value as int, user_ref!.child('league').value.toString(), user_pet_ref?.child('petsDied').value as int));
        leaderboard.sort(xpComparator);
      }
      return leaderboard;

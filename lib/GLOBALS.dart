@@ -1,18 +1,22 @@
 import 'dart:convert';
+import 'package:PawfectTasks/Components/UpdatePopup.dart';
 import 'package:PawfectTasks/db/database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gif_plus/flutter_gif_plus.dart';
 import 'dart:io';
+import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:PawfectTasks/Components/AppTheme.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:timezone/timezone.dart';
 
 @immutable
 class Globals {
+  static late String VERSION;
   static String sysFont = 'Poppins';
   static FlutterSecureStorage prefs = const FlutterSecureStorage();
   static late bool LoggedIN;
@@ -22,12 +26,14 @@ class Globals {
   static late List<Map<String,dynamic>> tasks;
   static late List<Map<String,dynamic>> displayTasks;
   static late Map<String, dynamic> taskCompleted;
+  static late bool autoUpdateCheck;
   static late int tasksCompletedToday;
   static late String profilepicurl;
   static late int currentImage;
   static late bool isprofilepic;
   static const int focused = 1;
   static const int unfocused = 2;
+  static int currentPet = 0;
 
   static Future<void> updatePetStatus() async {
     if (LoggedIN) {
@@ -74,6 +80,35 @@ class Globals {
     }
   }
 
+  static Future<void> checkUpdates(BuildContext context) async{
+    String gitReleaseURL = 'https://api.github.com/repos/GeekyHichambel/Pawfect_Tasks/releases/latest';
+    String accessToken = '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';
+    try{
+      final response = await http.get(Uri.parse(gitReleaseURL),
+        headers: {
+          'Authorization' : 'token $accessToken',
+        }
+      );
+      if (response.statusCode == 200){
+        var latestRelease = jsonDecode(response.body);
+        String latestVersion = latestRelease['name'];
+        String downloadUri = latestRelease['assets'][0]['url'];
+
+        if (VERSION != latestVersion){
+          debugPrint('A new version is available');
+          UpdatePopup.show(context, downloadUri, accessToken);
+        }else{
+          debugPrint('You are using the latest version');
+          GlobalVar.globalVar.showToast('You are using the latest version');
+        }
+      }else{
+        debugPrint('Error fetching the update information ${response.statusCode}');
+      }
+    } catch (e){
+      debugPrint('Error: $e');
+    }
+  }
+
   static Future<void> lastOnline() async{
     if (LoggedIN) {
       await DataBase.userCollection?.child(user).child('stats').update({
@@ -110,6 +145,16 @@ class Globals {
   }
 
   static updatePref() async{
+
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    VERSION = packageInfo.version;
+
+    if (await prefs.read(key: 'autoUpdateCheck') != null){
+      autoUpdateCheck = (await prefs.read(key: 'autoUpdateCheck')) == 'true';
+    }else{
+      autoUpdateCheck = false;
+    }
+
     if (await prefs.read(key: 'loggedIN') != null) {
       LoggedIN = (await prefs.read(key: 'loggedIN')) == 'true';
     }else{
@@ -147,6 +192,12 @@ class Globals {
                   return MapEntry<String, dynamic>(key, null);
                 }
               }else if (key == 'completed') {
+                if (value == 'false'){
+                  return MapEntry<String,dynamic>(key, false);
+                }else{
+                  return MapEntry<String,dynamic>(key, true);
+                }
+              }else if (key == 'reminder') {
                 if (value == 'false'){
                   return MapEntry<String,dynamic>(key, false);
                 }else{

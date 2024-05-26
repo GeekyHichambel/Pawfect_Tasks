@@ -2,6 +2,7 @@ import 'package:PawfectTasks/pages/Calendar.dart';
 import 'package:PawfectTasks/pages/FriendsPage.dart';
 import 'package:PawfectTasks/pages/settings/aboutUs.dart';
 import 'package:PawfectTasks/pages/settings/cFeedback.dart';
+import 'package:PawfectTasks/pages/settings/policy.dart';
 import 'package:PawfectTasks/pages/settings/storage.dart';
 import 'package:PawfectTasks/pages/settings/notif.dart';
 import 'package:PawfectTasks/pages/settings/uInfo.dart';
@@ -14,9 +15,14 @@ import 'package:PawfectTasks/pages/home.dart';
 import 'package:PawfectTasks/pages/streaks.dart';
 import 'package:PawfectTasks/pages/user_login.dart';
 import 'package:PawfectTasks/pages/user_signup.dart';
-
+import 'db/database.dart';
+//TODO: payment gateways
+//TODO: ads
+//TODO: server-side tasks
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await DataBase.connect();
+  await DataBase.initNotifications();
   runApp(
     MaterialApp(
       debugShowCheckedModeBanner: false,
@@ -37,6 +43,7 @@ Future<void> main() async {
         '/S>kill' : (context) => const killM(),
         '/S>notif' : (context) => const notif(),
         '/S>info' : (context) => const Uinfo(),
+        '/S>policy' : (context) => const Policy(),
       },
     ),
   );

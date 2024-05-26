@@ -7,7 +7,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:timezone/data/latest_all.dart' as tz;
+import 'package:flutter_timezone/flutter_timezone.dart';
+import 'package:timezone/data/latest.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
 
 const USER_COLLECTION = 'users';
 const ITEM_COLLECTION = 'items';
@@ -22,16 +24,26 @@ class DataBase{
   static DatabaseReference? streakCollection;
   static DatabaseReference? petsCollection;
   static DatabaseReference? leaderboardCollection;
-  static Reference? marketStorage;
+  static Reference? marketFoodStorage;
+  static Reference? marketPetStorage;
   static Reference? userPicsStorage;
   static FirebaseAuth firebaseAuth = FirebaseAuth.instance;
   static FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
   static AndroidNotificationChannel androidChannel = const AndroidNotificationChannel(
-      'high_importance_channel',
-      'High Importance Notifications',
+      'channel_id',
+      'channel_name',
       description: 'This channel is for important notifications.',
-      importance: Importance.defaultImportance,
       );
+  static AndroidNotificationDetails androidNotificationDetails = AndroidNotificationDetails(
+      androidChannel.id,
+      androidChannel.name,
+      channelDescription: androidChannel.description,
+      importance: Importance.max,
+      priority: Priority.high,
+      ticker: 'ticker',
+      icon: 'logo_bg',
+      styleInformation: const BigTextStyleInformation(''),
+    );
   static FlutterLocalNotificationsPlugin localNotifications = FlutterLocalNotificationsPlugin();
 
   static void handleMessage(RemoteMessage? message){
@@ -40,14 +52,36 @@ class DataBase{
 
   static Future initLocalNotifications() async{
     const IOS = DarwinInitializationSettings();
-    const Android = AndroidInitializationSettings('@drawable/logo_bg');
+    const Android = AndroidInitializationSettings('logo_bg');
     const settings = InitializationSettings(android: Android,iOS: IOS);
-
+    localNotifications.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()!.requestNotificationsPermission();
     await localNotifications.initialize(
-      settings,
+        settings,
+        onDidReceiveNotificationResponse: onNotificationTap,
+        onDidReceiveBackgroundNotificationResponse: onNotificationTap,
     );
-    final platform = localNotifications.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
-    await platform?.createNotificationChannel(androidChannel);
+  }
+
+  static void onNotificationTap(NotificationResponse notificationResponse) {
+
+  }
+
+  static notificationDetails() {
+    return NotificationDetails(
+        android: androidNotificationDetails,
+        iOS: const DarwinNotificationDetails());
+  }
+
+  static Future schedule({int id = 0,String? title,String? body,String? payload, required DateTime scheduledTime}) async{
+    return localNotifications.zonedSchedule(
+        id,
+        title,
+        body,
+        tz.TZDateTime.from(scheduledTime, tz.local),
+        await notificationDetails(),
+        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+        uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime
+    );
   }
 
   static Future initPushNotifications() async{
@@ -67,14 +101,7 @@ class DataBase{
             notification.hashCode,
             notification.title,
             notification.body,
-            NotificationDetails(
-              android: AndroidNotificationDetails(
-                androidChannel.id,
-                androidChannel.name,
-                channelDescription: androidChannel.description,
-                icon: '@drawable/logo_bg',
-              ),
-            ),
+            notificationDetails(),
           payload: jsonEncode(event.toMap()),
         );
     });
@@ -83,7 +110,7 @@ class DataBase{
   static Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage remoteMessage) async{
     FirebaseMessaging.onMessage.listen((RemoteMessage remoteMessage){
       if (kDebugMode) {
-        print('A new  message received.');
+        print('A new message received.');
       }
     });
   }
@@ -148,9 +175,12 @@ class DataBase{
     streakCollection = firebaseDatabase?.ref().child(STREAK_COLLECTION);
     petsCollection = firebaseDatabase?.ref().child(PETS_COLLECTION);
     leaderboardCollection = firebaseDatabase?.ref().child(LEADERBOARD_COLLECTION);
-    marketStorage = FirebaseStorage.instance.ref().child('pics');
+    marketFoodStorage = FirebaseStorage.instance.ref().child('pics');
+    marketPetStorage = FirebaseStorage.instance.ref().child('pet_pics');
     userPicsStorage = FirebaseStorage.instance.ref().child('users_pics');
     tz.initializeTimeZones();
+    String currentTimezone = await FlutterTimezone.getLocalTimezone();
+    tz.setLocalLocation(tz.getLocation(currentTimezone));
     if (kDebugMode) {
       firebaseDatabase?.setLoggingEnabled(true);
     }

@@ -181,7 +181,7 @@ class killMState extends State<killM>{
             ),
             const SizedBox(height: 20,),
             FadeInAnimation(
-              delay: 1.25,
+              delay: 1,
               child: Align(
                 alignment: AlignmentDirectional.center,
                 child: Container(
@@ -226,11 +226,11 @@ class killMState extends State<killM>{
               ),
             ),
             const SizedBox(height: 15,),
-            FadeInAnimation(delay: 1.5,child: Icon(Icons.info_outline_rounded, color: AppTheme.colors.blissCream, size: 24,)),
+            FadeInAnimation(delay: 1.25,child: Icon(Icons.info_outline_rounded, color: AppTheme.colors.blissCream, size: 24,)),
             const SizedBox(height: 5,),
             FadeInAnimation(
-              delay: 1.5,
-              child: Text('All the tasks are backed up on the cloud, so you don\'t need to worry about space\n\nNote: You must restart after restoring data inorder for the app to reflect changes' ,style: TextStyle(
+              delay: 1.25,
+              child: Text('All the tasks are backed up on the cloud, so you don\'t need to worry about space\n\nNote: You must restart the app after restoring data inorder for the app to reflect changes' ,style: TextStyle(
                 fontFamily: Globals.sysFont,
                 color: AppTheme.colors.blissCream,
                 fontSize: 12,
@@ -238,7 +238,7 @@ class killMState extends State<killM>{
             ),
             const SizedBox(height: 20,),
             FadeInAnimation(
-              delay: 1.75,
+              delay: 1.5,
               child: Text('Local Storage' ,style: TextStyle(
                 fontFamily: Globals.sysFont,
                 color: AppTheme.colors.onsetBlue,
@@ -248,7 +248,7 @@ class killMState extends State<killM>{
             ),
             const SizedBox(height: 20,),
           FadeInAnimation(
-            delay: 2,
+            delay: 1.5,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
@@ -270,7 +270,7 @@ class killMState extends State<killM>{
           ),
             const SizedBox(height: 15,),
             FadeInAnimation(
-              delay: 2,
+              delay: 1.5,
               child: Align(
                 alignment: AlignmentDirectional.center,
                 child: Column(
@@ -289,7 +289,7 @@ class killMState extends State<killM>{
                     ),
                     const SizedBox(height: 15,),
                     FadeInAnimation(
-                      delay: 2,
+                      delay: 1.5,
                       child: Container(
                         decoration: BoxDecoration(
                             borderRadius: const BorderRadius.all(Radius.circular(16.0)),
@@ -312,10 +312,10 @@ class killMState extends State<killM>{
                 )),
             ),
             const SizedBox(height: 15,),
-            FadeInAnimation(delay: 2.25,child: Icon(Icons.info_outline_rounded, color: AppTheme.colors.blissCream, size: 24,)),
+            FadeInAnimation(delay: 1.75,child: Icon(Icons.info_outline_rounded, color: AppTheme.colors.blissCream, size: 24,)),
             const SizedBox(height: 5,),
             FadeInAnimation(
-              delay: 2.25,
+              delay: 1.75,
               child: Text('Clear the task data saved in local storage\nTotal storage size is around 2GB' ,style: TextStyle(
                 fontFamily: Globals.sysFont,
                 color: AppTheme.colors.blissCream,

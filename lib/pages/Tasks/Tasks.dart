@@ -9,6 +9,7 @@ import 'package:flutter_animate/flutter_animate.dart' as flutter_animate;
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:gif/gif.dart';
 import 'package:intl/intl.dart';
+import 'package:timezone/timezone.dart' as tz;
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import '../../Components/AppTheme.dart';
 import '../../GLOBALS.dart';
@@ -19,6 +20,15 @@ import 'ThirdPage.dart';
 class Tasks{
   static Future<void> rewardUser(BuildContext context) async{
     bool loading = false;
+    bool dead = false;
+
+    Future<void> checkDead() async{
+      final pet_ref = await DataBase.petsCollection?.child(Globals.user).get();
+      int health = pet_ref?.child('petStatus').child('labra/health').value as int;
+      if (health == 0) {
+        dead = true;
+      }
+    }
 
     Future<void> giveRewards() async{
       final streak_ref = await DataBase.streakCollection?.child(Globals.user).get();
@@ -32,13 +42,18 @@ class Tasks{
       int slot = streak_ref.child('slot').value as int;
       int streak = streak_ref.child('streak').value as int;
 
-      await streak_ref.ref.update({
-        'xp' : xp,
-      });
+      if (!dead) {
+        await streak_ref.ref.update({
+          'xp': xp,
+        });
 
-      await DataBase.leaderboardCollection?.child(league).child('Slot$slot').child(Globals.user).update({
-        'xp' : xp,
-      });
+        await DataBase.leaderboardCollection?.child(league)
+            .child('Slot$slot')
+            .child(Globals.user)
+            .update({
+          'xp': xp,
+        });
+      }
 
       await item_ref?.ref.update({
         'pawCoin' : pawCoin,
@@ -146,6 +161,7 @@ class Tasks{
       }
     }
 
+    await checkDead();
     await showDialog(
         context: context, builder: (context) {
       return StatefulBuilder(
@@ -170,8 +186,11 @@ class Tasks{
                   Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   mainAxisSize: MainAxisSize.min,
-                  children: [
-                  Text('You received 5 ', style: TextStyle(color: AppTheme.colors.pleasingWhite, fontSize: 14),),
+                  children: dead? [
+                    Text('You received 30 ', style: TextStyle(color: AppTheme.colors.pleasingWhite, fontSize: 14),),
+                    Image.asset('assets/pawCoin.png',width: 16,height: 16,),
+                  ]: [
+                    Text('You received 5 ', style: TextStyle(color: AppTheme.colors.pleasingWhite, fontSize: 14),),
                   Image.asset('assets/xp_icon.png',width: 16,height: 16,),
                   Text(' and 30 ', style: TextStyle(color: AppTheme.colors.pleasingWhite, fontSize: 14),),
                             Image.asset('assets/pawCoin.png', width: 16, height: 16,),
@@ -203,12 +222,11 @@ class Tasks{
     Globals.displayTasks[index]['completed'] = true;
     Globals.tasksCompletedToday++;
 
-    if (Globals.LoggedIN && Globals.tasksCompletedToday <= 5) {
+    if (Globals.LoggedIN && Globals.tasksCompletedToday <= 8) {
       rewardUser(context);
     }
 
     final String currentDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
-
     await Globals.prefs.delete(key: 'tasks');
     Globals.AllTasks.update(currentDate, (value) => Globals.tasks);
     final jsonMap = jsonEncode(Globals.AllTasks);
@@ -239,7 +257,7 @@ class Tasks{
     await Globals.prefs.write(key: 'tasks', value: jsonMap);
   }
 
-  static Future<int> createNewTask(String name, String? description, Duration start, Duration _duration,IconData? icon, Color? color,DateTime _date) async{
+  static Future<int> createNewTask(String name, String? description, Duration start, Duration _duration,IconData? icon, Color? color,DateTime _date,{bool reminder = false, int repetition =  1}) async{
     try {
       final String? taskIcon = icon?.codePoint.toString();
       final String? taskColor = color?.value.toString();
@@ -249,6 +267,8 @@ class Tasks{
       final String startTime = minDiff >= 10? '${start.inHours} : $minDiff' : '${start.inHours} : 0$minDiff';
       final String duration = '${_duration.inHours} hours. ${_duration.inMinutes - (_duration.inHours * 60)} min.';
       final DateTime date = _date;
+      final bool isReminder = reminder;
+      int repetitionDays = repetition;
       if (taskName == ''){
         GlobalVar.globalVar.showToast('Task name can\'t be empty');
         throw Exception('Task name can\'t be empty');
@@ -262,6 +282,7 @@ class Tasks{
         'startTime' : startTime,
         'duration' : duration,
         'completed' : 'false',
+        'reminder' : isReminder.toString(),
       };
 
       Duration parseTime(String timeString) {
@@ -292,6 +313,7 @@ class Tasks{
             'startTime': startTime,
             'duration': duration,
             'completed': false,
+            'reminder' : reminder,
           });
           Globals.displayTasks.sort((a, b) =>
               parseTime(a['startTime']).compareTo(parseTime(b['startTime'])));
@@ -304,6 +326,7 @@ class Tasks{
             'startTime': startTime,
             'duration': duration,
             'completed': false,
+            'reminder' : reminder,
           }
           ];
         }
@@ -317,7 +340,7 @@ class Tasks{
       }else{
         await Globals.prefs.delete(key: 'tasks');
         if (Globals.AllTasks.containsKey(selectedDate)){
-          late final List<Map<String,dynamic>> tasks = Globals.AllTasks[selectedDate];
+          final List<Map<String,dynamic>> tasks = Globals.AllTasks[selectedDate];
             tasks.add(task);
             tasks.sort((a, b) =>
                 parseTime(a['startTime']).compareTo(parseTime(b['startTime'])));
@@ -326,6 +349,36 @@ class Tasks{
           Globals.AllTasks[selectedDate] = [task];
         }
       }
+
+      if (Globals.isPremium && reminder){
+        final DateTime scheduledTime = DateTime(date.year,date.month,date.day,parseTime(startTime).inHours,parseTime(startTime).inMinutes - (parseTime(startTime).inHours*60));
+        await DataBase.schedule(
+          title: 'Task Reminder',
+          body: 'Dear ${Globals.user},\nYou have got a task named: \'$name\', scheduled for $startTime.\nMake sure you complete it on time\nKeep Grinding!👍',
+          scheduledTime: scheduledTime,
+        ).then((_){
+          debugPrint('$scheduledTime');
+        }).onError((error, stackTrace){
+          debugPrint('$error');
+        });
+      }
+
+      if (Globals.isPremium && repetitionDays > 1){
+        for (var i = 1; i < repetitionDays; i++){
+          String cDate = DateFormat('yyyy-MM-dd').format(date.add(Duration(days: i)));
+          if (Globals.AllTasks.containsKey(cDate)){
+            final List<dynamic> tasks = Globals.AllTasks[cDate];
+            tasks.add(task);
+            tasks.sort((a, b) =>
+                parseTime(a['startTime']).compareTo(parseTime(b['startTime'])));
+            Globals.AllTasks.update(cDate, (value) => tasks);
+          }else{
+            Globals.AllTasks[cDate] = [task];
+          }
+          debugPrint('${Globals.AllTasks[cDate]}');
+        }
+      }
+
       final jsonMap = jsonEncode(Globals.AllTasks);
       await Globals.prefs.write(key: 'tasks', value: jsonMap);
       return 0;
@@ -342,7 +395,7 @@ class Tasks{
 
     TextEditingController Tcontroller = TextEditingController();
     TextEditingController Dcontroller = TextEditingController();
-    TextEditingController DUcontroller = TextEditingController(text: '15 min.');
+    TextEditingController DUcontroller = TextEditingController(text: '0 min.');
 
     List<PageStorageKey> pageKeys = [
       const PageStorageKey('FirstPage'),
@@ -374,7 +427,7 @@ class Tasks{
                 body: Container(
                     decoration: BoxDecoration(
                         color: AppTheme.colors.friendlyWhite,
-                        image: const DecorationImage(image: AssetImage('assets/cardBack.png'), fit: BoxFit.cover, filterQuality: FilterQuality.medium, opacity: 0.5)
+                        image: const DecorationImage(image: AssetImage('assets/cardBack.png'), fit: BoxFit.cover, filterQuality: FilterQuality.medium, opacity: 0.3)
                     ),
                     child: Padding( padding: const EdgeInsets.all(16.0), child:Stack(
                       alignment: Alignment.center,
@@ -398,17 +451,35 @@ class Tasks{
                                   Expanded(child: Text('Create A New Task',textAlign: TextAlign.center, style: TextStyle(color: AppTheme.colors.friendlyBlack, fontSize: 18, fontWeight: FontWeight.w700, fontFamily: Globals.sysFont),),),
                                   currentPage == Pages.length - 1? GestureDetector(
                                     onTap: (){
-                                      createNewTask(Tcontroller.text, Dcontroller.text, SecondPageState.startTime, SecondPageState.duuration, FirstPageState.currentIcon, FirstPageState.currentColor, ThirdPageState.selectedDate).then((result){
-                                        if (result == 0) {
-                                          FirstPageState.currentColor = null;
-                                          FirstPageState.currentIcon = null;
-                                          SecondPageState.duuration = const Duration(minutes: 15);
-                                          SecondPageState.startTime = const Duration();
-                                          ThirdPageState.selectedDate = DateTime.now();
-                                          Navigator.of(context).pop();
-                                          GlobalVar.globalVar.showToast('New Task Added');
-                                        }
-                                      });
+                                      if (Globals.isPremium){
+                                        createNewTask(Tcontroller.text, Dcontroller.text, SecondPageState.startTime, SecondPageState.duuration, FirstPageState.currentIcon, FirstPageState.currentColor, ThirdPageState.selectedDate, reminder: SecondPageState.reminder, repetition: ThirdPageState.selected).then((result){
+                                          if (result == 0) {
+                                            FirstPageState.currentColor = null;
+                                            FirstPageState.currentIcon = null;
+                                            SecondPageState.duuration = const Duration(minutes: 0);
+                                            SecondPageState.startTime = const Duration();
+                                            ThirdPageState.selectedDate = DateTime.now();
+                                            SecondPageState.reminder = false;
+                                            ThirdPageState.selected = 1;
+                                            Navigator.of(context).pop();
+                                            GlobalVar.globalVar.showToast('New Task Added');
+                                          }
+                                        });
+                                      }else{
+                                        createNewTask(Tcontroller.text, Dcontroller.text, SecondPageState.startTime, SecondPageState.duuration, FirstPageState.currentIcon, FirstPageState.currentColor, ThirdPageState.selectedDate).then((result){
+                                          if (result == 0) {
+                                            FirstPageState.currentColor = null;
+                                            FirstPageState.currentIcon = null;
+                                            SecondPageState.duuration = const Duration(minutes: 0);
+                                            SecondPageState.startTime = const Duration();
+                                            SecondPageState.reminder = false;
+                                            ThirdPageState.selectedDate = DateTime.now();
+                                            ThirdPageState.selected = 1;
+                                            Navigator.of(context).pop();
+                                            GlobalVar.globalVar.showToast('New Task Added');
+                                          }
+                                        });
+                                      }
                                     },
                                     child: Text('Done', style: TextStyle(color: AppTheme.colors.onsetBlue, fontSize: 15.5, fontWeight: FontWeight.bold,  fontFamily: Globals.sysFont),),
                                   ): IconButton(onPressed: (){
@@ -444,9 +515,10 @@ class Tasks{
                                 DUcontroller.clear();
                                 FirstPageState.currentColor = null;
                                 FirstPageState.currentIcon = null;
-                                SecondPageState.duuration = const Duration(minutes: 15);
+                                SecondPageState.duuration = const Duration(minutes: 0);
                                 SecondPageState.startTime = const Duration();
                                 ThirdPageState.selectedDate = DateTime.now();
+                                ThirdPageState.selected = 1;
                                 Navigator.of(context).pop();
                               }, child: Icon(CupertinoIcons.multiply, color: AppTheme.colors.friendlyWhite,),
                             ),
