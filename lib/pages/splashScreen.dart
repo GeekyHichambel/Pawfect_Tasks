@@ -1,12 +1,9 @@
 import 'dart:async';
-
-import 'package:PawfectTasks/Components/UpdatePopup.dart';
 import 'package:flutter/material.dart';
 import 'package:PawfectTasks/Components/AppTheme.dart';
 import 'package:lottie/lottie.dart';
 import 'package:video_player/video_player.dart';
 import '../GLOBALS.dart';
-import '../db/database.dart';
 
 class SplashScreen extends StatefulWidget{
   const SplashScreen({Key? key}) : super(key: key);

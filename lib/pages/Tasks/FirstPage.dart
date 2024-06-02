@@ -69,15 +69,16 @@ class FirstPageState extends State<FirstPage> with AutomaticKeepAliveClientMixin
       return StatefulBuilder(builder: (BuildContext context, StateSetter setState){
         return SizedBox(
           height: 300,
-          child: AlertDialog(
-            elevation: 0,
-            scrollable: true,
-            alignment: Alignment.center,
-            contentPadding: const EdgeInsets.all(20.0),
-            backgroundColor: AppTheme.colors.friendlyBlack,
-            shadowColor: Colors.transparent,
-            shape: const RoundedRectangleBorder(side: BorderSide.none, borderRadius: BorderRadius.all(Radius.circular(16.0))),
-            content: Column(
+          child: Stack(
+            children: [AlertDialog(
+              elevation: 0,
+              scrollable: true,
+              alignment: Alignment.center,
+              contentPadding: const EdgeInsets.all(20.0),
+              backgroundColor: AppTheme.colors.friendlyBlack,
+              shadowColor: Colors.transparent,
+              shape: const RoundedRectangleBorder(side: BorderSide.none, borderRadius: BorderRadius.all(Radius.circular(16.0))),
+              content: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children:[
                   Text('Task Icon', style: TextStyle(color: AppTheme.colors.onsetBlue, fontFamily: Globals.sysFont, fontSize: 18, fontWeight: FontWeight.w700),),
@@ -175,6 +176,7 @@ class FirstPageState extends State<FirstPage> with AutomaticKeepAliveClientMixin
                     ),
                   )),
                 ]),),
+          ]),
         );
       }).animate(effects: [
         flutter_animate.FadeEffect(duration: 200.ms, curve: Curves.fastLinearToSlowEaseIn),

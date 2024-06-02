@@ -15,7 +15,7 @@ class UpdatePopup{
 
   static Future<void> show(BuildContext context, String url, String accessToken) async{
 
-    showDialog(context: context, builder: (context,){
+    await showDialog(context: context, builder: (context,){
       return StatefulBuilder(builder: (context, StateSetter setState){
         return Center(
             child: AlertDialog(

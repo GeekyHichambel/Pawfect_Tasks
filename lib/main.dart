@@ -16,6 +16,8 @@ import 'package:PawfectTasks/pages/streaks.dart';
 import 'package:PawfectTasks/pages/user_login.dart';
 import 'package:PawfectTasks/pages/user_signup.dart';
 import 'db/database.dart';
+//TODO: fix repetitive tasks
+//TODO: premium feature showcase
 //TODO: payment gateways
 //TODO: ads
 //TODO: server-side tasks

@@ -96,7 +96,7 @@ class Globals {
 
         if (VERSION != latestVersion){
           debugPrint('A new version is available');
-          UpdatePopup.show(context, downloadUri, accessToken);
+          await UpdatePopup.show(context, downloadUri, accessToken);
         }else{
           debugPrint('You are using the latest version');
           GlobalVar.globalVar.showToast('You are using the latest version');

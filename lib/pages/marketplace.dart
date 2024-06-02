@@ -373,7 +373,7 @@ Future<void> openDialog(BuildContext context, name, price, foodValue) async{
                                   Expanded(
                                     child: GestureDetector(
                                       onTap: (){
-                                   openDialog(context, snapshot.data![index].name, snapshot.data![index].price, snapshot.data![index].hp);
+                                   filter == 'Pets'? openDialog(context, snapshot.data![index].name, snapshot.data![index].price, snapshot.data![index].hp) : openDialog(context, snapshot.data![index].name, snapshot.data![index].price, snapshot.data![index].foodValue);
                                   },
                                       child: filter == 'Pets'? ClipRRect(
                                         borderRadius: BorderRadius.circular(25),
